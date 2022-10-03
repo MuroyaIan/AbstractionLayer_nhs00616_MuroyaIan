@@ -1,9 +1,14 @@
-﻿// AbstractionLayer_nhs00616_MuroyaIan.cpp : アプリケーションのエントリ ポイントを定義します。
-//
+﻿//==============================================================================
+// Filename: Win_Main.cpp
+// Description: メインファイル（エントリポイント）
+// Copyright (C) 2022 Silicon Studio Co., Ltd. All rights reserved.
+//==============================================================================
 
-#include "framework.h"
-#include "AbstractionLayer_nhs00616_MuroyaIan.h"
+// インクルード部
+#include <Win/Win_Framework.h>
+#include <Win/Win_Main.h>
 
+// マクロ定義
 #define MAX_LOADSTRING 100
 
 // グローバル変数:
@@ -144,7 +149,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
     case WM_PAINT:
         {
-            PAINTSTRUCT ps;
+            PAINTSTRUCT ps{};
             //HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: HDC を使用する描画コードをここに追加してください...
             EndPaint(hWnd, &ps);

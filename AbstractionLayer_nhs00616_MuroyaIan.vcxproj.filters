@@ -13,25 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="targetver.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Resource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="AbstractionLayer_nhs00616_MuroyaIan.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="AbstractionLayer_nhs00616_MuroyaIan.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
+    <Filter Include="ヘッダー ファイル\Win">
+      <UniqueIdentifier>{ad65214d-0332-4872-9555-ed6b50859196}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Win">
+      <UniqueIdentifier>{2f8a7126-c10b-4f11-b4b9-470e455e3ccb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc">
@@ -45,5 +32,24 @@
     <Image Include="AbstractionLayer_nhs00616_MuroyaIan.ico">
       <Filter>リソース ファイル</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Resource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\targetver.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Win\Win_Main.h">
+      <Filter>ヘッダー ファイル\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Win\Win_Framework.h">
+      <Filter>ヘッダー ファイル\Win</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Win\Win_Main.cpp">
+      <Filter>ソース ファイル\Win</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

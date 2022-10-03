@@ -160,20 +160,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AbstractionLayer_nhs00616_MuroyaIan.h" />
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="Resource.h" />
-    <ClInclude Include="targetver.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="AbstractionLayer_nhs00616_MuroyaIan.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="AbstractionLayer_nhs00616_MuroyaIan.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Resource.h" />
+    <ClInclude Include="Source\targetver.h" />
+    <ClInclude Include="Source\Win\Win_Framework.h" />
+    <ClInclude Include="Source\Win\Win_Main.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\Win\Win_Main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

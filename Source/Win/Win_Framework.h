@@ -6,6 +6,8 @@
 
 #pragma once
 
+//===== インクルード部 =====
+
 // Windows プラットフォーム定義 ヘッダファイル
 #include <targetver.h>
 
@@ -63,3 +65,9 @@
 #include <string>           // 文字列
 #include <iostream>         // 文字列入出力
 #include <sstream>          // 文字列ストリーム
+
+//===== 定数・マクロ定義 =====
+//#define DIRECTX_11                  //dx11
+//#define DIRECTX_12                  //dx12
+#define IMGUI                       //ImGui使用
+//constexpr bool IS_DEBUG = true;     //デバッグモード

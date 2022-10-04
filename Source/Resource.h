@@ -1,4 +1,10 @@
-﻿//{{NO_DEPENDENCIES}}
+﻿//==============================================================================
+// Filename: Resource.h
+// Description: リソースヘッダ
+// Copyright (C) 2022 Silicon Studio Co., Ltd. All rights reserved.
+//==============================================================================
+
+//{{NO_DEPENDENCIES}}
 // Microsoft Visual C++ で生成されたインクルード ファイルです。
 // 次で使用: AbstractionLayer_nhs00616_MuroyaIan.rc
 
@@ -16,6 +22,7 @@
 #ifndef IDC_STATIC
 #define IDC_STATIC				-1
 #endif
+
 // 新しいオブジェクトの次の既定値
 //
 #ifdef APSTUDIO_INVOKED

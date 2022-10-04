@@ -167,13 +167,28 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="Library\3rd_Party\ImGui\imgui.h" />
     <ClInclude Include="Source\Resource.h" />
     <ClInclude Include="Source\targetver.h" />
+    <ClInclude Include="Source\Win\Win_App.h" />
+    <ClInclude Include="Source\Win\Win_ErrorOutput.h" />
     <ClInclude Include="Source\Win\Win_Framework.h" />
+    <ClInclude Include="Source\Win\Win_Keyboard.h" />
     <ClInclude Include="Source\Win\Win_Main.h" />
+    <ClInclude Include="Source\Win\Win_Mouse.h" />
+    <ClInclude Include="Source\Win\Win_TimeProc.h" />
+    <ClInclude Include="Source\Win\Win_Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Win\Win_App.cpp" />
+    <ClCompile Include="Source\Win\Win_ErrorOutput.cpp" />
+    <ClCompile Include="Source\Win\Win_Keyboard.cpp" />
     <ClCompile Include="Source\Win\Win_Main.cpp" />
+    <ClCompile Include="Source\Win\Win_Mouse.cpp" />
+    <ClCompile Include="Source\Win\Win_TimeProc.cpp" />
+    <ClCompile Include="Source\Win\Win_Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

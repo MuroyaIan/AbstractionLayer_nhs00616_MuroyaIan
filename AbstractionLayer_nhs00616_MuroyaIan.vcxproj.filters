@@ -19,6 +19,12 @@
     <Filter Include="ソース ファイル\Win">
       <UniqueIdentifier>{2f8a7126-c10b-4f11-b4b9-470e455e3ccb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ヘッダー ファイル\Lib">
+      <UniqueIdentifier>{af1e3821-8edc-4c25-9b18-1ee57769a3dd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Lib\IMGUI">
+      <UniqueIdentifier>{29e502ed-6d4d-4fcf-abac-a006099dbc54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc">
@@ -46,9 +52,54 @@
     <ClInclude Include="Source\Win\Win_Framework.h">
       <Filter>ヘッダー ファイル\Win</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Win\Win_ErrorOutput.h">
+      <Filter>ヘッダー ファイル\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Win\Win_Window.h">
+      <Filter>ヘッダー ファイル\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Win\Win_Keyboard.h">
+      <Filter>ヘッダー ファイル\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Win\Win_Mouse.h">
+      <Filter>ヘッダー ファイル\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\3rd_Party\ImGui\imgui.h">
+      <Filter>ヘッダー ファイル\Lib\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_win32.h">
+      <Filter>ヘッダー ファイル\Lib\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx11.h">
+      <Filter>ヘッダー ファイル\Lib\IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Win\Win_App.h">
+      <Filter>ヘッダー ファイル\Win</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Win\Win_TimeProc.h">
+      <Filter>ヘッダー ファイル\Win</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Win\Win_Main.cpp">
+      <Filter>ソース ファイル\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Win\Win_ErrorOutput.cpp">
+      <Filter>ソース ファイル\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Win\Win_Window.cpp">
+      <Filter>ソース ファイル\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Win\Win_Keyboard.cpp">
+      <Filter>ソース ファイル\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Win\Win_Mouse.cpp">
+      <Filter>ソース ファイル\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Win\Win_App.cpp">
+      <Filter>ソース ファイル\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Win\Win_TimeProc.cpp">
       <Filter>ソース ファイル\Win</Filter>
     </ClCompile>
   </ItemGroup>

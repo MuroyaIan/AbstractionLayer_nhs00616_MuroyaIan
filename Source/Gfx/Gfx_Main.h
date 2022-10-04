@@ -19,42 +19,143 @@
 //===== クラス定義 =====
 
 //***** グラフィック *****
-class GRAPHIC
+class GfxMain
 {
+
+    //--------------------------------------------------------------------------
+    friend class BINDER;
+    //--------------------------------------------------------------------------
+
 public:
 
     //描画モード
-    enum class DRAW_MODE
+    enum class DrawMode
     {
         DRAW_2D,
         DRAW_3D
     };
 
     //コピーNG
-    GRAPHIC(const GRAPHIC&) = delete;
-    GRAPHIC& operator=(const GRAPHIC&) = delete;
+    GfxMain(const GfxMain&) = delete;
+    GfxMain& operator=(const GfxMain&) = delete;
 
-    //プロトタイプ宣言
-    GRAPHIC(HWND hWindow, float fWidth, float fHeight);
-    ~GRAPHIC() noexcept;
-    void BeginFrame(float R, float G, float B) const noexcept;                        //フレーム開始
-    void DrawIndexed(UINT IndexNum) const noexcept(!IS_DEBUG);                        //フレームバッファ書込み
-    void DrawInstanced(UINT IndexNum, UINT InstanceNum) const noexcept(!IS_DEBUG);    //インスタンシング描画
-    void EndFrame() const;                                                            //フレーム終了⇒描画開始
-    void SetDrawMode(DRAW_MODE Mode);                                                //描画モード設定
+    //--------------------------------------------------------------------------
 
-    void SetViewMtx(DirectX::XMFLOAT4X4 mtxView) noexcept            //ビュー行列へのアクセス
+    //--------------------------------------------------------------------------
+    /// コンストラクタ
+    ///
+    /// \param[in] hWindow  ウィンドウハンドル
+    /// \param[in] fWidth   ウィンドウ幅
+    /// \param[in] fHeight  ウィンドウ高さ
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    GfxMain(
+        /*[in]*/ HWND hWindow,
+        /*[in]*/ float fWidth,
+        /*[in]*/ float fHeight);
+
+    //--------------------------------------------------------------------------
+    /// デストラクタ
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    ~GfxMain() noexcept;
+
+    //--------------------------------------------------------------------------
+    /// フレーム開始
+    ///
+    /// \param[in] r    色のrチャンネル
+    /// \param[in] g    色のgチャンネル
+    /// \param[in] b    色のbチャンネル
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void BeginFrame(
+        /*[in]*/ float r,
+        /*[in]*/ float g,
+        /*[in]*/ float b) const noexcept;
+
+    //--------------------------------------------------------------------------
+    /// フレームバッファ書込み
+    ///
+    /// \param[in] indexNum     描画する頂点の要素数
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void DrawIndexed(
+        /*[in]*/ UINT indexNum) const noexcept(!IS_DEBUG);
+
+    //--------------------------------------------------------------------------
+    /// インスタンシング描画
+    ///
+    /// \param[in] indexNum     描画する頂点の要素数
+    /// \param[in] instanceNum  描画するインスタンス数
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void DrawInstanced(
+        /*[in]*/ UINT indexNum,
+        /*[in]*/ UINT instanceNum) const noexcept(!IS_DEBUG);
+
+    //--------------------------------------------------------------------------
+    /// フレーム終了⇒描画開始
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void EndFrame() const;
+
+    //--------------------------------------------------------------------------
+    /// 描画モード設定
+    ///
+    /// \param[in] mode     指定する描画モード
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void SetDrawMode(
+        /*[in]*/ DrawMode mode);
+
+    //--------------------------------------------------------------------------
+    /// ビュー行列設定
+    ///
+    /// \param[in] mtxView  指定するビュー行列
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void SetViewMtx(
+        /*[in]*/ DirectX::XMFLOAT4X4 mtxView) noexcept
     {
         m_mtxView = mtxView;
     }
+
+    //--------------------------------------------------------------------------
+    /// ビュー行列取得
+    ///
+    /// \return ビュー行列
+    //--------------------------------------------------------------------------
     DirectX::XMFLOAT4X4 GetViewMtx() const noexcept
     {
         return m_mtxView;
     }
-    void SetProjectionMtx(DirectX::XMFLOAT4X4 mtxProj) noexcept        //投影行列へのアクセス
+
+    //--------------------------------------------------------------------------
+    /// 投影行列設定
+    ///
+    /// \param[in] mtxProj  指定する投影行列
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void SetProjectionMtx(
+        /*[in]*/ DirectX::XMFLOAT4X4 mtxProj) noexcept        //投影行列へのアクセス
     {
         m_mtxProjection = mtxProj;
     }
+
+    //--------------------------------------------------------------------------
+    /// 投影行列取得
+    ///
+    /// \return 投影行列
+    //--------------------------------------------------------------------------
     DirectX::XMFLOAT4X4 GetProjectionMtx() const noexcept
     {
         return m_mtxProjection;
@@ -62,11 +163,24 @@ public:
 
 #ifdef IMGUI
 
-    void SetImGuiMode(const bool bEnable) noexcept                    //ImGui描画ON/OFF
+    //--------------------------------------------------------------------------
+    /// ImGui描画ON/OFF
+    ///
+    /// \param[in] bEnable  描画切替フラグ
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void SetImGuiMode(
+        /*[in]*/ const bool bEnable) noexcept                    //ImGui描画ON/OFF
     {
         m_bDrawImGui = bEnable;
     }
 
+    //--------------------------------------------------------------------------
+    /// ImGui描画状態確認
+    ///
+    /// \return bool型変数(描画中かどうか)
+    //--------------------------------------------------------------------------
     bool IsImGuiEnabled() const noexcept                            //ImGui描画状態確認
     {
         return m_bDrawImGui;
@@ -74,24 +188,35 @@ public:
 
 #endif // IMGUI
 
+    //--------------------------------------------------------------------------
+
 private:
 
-    //変数宣言
-    Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;                    //デバイス
-    Microsoft::WRL::ComPtr<IDXGISwapChain> m_pSwapChain;            //スワップチェーン
-    Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_pContext;            //コンテキスト
-    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pTargetView;    //ターゲットビュー
-    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pDSView;        //深度・ステンシルビュー
-
-    DirectX::XMFLOAT4X4 m_mtxView;            //ビュー行列（カメラ）
-    DirectX::XMFLOAT4X4 m_mtxProjection;    //投影行列
+    //--------------------------------------------------------------------------
+    Microsoft::WRL::ComPtr<ID3D11Device> m_pDevice;
+    Microsoft::WRL::ComPtr<IDXGISwapChain> m_pSwapChain;
+    Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_pContext;
+    Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pTargetView;
+    Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pDSView;
+    DirectX::XMFLOAT4X4 m_mtxView;
+    DirectX::XMFLOAT4X4 m_mtxProjection;
 
 #ifdef IMGUI
 
-    bool m_bDrawImGui;                        //ImGUI描画制御
+    bool m_bDrawImGui;
 
 #endif // IMGUI
 
-    //権限指定
-    friend class BINDER;
+    //--------------------------------------------------------------------------
+
+    /// <summary>
+    /// m_pDevice           デバイス
+    /// m_pSwapChain        スワップチェーン
+    /// m_pContext          コンテキスト
+    /// m_pTargetView       ターゲットビュー
+    /// m_pDSView           深度・ステンシルビュー
+    /// m_mtxView           ビュー行列（カメラ）
+    /// m_mtxProjection     投影行列
+    /// m_bDrawImGui        ImGUI描画制御
+    /// </summary>
 };

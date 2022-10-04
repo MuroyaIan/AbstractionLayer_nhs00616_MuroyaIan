@@ -22,7 +22,7 @@ namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
 //===== クラス実装 =====
-GRAPHIC::GRAPHIC(HWND hWindow, float fWidth, float fHeight) :
+GfxMain::GfxMain(HWND hWindow, float fWidth, float fHeight) :
     m_pDevice(), m_pSwapChain(), m_pContext(), m_pTargetView(), m_pDSView(),
     m_mtxView(), m_mtxProjection()
 {
@@ -52,11 +52,11 @@ GRAPHIC::GRAPHIC(HWND hWindow, float fWidth, float fHeight) :
     sd.Flags = 0u;
 
     //デバッグ設定
-    UINT CreateDeviceFlag = 0u;
+    UINT createDeviceFlag = 0u;
 
 #ifdef _DEBUG
 
-    CreateDeviceFlag = D3D11_CREATE_DEVICE_DEBUG;
+    createDeviceFlag = D3D11_CREATE_DEVICE_DEBUG;
 
 #endif // _DEBUG
 
@@ -65,7 +65,7 @@ GRAPHIC::GRAPHIC(HWND hWindow, float fWidth, float fHeight) :
         nullptr,
         D3D_DRIVER_TYPE_HARDWARE,
         nullptr,
-        CreateDeviceFlag,
+        createDeviceFlag,
         nullptr,
         0u,
         D3D11_SDK_VERSION,
@@ -153,7 +153,7 @@ GRAPHIC::GRAPHIC(HWND hWindow, float fWidth, float fHeight) :
 
 }
 
-GRAPHIC::~GRAPHIC() noexcept
+GfxMain::~GfxMain() noexcept
 {
 
 #ifdef IMGUI
@@ -166,10 +166,10 @@ GRAPHIC::~GRAPHIC() noexcept
 }
 
 //フレーム開始
-void GRAPHIC::BeginFrame(float R, float G, float B) const noexcept
+void GfxMain::BeginFrame(float r, float g, float b) const noexcept
 {
     //バッファクリア
-    const float color[] = { R, G, B, 1.0f };
+    const float color[] = { r, g, b, 1.0f };
     m_pContext->ClearRenderTargetView(m_pTargetView.Get(), color);
     m_pContext->ClearDepthStencilView(m_pDSView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 
@@ -187,21 +187,21 @@ void GRAPHIC::BeginFrame(float R, float G, float B) const noexcept
 }
 
 //フレームバッファ書込み
-void GRAPHIC::DrawIndexed(UINT IndexNum) const noexcept(!IS_DEBUG)
+void GfxMain::DrawIndexed(UINT indexNum) const noexcept(!IS_DEBUG)
 {
     //書込み処理
-    m_pContext->DrawIndexed(IndexNum, 0u, 0);
+    m_pContext->DrawIndexed(indexNum, 0u, 0);
 }
 
 //インスタンシング描画
-void GRAPHIC::DrawInstanced(UINT IndexNum, UINT InstanceNum) const noexcept(!IS_DEBUG)
+void GfxMain::DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept(!IS_DEBUG)
 {
     //書込み処理
-    m_pContext->DrawIndexedInstanced(IndexNum, InstanceNum, 0u, 0, 0u);
+    m_pContext->DrawIndexedInstanced(indexNum, instanceNum, 0u, 0, 0u);
 }
 
 //フレーム終了
-void GRAPHIC::EndFrame() const
+void GfxMain::EndFrame() const
 {
 
 #ifdef IMGUI
@@ -226,18 +226,18 @@ void GRAPHIC::EndFrame() const
 }
 
 //描画モード設定
-void GRAPHIC::SetDrawMode(DRAW_MODE Mode)
+void GfxMain::SetDrawMode(DrawMode mode)
 {
     //ビューをバインド
-    switch (Mode)
+    switch (mode)
     {
-    case GRAPHIC::DRAW_MODE::DRAW_2D:
-        m_pContext->OMSetRenderTargets(1u, m_pTargetView.GetAddressOf(), nullptr);
-        break;
-    case GRAPHIC::DRAW_MODE::DRAW_3D:
-        m_pContext->OMSetRenderTargets(1u, m_pTargetView.GetAddressOf(), m_pDSView.Get());
-        break;
-    default:
-        break;
+        case GfxMain::DrawMode::DRAW_2D:
+            m_pContext->OMSetRenderTargets(1u, m_pTargetView.GetAddressOf(), nullptr);
+            break;
+        case GfxMain::DrawMode::DRAW_3D:
+            m_pContext->OMSetRenderTargets(1u, m_pTargetView.GetAddressOf(), m_pDSView.Get());
+            break;
+        default:
+            break;
     }
 }

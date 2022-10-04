@@ -113,7 +113,7 @@
       <Filter>Lib\imgui\backends</Filter>
     </ClInclude>
     <ClInclude Include="Source\Debug\Debug_ImguiMgr.h">
-      <Filter>ソース ファイル\Debug</Filter>
+      <Filter>ヘッダー ファイル\Debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -163,7 +163,7 @@
       <Filter>Lib\imgui\backends</Filter>
     </ClCompile>
     <ClCompile Include="Source\Debug\Debug_ImguiMgr.cpp">
-      <Filter>ヘッダー ファイル\Debug</Filter>
+      <Filter>ソース ファイル\Debug</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

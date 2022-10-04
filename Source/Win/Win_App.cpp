@@ -31,7 +31,7 @@
 //namespace dx = DirectX;
 
 //===== グローバル定数宣言 =====
-constexpr LPCWSTR WINDOW_NAME = L"Game_Base";    //Window名
+constexpr LPCWSTR WINDOW_NAME = L"AbstractionLayer";    //Window名
 constexpr float SCREEN_WIDTH = 1600.0f;
 constexpr float SCREEN_HEIGHT = 900.0f;            //画面解像度
 constexpr int WND_POS_X = 150;
@@ -44,7 +44,7 @@ APP_64::APP_64() :
     //m_aDrawer(0), m_aModel(0), m_pSunLight(), m_aLight(4), m_pPlayer()
 {
     //DirectX初期化
-    m_pDX = std::make_unique<GRAPHIC>(m_Window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
+    m_pDX = std::make_unique<GfxMain>(m_Window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
 
 //    //シェーダMgr初期化
 //    m_pShaderMgr = std::make_unique<SHADER_MGR>(*m_pDX);

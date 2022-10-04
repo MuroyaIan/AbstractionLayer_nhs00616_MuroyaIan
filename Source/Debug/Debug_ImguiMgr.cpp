@@ -8,7 +8,7 @@
 #include <Debug/Debug_ImguiMgr.h>
 
 //===== クラス実装 =====
-IMGUI_MGR::IMGUI_MGR() noexcept
+DebugImguiMgr::DebugImguiMgr() noexcept
 {
     //初期化処理
     IMGUI_CHECKVERSION();
@@ -16,25 +16,25 @@ IMGUI_MGR::IMGUI_MGR() noexcept
 
     //スタイル設定
     ImGui::StyleColorsDark();
-    ImGuiStyle& Style = ImGui::GetStyle();
-    Style.Colors[ImGuiCol_TitleBg] = ImVec4(0.0f, 0.5f, 0.5f, 0.5f);
-    Style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.0f, 0.5f, 0.5f, 1.0f);
-    Style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.2f, 0.2f, 0.2f, 0.5f);
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.Colors[ImGuiCol_TitleBg] = ImVec4(0.0f, 0.5f, 0.5f, 0.5f);
+    style.Colors[ImGuiCol_TitleBgActive] = ImVec4(0.0f, 0.5f, 0.5f, 1.0f);
+    style.Colors[ImGuiCol_TitleBgCollapsed] = ImVec4(0.2f, 0.2f, 0.2f, 0.5f);
 
     //フォント読込
     ImGuiIO& io = ImGui::GetIO();
-    ImFont* Font = nullptr;
-    Font = io.Fonts->AddFontFromFileTTF("Asset/Font/UDEVGothicJPDOC-Regular.ttf", 16.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
-    IM_ASSERT(Font != NULL);
+    ImFont* font = nullptr;
+    font = io.Fonts->AddFontFromFileTTF("Asset/Font/UDEVGothicJPDOC-Regular.ttf", 16.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+    IM_ASSERT(font != NULL);
 }
 
-IMGUI_MGR::~IMGUI_MGR() noexcept
+DebugImguiMgr::~DebugImguiMgr() noexcept
 {
     ImGui::DestroyContext();
 }
 
 //DEMOウィンドウ描画
-void IMGUI_MGR::DrawDemo() const noexcept
+void DebugImguiMgr::DrawDemo() const noexcept
 {
     static bool bShowDemo = true;
     if (bShowDemo)

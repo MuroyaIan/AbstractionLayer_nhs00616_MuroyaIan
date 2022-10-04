@@ -8,11 +8,11 @@
 #include <Win/Win_Window.h>
 #include <Resource.h>
 
-//#ifdef IMGUI
-//#
-//#    include <3rd_Party/ImGui/backends/imgui_impl_win32.h>
-//#
-//#endif // IMGUI
+#ifdef IMGUI
+#
+#   include <3rd_Party/ImGui/backends/imgui_impl_win32.h>
+#
+#endif // IMGUI
 
 //===== 追加ライブラリ =====
 #pragma comment(lib, "imm32")
@@ -150,13 +150,13 @@ WinWindow::WinWindow(LPCWSTR windowName, int nWndWidth, int nWndHeight, int nWnd
     if (!RegisterRawInputDevices(&rid, 1, sizeof(rid)))
         throw ERROR_EX2(S_OK, "RawInput初期化失敗");
 
-//#ifdef IMGUI
-//
-//    //IMGUI初期化
-//    if (!ImGui_ImplWin32_Init(m_hWindow))
-//        throw ERROR_EX2(S_OK, "IMGUI初期化失敗");
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+    //IMGUI初期化
+    if (!ImGui_ImplWin32_Init(m_hWindow))
+        throw ERROR_EX2(S_OK, "IMGUI初期化失敗");
+
+#endif // IMGUI
 
 }
 
@@ -164,12 +164,12 @@ WinWindow::WinWindow(LPCWSTR windowName, int nWndWidth, int nWndHeight, int nWnd
 WinWindow::~WinWindow() noexcept(false)
 {
 
-//#ifdef IMGUI
-//
-//    //IMGUI終了
-//    ImGui_ImplWin32_Shutdown();
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+    //IMGUI終了
+    ImGui_ImplWin32_Shutdown();
+
+#endif // IMGUI
 
     //Instance破棄
     if (!DestroyWindow(m_hWindow))
@@ -266,11 +266,11 @@ void WinWindow::EnableCursor() noexcept
     ShowCursor();
     UnlockCursor();
 
-//#ifdef IMGUI
-//
-//    ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+    ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+
+#endif // IMGUI
 
 }
 
@@ -280,11 +280,11 @@ void WinWindow::DisableCursor() noexcept
     HideCursor();
     LockCursor();
 
-//#ifdef IMGUI
-//
-//    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+    ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
+
+#endif // IMGUI
 
 }
 
@@ -332,15 +332,15 @@ LRESULT CALLBACK WinWindow::WndProc_Call(HWND hWnd, UINT uMsg, WPARAM wParam, LP
 LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) noexcept
 {
 
-//#ifdef IMGUI
-//
-//    //IMGUI用
-//    if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
-//        return true;
-//
-//    const ImGuiIO& io = ImGui::GetIO();
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+    //IMGUI用
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam))
+        return true;
+
+    const ImGuiIO& io = ImGui::GetIO();
+
+#endif // IMGUI
 
     switch (uMsg) {
         case WM_CLOSE:
@@ -372,12 +372,12 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:                                                 //「WM_SYSKEY」⇒「ALT」と「F10」を対応
 
-//#ifdef IMGUI
-//
-//            if (io.WantCaptureKeyboard)                                        //IMGUI入力切替
-//                break;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+            if (io.WantCaptureKeyboard)                                     //IMGUI入力切替
+                break;
+
+#endif // IMGUI
 
             switch (wParam) {
                 case VK_ESCAPE:                                             //「ESC」⇒ウィンドウ終了
@@ -389,23 +389,23 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
         case WM_KEYUP:
         case WM_SYSKEYUP:
 
-//#ifdef IMGUI
-//
-//            if (io.WantCaptureKeyboard)                                        //IMGUI入力切替
-//                break;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+            if (io.WantCaptureKeyboard)                                     //IMGUI入力切替
+                break;
+
+#endif // IMGUI
 
             m_keyboard.KeyReleased(static_cast<unsigned char>(wParam));     //キーを離した
             break;
         case WM_CHAR:
 
-//#ifdef IMGUI
-//
-//            if (io.WantCaptureKeyboard)                                        //IMGUI入力切替
-//                break;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+            if (io.WantCaptureKeyboard)                                     //IMGUI入力切替
+                break;
+
+#endif // IMGUI
 
             m_keyboard.CharInput(static_cast<unsigned char>(wParam));        //テキストを入力した
             break;
@@ -423,12 +423,12 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
                 break;                          //マウス座標処理をスキップ
             }
 
-//#ifdef IMGUI
-//
-//            if (io.WantCaptureMouse)                                                //IMGUI入力切替
-//                break;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+            if (io.WantCaptureMouse)                                                //IMGUI入力切替
+                break;
+
+#endif // IMGUI
 
             {
                 POINTS pt = MAKEPOINTS(lParam);
@@ -456,23 +456,23 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
                 HideCursor();
             }
 
-//#ifdef IMGUI
-//
-//            if (io.WantCaptureMouse)                                                //IMGUI入力切替
-//                break;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+            if (io.WantCaptureMouse)                                                //IMGUI入力切替
+                break;
+
+#endif // IMGUI
 
             m_mouse.LeftPressed();
             break;
         case WM_LBUTTONUP:
 
-//#ifdef IMGUI
-//
-//            if (io.WantCaptureMouse)                                                //IMGUI入力切替
-//                break;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+            if (io.WantCaptureMouse)                                                //IMGUI入力切替
+                break;
+
+#endif // IMGUI
 
             {
                 POINTS pt = MAKEPOINTS(lParam);
@@ -485,23 +485,23 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
             break;
         case WM_RBUTTONDOWN:
 
-//#ifdef IMGUI
-//
-//            if (io.WantCaptureMouse)                                                //IMGUI入力切替
-//                break;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+            if (io.WantCaptureMouse)                                                //IMGUI入力切替
+                break;
+
+#endif // IMGUI
 
             m_mouse.RightPressed();
             break;
         case WM_RBUTTONUP:
 
-//#ifdef IMGUI
-//
-//            if (io.WantCaptureMouse)                                                //IMGUI入力切替
-//                break;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+            if (io.WantCaptureMouse)                                                //IMGUI入力切替
+                break;
+
+#endif // IMGUI
 
             {
                 POINTS pt = MAKEPOINTS(lParam);
@@ -514,12 +514,12 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
             break;
         case WM_MOUSEWHEEL:
 
-//#ifdef IMGUI
-//
-//            if (io.WantCaptureMouse)                                                //IMGUI入力切替
-//                break;
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+            if (io.WantCaptureMouse)                                                //IMGUI入力切替
+                break;
+
+#endif // IMGUI
 
             {
                 const int nDelta = GET_WHEEL_DELTA_WPARAM(wParam);                  //ホイール操作量取得(メッセージ一回で+-120)

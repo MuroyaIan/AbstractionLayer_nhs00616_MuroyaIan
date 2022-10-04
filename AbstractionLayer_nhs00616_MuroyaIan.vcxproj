@@ -169,7 +169,14 @@
   <ItemGroup>
     <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx11.h" />
     <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_win32.h" />
+    <ClInclude Include="Library\3rd_Party\ImGui\imconfig.h" />
     <ClInclude Include="Library\3rd_Party\ImGui\imgui.h" />
+    <ClInclude Include="Library\3rd_Party\ImGui\imgui_internal.h" />
+    <ClInclude Include="Library\3rd_Party\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="Library\3rd_Party\ImGui\imstb_textedit.h" />
+    <ClInclude Include="Library\3rd_Party\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Source\Gfx\GFX_ImguiMgr.h" />
+    <ClInclude Include="Source\Gfx\Gfx_Main.h" />
     <ClInclude Include="Source\Resource.h" />
     <ClInclude Include="Source\targetver.h" />
     <ClInclude Include="Source\Win\Win_App.h" />
@@ -182,6 +189,15 @@
     <ClInclude Include="Source\Win\Win_Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Library\3rd_Party\ImGui\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="Library\3rd_Party\ImGui\imgui.cpp" />
+    <ClCompile Include="Library\3rd_Party\ImGui\imgui_demo.cpp" />
+    <ClCompile Include="Library\3rd_Party\ImGui\imgui_draw.cpp" />
+    <ClCompile Include="Library\3rd_Party\ImGui\imgui_tables.cpp" />
+    <ClCompile Include="Library\3rd_Party\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Source\Gfx\GFX_ImguiMgr.cpp" />
+    <ClCompile Include="Source\Gfx\Gfx_Main.cpp" />
     <ClCompile Include="Source\Win\Win_App.cpp" />
     <ClCompile Include="Source\Win\Win_ErrorOutput.cpp" />
     <ClCompile Include="Source\Win\Win_Keyboard.cpp" />

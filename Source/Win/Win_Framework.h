@@ -70,4 +70,4 @@
 //#define DIRECTX_11                  //dx11
 //#define DIRECTX_12                  //dx12
 #define IMGUI                       //ImGui使用
-//constexpr bool IS_DEBUG = true;     //デバッグモード
+constexpr bool IS_DEBUG = true;     //デバッグモード

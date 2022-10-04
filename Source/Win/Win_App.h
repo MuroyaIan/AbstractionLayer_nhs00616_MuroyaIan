@@ -9,17 +9,17 @@
 //===== インクルード部 =====
 #include <Win/Win_Window.h>
 #include <Win/Win_TimeProc.h>
-//#include <GraphicApp/Graphic.h>
+#include <Gfx/Gfx_Main.h>
 //#include <Geometry/ShaderMgr.h>
 //#include <Geometry/TextureMgr.h>
 //#include <Geometry/Model/ModelMgr.h>
 //#include <Tool/Input/InputMgr.h>
 
-//#ifdef IMGUI
-//#
-//#    include <Tool/imguiMgr.h>
-//#
-//#endif // IMGUI
+#ifdef IMGUI
+#
+#   include <Gfx/GFX_ImguiMgr.h>
+#
+#endif // IMGUI
 
 //===== 構造体定義 =====
 //struct GFX_PACK                    //描画用データ
@@ -61,14 +61,14 @@ public:
     void Update();                                        //更新処理
     void Draw();                                        //描画処理
 
-//    GAME_WINDOW& GetWindowProc() noexcept                //ウィンドウ処理参照
-//    {
-//        return m_Window;
-//    }
-//    WinTime& GetTimeProc() noexcept                    //時間処理参照
-//    {
-//        return m_Time;
-//    }
+    WinWindow& GetWindowProc() noexcept                //ウィンドウ処理参照
+    {
+        return m_Window;
+    }
+    WinTime& GetTimeProc() noexcept                    //時間処理参照
+    {
+        return m_Time;
+    }
 //    GFX_PACK& GetGfxPack() const noexcept                //描画データ参照
 //    {
 //        return *m_pGfx;
@@ -101,17 +101,17 @@ private:
 
     //変数宣言
 
-//#ifdef IMGUI
-//
-//    IMGUI_MGR m_ImGui;                                    //ImGuiマネージャ
-//    std::unique_ptr<DEBUG_MGR> m_pDebugMgr;                //デバッグマネージャ用ポインタ
-//
-//#endif // IMGUI
+#ifdef IMGUI
+
+    IMGUI_MGR m_ImGui;                                    //ImGuiマネージャ
+    //std::unique_ptr<DEBUG_MGR> m_pDebugMgr;                //デバッグマネージャ用ポインタ
+
+#endif // IMGUI
 
     WinWindow m_Window;                                //ゲームウィンドウ
     MSG m_Message;                                        //メッセージ構造体
     WinTime m_Time;                                    //時間処理
-    //std::unique_ptr<GRAPHIC> m_pDX;                        //DirectX用ポインタ
+    std::unique_ptr<GRAPHIC> m_pDX;                        //DirectX用ポインタ
     //std::unique_ptr<SHADER_MGR> m_pShaderMgr;            //シェーダマネージャ用ポインタ
     //std::unique_ptr<TEXTURE_MGR> m_pTextureMgr;            //テクスチャマネージャ用ポインタ
     //std::unique_ptr<MODEL_MGR> m_pModelMgr;                //モデルマネージャ用ポインタ

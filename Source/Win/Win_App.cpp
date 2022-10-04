@@ -39,13 +39,13 @@ constexpr int WND_POS_Y = 50;                    //Window左上座標
 
 //===== クラス実装 =====
 APP_64::APP_64() :
-    m_Window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_Message(), m_Time()//,
-    //m_pDX(), m_pShaderMgr(), m_pTextureMgr(), m_pModelMgr(), m_pGfx(), m_pInputMgr(), m_pEditor(), m_pCameraMgr(), m_pLightMgr(),
+    m_Window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_Message(), m_Time(),
+    m_pDX()//, m_pShaderMgr(), m_pTextureMgr(), m_pModelMgr(), m_pGfx(), m_pInputMgr(), m_pEditor(), m_pCameraMgr(), m_pLightMgr(),
     //m_aDrawer(0), m_aModel(0), m_pSunLight(), m_aLight(4), m_pPlayer()
 {
-//    //DirectX初期化
-//    m_pDX = std::make_unique<GRAPHIC>(m_Window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
-//
+    //DirectX初期化
+    m_pDX = std::make_unique<GRAPHIC>(m_Window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
+
 //    //シェーダMgr初期化
 //    m_pShaderMgr = std::make_unique<SHADER_MGR>(*m_pDX);
 //
@@ -247,11 +247,11 @@ void APP_64::Update()
 //描画処理
 void APP_64::Draw()
 {
-//    //描画開始
-//    m_pDX->BeginFrame(0.0f, 0.0f, 0.0f);
-//
-//
-//
+    //描画開始
+    m_pDX->BeginFrame(0.0f, 0.0f, 0.0f);
+
+
+
 //    //モード切替
 //    if (m_pEditor->IsEnabled())
 //        m_pEditor->Draw();            //エディタモード
@@ -442,7 +442,7 @@ void APP_64::Draw()
 //#endif // IMGUI
 //
 //    }
-//
-//    //描画終了
-//    m_pDX->EndFrame();
+
+    //描画終了
+    m_pDX->EndFrame();
 }

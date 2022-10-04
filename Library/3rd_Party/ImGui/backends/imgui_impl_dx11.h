@@ -12,7 +12,7 @@
 
 #pragma once
 #include <Win/Win_Framework.h>
-//#include <GraphicApp/Graphic.h>
+#include <Gfx/Gfx_Main.h>
 #include <3rd_Party/ImGui/imgui.h>      // IMGUI_IMPL_API
 
 struct ID3D11Device;

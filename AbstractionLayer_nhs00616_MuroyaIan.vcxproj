@@ -182,7 +182,7 @@
     <ClInclude Include="Source\Gfx\Binder\Gfx_ConstantBuffer.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_IndexBuffer.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_Inputlayout.h" />
-    <ClInclude Include="Source\Gfx\Binder\Gfx_Material.h" />
+    <ClInclude Include="Source\Gfx\Binder\Gfx_cbMaterial.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_PixelShader.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_Sampler.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_Texture.h" />
@@ -224,7 +224,7 @@
     <ClCompile Include="Source\Gfx\Binder\Gfx_cbMatrix_VP.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_IndexBuffer.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_Inputlayout.cpp" />
-    <ClCompile Include="Source\Gfx\Binder\Gfx_Material.cpp" />
+    <ClCompile Include="Source\Gfx\Binder\Gfx_cbMaterial.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_PixelShader.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_Sampler.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_Texture.cpp" />

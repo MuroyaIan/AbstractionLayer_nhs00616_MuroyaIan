@@ -24,7 +24,7 @@ enum class CB_SLOT_PS       //ピクセルシェーダ用定数バッファID
 };
 
 //===== 構造体宣言 =====
-struct cbColor              //カラー用定数バッファ
+struct GfxCbColor              //カラー用定数バッファ
 {
     //--------------------------------------------------------------------------
 
@@ -33,7 +33,7 @@ struct cbColor              //カラー用定数バッファ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    cbColor() noexcept
+    GfxCbColor() noexcept
     {
         faceColor[0]  = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
         faceColor[1]  = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
@@ -66,7 +66,7 @@ struct cbColor              //カラー用定数バッファ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    ~cbColor() noexcept
+    ~GfxCbColor() noexcept
     {}
 
     //--------------------------------------------------------------------------
@@ -80,7 +80,7 @@ struct cbColor              //カラー用定数バッファ
     /// </summary>
 };
 
-struct cbMtxVP  //変換行列用定数バッファ
+struct GfxCbMtxVP  //変換行列用定数バッファ
 {
     //--------------------------------------------------------------------------
 
@@ -89,7 +89,7 @@ struct cbMtxVP  //変換行列用定数バッファ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    cbMtxVP() noexcept : mtxView(), mtxProj()
+    GfxCbMtxVP() noexcept : mtxView(), mtxProj()
     {
         DirectX::XMStoreFloat4x4(&mtxView, DirectX::XMMatrixIdentity());
         DirectX::XMStoreFloat4x4(&mtxProj, DirectX::XMMatrixIdentity());
@@ -103,7 +103,7 @@ struct cbMtxVP  //変換行列用定数バッファ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    cbMtxVP(
+    GfxCbMtxVP(
         /*[in]*/ DirectX::XMFLOAT4X4 mtxV,
         /*[in]*/ DirectX::XMFLOAT4X4 mtxP) noexcept :
         mtxView(mtxV), mtxProj(mtxP)
@@ -114,7 +114,7 @@ struct cbMtxVP  //変換行列用定数バッファ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    ~cbMtxVP() noexcept
+    ~GfxCbMtxVP() noexcept
     {}
 
     //--------------------------------------------------------------------------
@@ -134,7 +134,7 @@ struct cbMtxVP  //変換行列用定数バッファ
 
 //***** 定数バッファ *****
 template<typename C>
-class ConstantBuffer : public GfxBinder
+class GfxConstantBuffer : public GfxBinder
 {
 public:
 
@@ -149,7 +149,7 @@ public:
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    ConstantBuffer(
+    GfxConstantBuffer(
         /*[in]*/ GfxMain& gfx,
         /*[in]*/ const C& consts,
         /*[in]*/ UINT slot = 0u) :
@@ -180,7 +180,7 @@ public:
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    ConstantBuffer(
+    GfxConstantBuffer(
         /*[in]*/ GfxMain& gfx,
         /*[in]*/ UINT slot = 0u) :
         GfxBinder(), m_pConstantBuffer(), m_slot(slot)
@@ -205,7 +205,7 @@ public:
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    ~ConstantBuffer() noexcept override {}
+    ~GfxConstantBuffer() noexcept override {}
 
     //--------------------------------------------------------------------------
     /// バッファ更新
@@ -250,7 +250,7 @@ protected:
 
 //***** 定数バッファ（頂点シェーダ用） *****
 template<typename C>
-class VertexCBuffer : public ConstantBuffer<C>
+class GfxVertexCBuffer : public GfxConstantBuffer<C>
 {
 public:
 
@@ -265,10 +265,10 @@ public:
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    VertexCBuffer(
+    GfxVertexCBuffer(
         /*[in]*/ GfxMain& gfx,
         /*[in]*/ const C& consts,
-        /*[in]*/ UINT slot = 0u) : CBuff::ConstantBuffer(gfx, consts, slot) {}
+        /*[in]*/ UINT slot = 0u) : CBuff::GfxConstantBuffer(gfx, consts, slot) {}
 
     //--------------------------------------------------------------------------
     /// コンストラクタ（バッファ初期化なし）
@@ -278,16 +278,16 @@ public:
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    VertexCBuffer(
+    GfxVertexCBuffer(
         /*[in]*/ GfxMain& gfx,
-        /*[in]*/ UINT slot = 0u) : CBuff::ConstantBuffer(gfx, slot) {}
+        /*[in]*/ UINT slot = 0u) : CBuff::GfxConstantBuffer(gfx, slot) {}
 
     //--------------------------------------------------------------------------
     /// デストラクタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    ~VertexCBuffer() noexcept override {}
+    ~GfxVertexCBuffer() noexcept override {}
 
     //--------------------------------------------------------------------------
     /// バインド処理
@@ -307,12 +307,12 @@ public:
 private:
 
     //テンプレート対策
-    using CBuff = ConstantBuffer<C>;
+    using CBuff = GfxConstantBuffer<C>;
 };
 
 //***** 定数バッファ（ピクセルシェーダ用） *****
 template<typename C>
-class PixelCBuffer : public ConstantBuffer<C>
+class GfxPixelCBuffer : public GfxConstantBuffer<C>
 {
 public:
 
@@ -327,10 +327,10 @@ public:
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    PixelCBuffer(
+    GfxPixelCBuffer(
         /*[in]*/ GfxMain& gfx,
         /*[in]*/ const C& consts,
-        /*[in]*/ UINT slot = 0u) : CBuff::ConstantBuffer(gfx, consts, slot) {}
+        /*[in]*/ UINT slot = 0u) : CBuff::GfxConstantBuffer(gfx, consts, slot) {}
 
     //--------------------------------------------------------------------------
     /// コンストラクタ（バッファ初期化なし）
@@ -340,16 +340,16 @@ public:
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    PixelCBuffer(
+    GfxPixelCBuffer(
         /*[in]*/ GfxMain& gfx,
-        /*[in]*/ UINT slot = 0u) : CBuff::ConstantBuffer(gfx, slot) {}
+        /*[in]*/ UINT slot = 0u) : CBuff::GfxConstantBuffer(gfx, slot) {}
 
     //--------------------------------------------------------------------------
     /// デストラクタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    ~PixelCBuffer() noexcept override {}
+    ~GfxPixelCBuffer() noexcept override {}
 
     //--------------------------------------------------------------------------
     /// バインド処理
@@ -369,5 +369,5 @@ public:
 private:
 
     //テンプレート対策
-    using CBuff = ConstantBuffer<C>;
+    using CBuff = GfxConstantBuffer<C>;
 };

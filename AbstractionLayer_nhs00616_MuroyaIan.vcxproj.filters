@@ -58,6 +58,15 @@
     <Filter Include="ヘッダー ファイル\GFX\Binder\cb">
       <UniqueIdentifier>{fa7cf0b3-7449-4d48-9a5f-ac3ec3b361f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Tool">
+      <UniqueIdentifier>{78a2cf2a-67de-4e6e-900f-2227b6a7623e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Tool">
+      <UniqueIdentifier>{6fbafd19-59c9-44c3-8624-9fba6c2e722b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\GFX\Drawer\vsd">
+      <UniqueIdentifier>{c8bed11f-e7a3-429c-b1e4-0c28184ad0a0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc">
@@ -169,30 +178,6 @@
     <ClInclude Include="Source\Gfx\Drawer\Gfx_DrawerRef.h">
       <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Gfx\Drawer\Gfx_VertexShaderData.h">
-      <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdBox.h">
-      <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdCone.h">
-      <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdGrid.h">
-      <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdPlane.h">
-      <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdPrism.h">
-      <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdRef.h">
-      <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdSphere.h">
-      <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Gfx\Binder\Gfx_cbMaterial.h">
       <Filter>ヘッダー ファイル\GFX\Binder\cb</Filter>
     </ClInclude>
@@ -201,6 +186,33 @@
     </ClInclude>
     <ClInclude Include="Source\Gfx\Binder\Gfx_ConstantBuffer.h">
       <Filter>ヘッダー ファイル\GFX\Binder\cb</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tool\ToolMath.h">
+      <Filter>ヘッダー ファイル\Tool</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Drawer\Gfx_VertexShaderData.h">
+      <Filter>ヘッダー ファイル\GFX\Drawer\vsd</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdBox.h">
+      <Filter>ヘッダー ファイル\GFX\Drawer\vsd</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdCone.h">
+      <Filter>ヘッダー ファイル\GFX\Drawer\vsd</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdGrid.h">
+      <Filter>ヘッダー ファイル\GFX\Drawer\vsd</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdPlane.h">
+      <Filter>ヘッダー ファイル\GFX\Drawer\vsd</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdPrism.h">
+      <Filter>ヘッダー ファイル\GFX\Drawer\vsd</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdSphere.h">
+      <Filter>ヘッダー ファイル\GFX\Drawer\vsd</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdRef.h">
+      <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -287,6 +299,9 @@
     </ClCompile>
     <ClCompile Include="Source\Gfx\Binder\Gfx_cbMatrix_VP.cpp">
       <Filter>ソース ファイル\GFX\Binder\cb</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Tool\ToolMath.cpp">
+      <Filter>ソース ファイル\Tool</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

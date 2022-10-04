@@ -6,5 +6,5 @@
 
 #pragma once
 
-// インクルード部
+//===== インクルード部 =====
 #include <Resource.h>

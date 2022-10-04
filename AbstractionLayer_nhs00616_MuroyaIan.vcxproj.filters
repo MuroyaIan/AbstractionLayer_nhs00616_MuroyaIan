@@ -34,6 +34,12 @@
     <Filter Include="Lib\imgui\backends">
       <UniqueIdentifier>{39a65452-7b4d-467a-9307-ee6b9ae617b3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Debug">
+      <UniqueIdentifier>{ec97fe8c-10e2-40ab-ba8a-b285e0cee552}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Debug">
+      <UniqueIdentifier>{ad2ed9ea-3279-4d76-8110-c074335f8bb3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc">
@@ -82,9 +88,6 @@
     <ClInclude Include="Source\Gfx\Gfx_Main.h">
       <Filter>ヘッダー ファイル\GFX</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Gfx\GFX_ImguiMgr.h">
-      <Filter>ソース ファイル\GFX</Filter>
-    </ClInclude>
     <ClInclude Include="Library\3rd_Party\ImGui\imconfig.h">
       <Filter>Lib\imgui</Filter>
     </ClInclude>
@@ -108,6 +111,9 @@
     </ClInclude>
     <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_win32.h">
       <Filter>Lib\imgui\backends</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Debug\Debug_ImguiMgr.h">
+      <Filter>ソース ファイル\Debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -135,9 +141,6 @@
     <ClCompile Include="Source\Gfx\Gfx_Main.cpp">
       <Filter>ソース ファイル\GFX</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Gfx\GFX_ImguiMgr.cpp">
-      <Filter>ヘッダー ファイル\GFX</Filter>
-    </ClCompile>
     <ClCompile Include="Library\3rd_Party\ImGui\imgui.cpp">
       <Filter>Lib\imgui</Filter>
     </ClCompile>
@@ -158,6 +161,9 @@
     </ClCompile>
     <ClCompile Include="Library\3rd_Party\ImGui\backends\imgui_impl_win32.cpp">
       <Filter>Lib\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Debug\Debug_ImguiMgr.cpp">
+      <Filter>ヘッダー ファイル\Debug</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

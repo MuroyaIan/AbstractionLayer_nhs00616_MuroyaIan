@@ -17,7 +17,7 @@
 
 #ifdef IMGUI
 #
-#   include <Gfx/GFX_ImguiMgr.h>
+#   include <Debug/Debug_ImguiMgr.h>
 #
 #endif // IMGUI
 

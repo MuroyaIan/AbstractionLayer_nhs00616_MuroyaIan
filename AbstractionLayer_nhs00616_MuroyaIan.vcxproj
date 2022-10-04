@@ -175,7 +175,7 @@
     <ClInclude Include="Library\3rd_Party\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Library\3rd_Party\ImGui\imstb_textedit.h" />
     <ClInclude Include="Library\3rd_Party\ImGui\imstb_truetype.h" />
-    <ClInclude Include="Source\Gfx\GFX_ImguiMgr.h" />
+    <ClInclude Include="Source\Debug\Debug_ImguiMgr.h" />
     <ClInclude Include="Source\Gfx\Gfx_Main.h" />
     <ClInclude Include="Source\Resource.h" />
     <ClInclude Include="Source\targetver.h" />
@@ -196,7 +196,7 @@
     <ClCompile Include="Library\3rd_Party\ImGui\imgui_draw.cpp" />
     <ClCompile Include="Library\3rd_Party\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Library\3rd_Party\ImGui\imgui_widgets.cpp" />
-    <ClCompile Include="Source\Gfx\GFX_ImguiMgr.cpp" />
+    <ClCompile Include="Source\Debug\Debug_ImguiMgr.cpp" />
     <ClCompile Include="Source\Gfx\Gfx_Main.cpp" />
     <ClCompile Include="Source\Win\Win_App.cpp" />
     <ClCompile Include="Source\Win\Win_ErrorOutput.cpp" />

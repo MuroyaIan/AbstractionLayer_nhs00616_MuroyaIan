@@ -6,15 +6,6 @@
 
 //===== インクルード部 =====
 #include <Win/Win_App.h>
-//#include <Tool/Rand.h>
-//#include <EditorApp/Editor.h>
-//
-//#ifdef IMGUI
-//#
-//#    include <Geometry/Debug/DebugMgr.h>
-//#
-//#endif // IMGUI
-//
 //#include <Camera/CameraMgr.h>
 //#include <Light/LightMgr.h>
 //
@@ -23,25 +14,22 @@
 //#include <Geometry/Shape_Default.h>            //【描画テスト】
 //#include <Geometry/Shape_Tex.h>
 //#include <Geometry/Shape_Model.h>
-//#include <Geometry/Model/Model.h>
 //#include <Light/DirectionalLight.h>
-//#include <Light/PointLight.h>
-//#include <Geometry/Model/TestPlayer.h>
-//
-//namespace dx = DirectX;
+
+namespace dx = DirectX;
 
 //===== グローバル定数宣言 =====
 constexpr LPCWSTR WINDOW_NAME = L"AbstractionLayer";    //Window名
 constexpr float SCREEN_WIDTH = 1600.0f;
-constexpr float SCREEN_HEIGHT = 900.0f;            //画面解像度
+constexpr float SCREEN_HEIGHT = 900.0f;                 //画面解像度
 constexpr int WND_POS_X = 150;
-constexpr int WND_POS_Y = 50;                    //Window左上座標
+constexpr int WND_POS_Y = 50;                           //Window左上座標
 
 //===== クラス実装 =====
 APP_64::APP_64() :
     m_Window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_Message(), m_Time(),
-    m_pDX()//, m_pShaderMgr(), m_pTextureMgr(), m_pModelMgr(), m_pGfx(), m_pInputMgr(), m_pEditor(), m_pCameraMgr(), m_pLightMgr(),
-    //m_aDrawer(0), m_aModel(0), m_pSunLight(), m_aLight(4), m_pPlayer()
+    m_pDX()/*, m_pShaderMgr(), m_pTextureMgr()*/, m_pGfx()//, m_pInputMgr(), m_pCameraMgr(), m_pLightMgr(),
+    //m_aDrawer(0), m_pSunLight()
 {
     //DirectX初期化
     m_pDX = std::make_unique<GfxMain>(m_Window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -52,27 +40,11 @@ APP_64::APP_64() :
 //    //テクスチャMgr初期化
 //    m_pTextureMgr = std::make_unique<TEXTURE_MGR>(*m_pDX);
 //
-//    //モデルMgr初期化
-//    m_pModelMgr = std::make_unique<MODEL_MGR>();
-//
-//    //描画データ初期化
-//    m_pGfx = std::make_unique<GFX_PACK>(*m_pDX, *m_pShaderMgr, *m_pTextureMgr, *m_pModelMgr);
+    //描画データ初期化
+    m_pGfx = std::make_unique<GFX_PACK>(*m_pDX/*, *m_pShaderMgr, *m_pTextureMgr*/);
 //
 //    //入力マネージャ初期化
 //    m_pInputMgr = std::make_unique<INPUT_MGR>(*this);
-//
-//    //乱数初期化
-//    RAND_MAKER::InitMaker();
-//
-//    //エディタ初期化
-//    m_pEditor = std::make_unique<EDITOR>(*this);
-//
-//#ifdef IMGUI
-//
-//    //デバッグマネージャ初期化
-//    m_pDebugMgr = std::make_unique<DEBUG_MGR>(*this);
-//
-//#endif // IMGUI
 //
 //    //カメラマネージャ初期化
 //    m_pCameraMgr = std::make_unique<CAMERA_MGR>(*this);
@@ -138,22 +110,6 @@ APP_64::APP_64() :
 //
 //    //太陽光初期化
 //    m_pSunLight = std::make_unique<DIRECTIONAL_LIGHT>(*this);
-//
-//    //点光源初期化
-//    //for(auto& l : m_aLight)
-//    //    l = std::make_unique<POINT_LIGHT>(*this);
-//    //m_aLight[0]->GetData().Color_D = DirectX::XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
-//    //m_aLight[1]->GetData().Color_D = DirectX::XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
-//    //m_aLight[2]->GetData().Color_D = DirectX::XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
-//    //m_aLight[3]->GetData().Color_D = DirectX::XMFLOAT4(1.0f, 1.0f, 0.0f, 1.0f);
-//    //m_aLight[0]->GetData().Pos = DirectX::XMFLOAT4( 8.0f, 2.0f,  8.0f, 1.0f);
-//    //m_aLight[1]->GetData().Pos = DirectX::XMFLOAT4(-8.0f, 2.0f,  8.0f, 1.0f);
-//    //m_aLight[2]->GetData().Pos = DirectX::XMFLOAT4( 8.0f, 2.0f, -8.0f, 1.0f);
-//    //m_aLight[3]->GetData().Pos = DirectX::XMFLOAT4(-8.0f, 2.0f, -8.0f, 1.0f);
-//
-//
-//
-//    m_pPlayer = std::make_unique<PLAYER>(*this);
 }
 
 APP_64::~APP_64()
@@ -205,22 +161,14 @@ void APP_64::Update()
 //        //太陽光更新
 //        m_pSunLight->Update();
 //
-//        //点光源更新
-//        //for (auto& l : m_aLight)
-//        //    l->Update();
-//
 //        //3D更新
 //        for (auto& d : m_aDrawer)
 //            d->Update();
 //        for (auto& m : m_aModel)
 //            m->Update();
-//        m_pPlayer->Update();
 //    }
 //
 //#ifdef IMGUI
-//
-//    //デバッグマネージャ更新
-//    m_pDebugMgr->Update();
 //
 //    //ImGui描画制御
 //    if (m_pInputMgr->m_KB.GetPress(VK_TAB))
@@ -268,14 +216,10 @@ void APP_64::Draw()
 //            d->Draw(*m_pDX);
 //        for (auto& m : m_aModel)
 //            m->Draw();
-//        m_pPlayer->Draw();
 //
 //
 //
 //#ifdef IMGUI
-//
-//        //デバッグマネージャ描画
-//        m_pDebugMgr->Draw(*m_pDX);
 //
 //        //ImGui描画
 //        if (m_pDX->IsImGuiEnabled()) {

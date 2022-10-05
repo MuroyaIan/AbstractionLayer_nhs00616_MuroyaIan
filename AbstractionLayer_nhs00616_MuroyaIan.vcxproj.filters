@@ -67,6 +67,12 @@
     <Filter Include="ヘッダー ファイル\GFX\Drawer\vsd">
       <UniqueIdentifier>{c8bed11f-e7a3-429c-b1e4-0c28184ad0a0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Draw">
+      <UniqueIdentifier>{bd84d317-a195-4e75-96e9-8cedc9194d44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Draw">
+      <UniqueIdentifier>{605de778-0c45-43b4-98aa-451a47cf6c49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc">

@@ -29,7 +29,7 @@ struct GFX_PACK                     //描画用データ
 };
 
 //===== 前方宣言 =====
-//class CAMERA_MGR;
+class DrawCameraMgr;
 //class LIGHT_MGR;
 //
 //class DRAWER;
@@ -65,10 +65,10 @@ public:
 //    {
 //        return *m_pInputMgr;
 //    }
-//    CAMERA_MGR& GetCameraMgr() const noexcept            //カメラマネージャ参照
-//    {
-//        return *m_pCameraMgr;
-//    }
+    DrawCameraMgr& GetCameraMgr() const noexcept            //カメラマネージャ参照
+    {
+        return *m_pCameraMgr;
+    }
 //    LIGHT_MGR& GetLightMgr() const noexcept                //ライトマネージャ参照
 //    {
 //        return *m_pLightMgr;
@@ -92,7 +92,7 @@ private:
     //std::unique_ptr<TEXTURE_MGR> m_pTextureMgr;            //テクスチャマネージャ用ポインタ
     std::unique_ptr<GFX_PACK> m_pGfx;                    //描画データ用ポインタ
     //std::unique_ptr<INPUT_MGR> m_pInputMgr;                //入力マネージャ用ポインタ
-    //std::unique_ptr<CAMERA_MGR> m_pCameraMgr;            //カメラマネージャ
+    std::unique_ptr<DrawCameraMgr> m_pCameraMgr;            //カメラマネージャ
     //std::unique_ptr<LIGHT_MGR> m_pLightMgr;                //ライトマネージャ
 
 

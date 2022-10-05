@@ -40,11 +40,11 @@ public:
             throw ERROR_EX2(S_OK, "経度分割数は3以上にしてください。");
 
         //変数宣言
-        constexpr float fRadius = 0.5f;						//半径
+        constexpr float fRadius = 0.5f;                     //半径
         const dx::XMVECTOR vBase =
             dx::XMVectorSet(0.0f, fRadius, 0.0f, 0.0f);     //基準用頂点ベクトル
-        const float fLatAngle = F_PI / latDiv;				//緯度角(180で分割)
-        const float fLongAngle = 2.0f * F_PI / longDiv;		//経度角(360で分割)
+        const float fLatAngle = F_PI / latDiv;              //緯度角(180で分割)
+        const float fLongAngle = 2.0f * F_PI / longDiv;     //経度角(360で分割)
 
         //頂点作成
         std::vector<V> aData;
@@ -142,17 +142,17 @@ public:
             throw ERROR_EX2(S_OK, "経度分割数は3以上にしてください。");
 
         //変数宣言
-        constexpr float fRadius = 0.5f;						//半径
+        constexpr float fRadius = 0.5f;                     //半径
         const dx::XMVECTOR vBase =
             dx::XMVectorSet(0.0f, fRadius, 0.0f, 0.0f);     //基準用頂点ベクトル
-        const float fLatAngle = F_PI / latDiv;				//緯度角(180で分割)
-        const float fLongAngle = 2.0f * F_PI / longDiv;		//経度角(360で分割)
+        const float fLatAngle = F_PI / latDiv;              //緯度角(180で分割)
+        const float fLongAngle = 2.0f * F_PI / longDiv;     //経度角(360で分割)
 
         //頂点作成
         std::vector<V> aData;
         for (int iLat = 1; iLat < latDiv; iLat++) {
             const dx::XMVECTOR vLatBase = dx::XMVector3Transform(vBase,
-                dx::XMMatrixRotationX(fLatAngle * iLat));		    //緯度の分割分ごとに
+                dx::XMMatrixRotationX(fLatAngle * iLat));           //緯度の分割分ごとに
             for (int iLong = 0; iLong < longDiv; iLong++) {
                 aData.emplace_back();
                 dx::XMVECTOR vVertex = dx::XMVector3Transform(vLatBase,

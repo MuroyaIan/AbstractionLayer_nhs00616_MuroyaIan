@@ -25,7 +25,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);   //メモリリーク検出
 
         //アプリケーション実行
-        return APP_64{}.Run();
+        return App64{}.Run();
     }
     catch (const WinErrorProc& e)
     {

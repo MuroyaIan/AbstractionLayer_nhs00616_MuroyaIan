@@ -73,6 +73,9 @@
     <Filter Include="ヘッダー ファイル\Draw">
       <UniqueIdentifier>{605de778-0c45-43b4-98aa-451a47cf6c49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{09dae40b-d56c-420f-b35f-20d139e41f16}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc">
@@ -223,6 +226,27 @@
     <ClInclude Include="Source\Tool\Tool_TexLoader.h">
       <Filter>ヘッダー ファイル\Tool</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Draw\Draw_ShaderMgr.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Draw\Draw_Camera.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Draw\Draw_CameraMgr.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Draw\Draw_CameraTest.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Draw\Draw_DirectionalLight.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Draw\Draw_Light.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Draw\Draw_LightMgr.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Win\Win_Main.cpp">
@@ -315,5 +339,34 @@
     <ClCompile Include="Source\Tool\Tool_TexLoader.cpp">
       <Filter>ソース ファイル\Tool</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Draw\Draw_ShaderMgr.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Draw\Draw_Camera.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Draw\Draw_CameraMgr.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Draw\Draw_CameraTest.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Draw\Draw_DirectionalLight.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Draw\Draw_Light.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Draw\Draw_LightMgr.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Source\Shader\PS_Phong.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Source\Shader\VS_Instance_Phong.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

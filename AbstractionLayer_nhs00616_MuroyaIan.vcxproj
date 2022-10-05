@@ -83,6 +83,7 @@
     <TargetName>$(ProjectName)_D</TargetName>
     <IncludePath>$(SolutionDir)Library;$(SolutionDir)Source;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Library\3rd_Party;$(LibraryPath)</LibraryPath>
+    <MultiProcFXC>true</MultiProcFXC>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -90,6 +91,7 @@
     <IntDir>$(ProjectDir)objFile\$(Configuration)\</IntDir>
     <IncludePath>$(SolutionDir)Library;$(SolutionDir)Source;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Library\3rd_Party;$(LibraryPath)</LibraryPath>
+    <MultiProcFXC>true</MultiProcFXC>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -136,6 +138,10 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+      <ObjectFileOutput>$(ProjectDir)Asset\Shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -158,6 +164,10 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+      <ObjectFileOutput>$(SolutionDir)Asset\Shader\%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc" />
@@ -176,6 +186,13 @@
     <ClInclude Include="Library\3rd_Party\ImGui\imstb_textedit.h" />
     <ClInclude Include="Library\3rd_Party\ImGui\imstb_truetype.h" />
     <ClInclude Include="Source\Debug\Debug_ImguiMgr.h" />
+    <ClInclude Include="Source\Draw\Draw_Camera.h" />
+    <ClInclude Include="Source\Draw\Draw_CameraMgr.h" />
+    <ClInclude Include="Source\Draw\Draw_CameraTest.h" />
+    <ClInclude Include="Source\Draw\Draw_DirectionalLight.h" />
+    <ClInclude Include="Source\Draw\Draw_Light.h" />
+    <ClInclude Include="Source\Draw\Draw_LightMgr.h" />
+    <ClInclude Include="Source\Draw\Draw_ShaderMgr.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_Binder.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_BinderRef.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_cbMatrix_VP.h" />
@@ -222,6 +239,13 @@
     <ClCompile Include="Library\3rd_Party\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Library\3rd_Party\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Source\Debug\Debug_ImguiMgr.cpp" />
+    <ClCompile Include="Source\Draw\Draw_Camera.cpp" />
+    <ClCompile Include="Source\Draw\Draw_CameraMgr.cpp" />
+    <ClCompile Include="Source\Draw\Draw_CameraTest.cpp" />
+    <ClCompile Include="Source\Draw\Draw_DirectionalLight.cpp" />
+    <ClCompile Include="Source\Draw\Draw_Light.cpp" />
+    <ClCompile Include="Source\Draw\Draw_LightMgr.cpp" />
+    <ClCompile Include="Source\Draw\Draw_ShaderMgr.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_Binder.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_cbMatrix_VP.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_IndexBuffer.cpp" />
@@ -244,6 +268,18 @@
     <ClCompile Include="Source\Win\Win_Mouse.cpp" />
     <ClCompile Include="Source\Win\Win_TimeProc.cpp" />
     <ClCompile Include="Source\Win\Win_Window.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Source\Shader\PS_Phong.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Source\Shader\VS_Instance_Phong.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

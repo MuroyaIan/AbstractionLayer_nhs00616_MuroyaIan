@@ -10,7 +10,7 @@
 #include <Win/Win_Window.h>
 #include <Win/Win_TimeProc.h>
 #include <Gfx/Gfx_Main.h>
-//#include <Geometry/ShaderMgr.h>
+#include <Draw/Draw_ShaderMgr.h>
 //#include <Geometry/TextureMgr.h>
 //#include <Tool/Input/InputMgr.h>
 
@@ -21,10 +21,10 @@
 #endif // IMGUI
 
 //===== 構造体定義 =====
-struct GFX_PACK             //描画用データ
+struct GFX_PACK                     //描画用データ
 {
-    GfxMain& m_DX;          //DXオブジェクト参照
-    //SHADER_MGR& m_ShaderMgr;    //シェーダマネージャ参照
+    GfxMain& m_DX;                  //DXオブジェクト参照
+    DrawShaderMgr& m_ShaderMgr;     //シェーダマネージャ参照
     //TEXTURE_MGR& m_TextureMgr;    //テクスチャマネージャ参照
 };
 
@@ -38,13 +38,13 @@ struct GFX_PACK             //描画用データ
 //===== クラス定義 =====
 
 //***** ゲームアプリ（Win64） *****
-class APP_64
+class App64
 {
 public:
 
     //プロトタイプ宣言
-    APP_64();
-    ~APP_64();
+    App64();
+    ~App64();
     int Run();                                            //アプリケーション実行
     void Update();                                        //更新処理
     void Draw();                                        //描画処理
@@ -88,7 +88,7 @@ private:
     MSG m_Message;                                        //メッセージ構造体
     WinTime m_Time;                                    //時間処理
     std::unique_ptr<GfxMain> m_pDX;                        //DirectX用ポインタ
-    //std::unique_ptr<SHADER_MGR> m_pShaderMgr;            //シェーダマネージャ用ポインタ
+    std::unique_ptr<DrawShaderMgr> m_pShaderMgr;            //シェーダマネージャ用ポインタ
     //std::unique_ptr<TEXTURE_MGR> m_pTextureMgr;            //テクスチャマネージャ用ポインタ
     std::unique_ptr<GFX_PACK> m_pGfx;                    //描画データ用ポインタ
     //std::unique_ptr<INPUT_MGR> m_pInputMgr;                //入力マネージャ用ポインタ

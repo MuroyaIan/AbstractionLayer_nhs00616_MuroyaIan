@@ -26,22 +26,22 @@ constexpr int WND_POS_X = 150;
 constexpr int WND_POS_Y = 50;                           //Window左上座標
 
 //===== クラス実装 =====
-APP_64::APP_64() :
+App64::App64() :
     m_Window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_Message(), m_Time(),
-    m_pDX()/*, m_pShaderMgr(), m_pTextureMgr()*/, m_pGfx()//, m_pInputMgr(), m_pCameraMgr(), m_pLightMgr(),
+    m_pDX(), m_pShaderMgr()/*, m_pTextureMgr()*/, m_pGfx()//, m_pInputMgr(), m_pCameraMgr(), m_pLightMgr(),
     //m_aDrawer(0), m_pSunLight()
 {
     //DirectX初期化
     m_pDX = std::make_unique<GfxMain>(m_Window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
 
-//    //シェーダMgr初期化
-//    m_pShaderMgr = std::make_unique<SHADER_MGR>(*m_pDX);
-//
+    //シェーダMgr初期化
+    m_pShaderMgr = std::make_unique<DrawShaderMgr>(*m_pDX);
+
 //    //テクスチャMgr初期化
 //    m_pTextureMgr = std::make_unique<TEXTURE_MGR>(*m_pDX);
 //
     //描画データ初期化
-    m_pGfx = std::make_unique<GFX_PACK>(*m_pDX/*, *m_pShaderMgr, *m_pTextureMgr*/);
+    m_pGfx = std::make_unique<GFX_PACK>(*m_pDX, *m_pShaderMgr/*, *m_pTextureMgr*/);
 //
 //    //入力マネージャ初期化
 //    m_pInputMgr = std::make_unique<INPUT_MGR>(*this);
@@ -112,12 +112,12 @@ APP_64::APP_64() :
 //    m_pSunLight = std::make_unique<DIRECTIONAL_LIGHT>(*this);
 }
 
-APP_64::~APP_64()
+App64::~App64()
 {
 }
 
 //アプリケーション実行
-int APP_64::Run()
+int App64::Run()
 {
     //ゲームループ
     while (true)
@@ -145,7 +145,7 @@ int APP_64::Run()
 }
 
 //更新処理
-void APP_64::Update()
+void App64::Update()
 {
 //    //入力処理更新
 //    m_pInputMgr->Update();
@@ -193,7 +193,7 @@ void APP_64::Update()
 }
 
 //描画処理
-void APP_64::Draw()
+void App64::Draw()
 {
     //描画開始
     m_pDX->BeginFrame(0.0f, 0.0f, 0.0f);

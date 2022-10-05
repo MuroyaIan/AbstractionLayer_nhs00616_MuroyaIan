@@ -24,7 +24,8 @@ DebugImguiMgr::DebugImguiMgr() noexcept
     //フォント読込
     ImGuiIO& io = ImGui::GetIO();
     ImFont* font = nullptr;
-    font = io.Fonts->AddFontFromFileTTF("Asset/Font/UDEVGothicJPDOC-Regular.ttf", 16.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
+    font = io.Fonts->AddFontFromFileTTF("Asset/Font/UDEVGothicJPDOC-Regular.ttf",
+        16.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     IM_ASSERT(font != NULL);
 }
 

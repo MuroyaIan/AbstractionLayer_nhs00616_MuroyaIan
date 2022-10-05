@@ -187,7 +187,7 @@
     <ClInclude Include="Source\Gfx\Binder\Gfx_ConstantBuffer.h">
       <Filter>ヘッダー ファイル\GFX\Binder\cb</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Tool\ToolMath.h">
+    <ClInclude Include="Source\Tool\Tool_Math.h">
       <Filter>ヘッダー ファイル\Tool</Filter>
     </ClInclude>
     <ClInclude Include="Source\Gfx\Drawer\Gfx_VertexShaderData.h">
@@ -213,6 +213,9 @@
     </ClInclude>
     <ClInclude Include="Source\Gfx\Drawer\Gfx_vsdRef.h">
       <Filter>ヘッダー ファイル\GFX\Drawer</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tool\Tool_TexLoader.h">
+      <Filter>ヘッダー ファイル\Tool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -300,7 +303,10 @@
     <ClCompile Include="Source\Gfx\Binder\Gfx_cbMatrix_VP.cpp">
       <Filter>ソース ファイル\GFX\Binder\cb</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Tool\ToolMath.cpp">
+    <ClCompile Include="Source\Tool\Tool_Math.cpp">
+      <Filter>ソース ファイル\Tool</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Tool\Tool_TexLoader.cpp">
       <Filter>ソース ファイル\Tool</Filter>
     </ClCompile>
   </ItemGroup>

@@ -1,11 +1,11 @@
 ﻿//==============================================================================
-// Filename: ToolMath.cpp
+// Filename: Tool_Math.cpp
 // Description: 計算処理
 // Copyright (C) 2022 Silicon Studio Co., Ltd. All rights reserved.
 //==============================================================================
 
 //===== インクルード部 =====
-#include <Tool/ToolMath.h>
+#include <Tool/Tool_Math.h>
 
 //===== クラス実装 =====
 
@@ -103,7 +103,8 @@ MathVector3::MathVector3() noexcept : x(0.0f), y(0.0f), z(0.0f)
 {
 }
 
-MathVector3::MathVector3(float xIn, float yIn, float zIn) noexcept : x(xIn), y(yIn), z(zIn)
+MathVector3::MathVector3(float xIn, float yIn, float zIn) noexcept :
+    x(xIn), y(yIn), z(zIn)
 {
 }
 

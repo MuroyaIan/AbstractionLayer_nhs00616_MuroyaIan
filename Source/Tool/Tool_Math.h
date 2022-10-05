@@ -1,5 +1,5 @@
 ﻿//==============================================================================
-// Filename: ToolMath.h
+// Filename: Tool_Math.h
 // Description: 計算処理
 // Copyright (C) 2022 Silicon Studio Co., Ltd. All rights reserved.
 //==============================================================================

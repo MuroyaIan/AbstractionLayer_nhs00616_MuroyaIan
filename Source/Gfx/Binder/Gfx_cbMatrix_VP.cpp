@@ -5,8 +5,8 @@
 //==============================================================================
 
 //===== インクルード部 =====
-#include <gfx/Binder/Gfx_cbMatrix_VP.h>
-#include <Tool/ToolMath.h>
+#include <Gfx/Binder/Gfx_cbMatrix_VP.h>
+#include <Tool/Tool_Math.h>
 
 namespace dx = DirectX;
 using vcbMtx = GfxVertexCBuffer<GfxCbMtxVP>;

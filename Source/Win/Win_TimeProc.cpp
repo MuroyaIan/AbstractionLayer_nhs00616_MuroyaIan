@@ -61,15 +61,18 @@ WinTime::~WinTime() noexcept
 bool WinTime::Update() noexcept
 {
     //計測処理
-    m_currentTime = GetTime::now();                                                                     //現在時刻取得
-    m_execInterval = Time::duration_cast<Time::microseconds>(m_currentTime - m_prevExecTime).count();
-    m_measInterval = Time::duration_cast<Time::milliseconds>(m_currentTime - m_prevMeasTime).count();   //経過時間算出
+    m_currentTime = GetTime::now();                                                         //現在時刻取得
+    m_execInterval =
+        Time::duration_cast<Time::microseconds>(m_currentTime - m_prevExecTime).count();
+    m_measInterval =
+        Time::duration_cast<Time::milliseconds>(m_currentTime - m_prevMeasTime).count();    //経過時間算出
 
     //FPS計算（精度ミリ秒）
-    if (static_cast<int>(m_measInterval) >= HALF_SECOND) {                                      //計算頻度　⇒　0.5秒/回
-        m_measFPS = static_cast<int>(m_measCnt * SECOND / static_cast<float>(m_measInterval));  //FPS計算
-        m_prevMeasTime = m_currentTime;                                                         //バックアップ更新
-        m_measCnt = 0;                                                                          //カウンタリセット
+    if (static_cast<int>(m_measInterval) >= HALF_SECOND) {                              //計算頻度　⇒　0.5秒/回
+        m_measFPS =
+            static_cast<int>(m_measCnt * SECOND / static_cast<float>(m_measInterval));  //FPS計算
+        m_prevMeasTime = m_currentTime;                                                 //バックアップ更新
+        m_measCnt = 0;                                                                  //カウンタリセット
     }
 
     //FPSチェック（精度マイクロ秒）
@@ -86,6 +89,7 @@ bool WinTime::Update() noexcept
 WinTime::Timer::Timer() noexcept : m_timerCnt(0), m_time(0)
 {
 }
+
 WinTime::Timer::~Timer() noexcept
 {
 }

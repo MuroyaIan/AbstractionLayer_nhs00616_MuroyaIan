@@ -26,7 +26,8 @@ WinMouseEvents::~WinMouseEvents() noexcept
 
 //***** マウス処理 *****
 WinMouse::WinMouse() noexcept :
-    m_buffer(), m_info(), m_wheelDelta(0), m_wheelVal(0), m_rawDeltaBuffer(), m_bUseRawInput(false)
+    m_buffer(), m_info(), m_wheelDelta(0), m_wheelVal(0),
+    m_rawDeltaBuffer(), m_bUseRawInput(false)
 {
 }
 

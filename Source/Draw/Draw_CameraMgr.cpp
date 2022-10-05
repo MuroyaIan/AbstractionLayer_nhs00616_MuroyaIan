@@ -40,9 +40,9 @@ void DrawCameraMgr::Update() noexcept
 void DrawCameraMgr::Draw() const noexcept
 {
     //行列情報をバインド
-    m_app.GetGfxPack().m_DX.SetViewMtx(m_mtxView);
-    m_app.GetGfxPack().m_DX.SetProjectionMtx(m_mtxProj);
-    m_app.GetGfxPack().m_ShaderMgr.Bind(DrawShaderMgr::BinderID::CB_VS_MTX_VP);
+    m_app.GetGfxPack().m_dx.SetViewMtx(m_mtxView);
+    m_app.GetGfxPack().m_dx.SetProjectionMtx(m_mtxProj);
+    m_app.GetGfxPack().m_shaderMgr.Bind(DrawShaderMgr::BinderID::CB_VS_MTX_VP);
 }
 
 //カメラセット

@@ -11,7 +11,7 @@
 
 //===== クラス定義 =====
 
-//***** メインカメラ *****
+//***** テストカメラ *****
 class DrawCameraTest : public DrawCamera
 {
 public:

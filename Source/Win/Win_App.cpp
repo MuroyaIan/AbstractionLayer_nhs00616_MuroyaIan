@@ -7,14 +7,13 @@
 //===== インクルード部 =====
 #include <Win/Win_App.h>
 #include <Draw/Draw_CameraMgr.h>
-//#include <Light/LightMgr.h>
-//
-//
-//
+#include <Draw/Draw_LightMgr.h>
+
 //#include <Geometry/Shape_Default.h>            //【描画テスト】
 //#include <Geometry/Shape_Tex.h>
 //#include <Geometry/Shape_Model.h>
-//#include <Light/DirectionalLight.h>
+#include <Draw/Draw_DirectionalLight.h>
+#include <Tool/Tool_Math.h>
 
 namespace dx = DirectX;
 
@@ -27,33 +26,33 @@ constexpr int WND_POS_Y = 50;                           //Window左上座標
 
 //===== クラス実装 =====
 App64::App64() :
-    m_Window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_Message(), m_Time(),
+    m_window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_message(), m_time(),
     m_pDX(), m_pShaderMgr()/*, m_pTextureMgr()*/, m_pGfx()/*, m_pInputMgr()*/, m_pCameraMgr()//, m_pLightMgr(),
-    //m_aDrawer(0), m_pSunLight()
+    /*m_aDrawer(0)*/, m_pSunLight()
 {
     //DirectX初期化
-    m_pDX = std::make_unique<GfxMain>(m_Window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
+    m_pDX = std::make_unique<GfxMain>(m_window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
 
     //シェーダMgr初期化
     m_pShaderMgr = std::make_unique<DrawShaderMgr>(*m_pDX);
 
 //    //テクスチャMgr初期化
 //    m_pTextureMgr = std::make_unique<TEXTURE_MGR>(*m_pDX);
-//
+
     //描画データ初期化
-    m_pGfx = std::make_unique<GFX_PACK>(*m_pDX, *m_pShaderMgr/*, *m_pTextureMgr*/);
-//
+    m_pGfx = std::make_unique<GfxPack>(*m_pDX, *m_pShaderMgr/*, *m_pTextureMgr*/);
+
 //    //入力マネージャ初期化
 //    m_pInputMgr = std::make_unique<INPUT_MGR>(*this);
 
     //カメラマネージャ初期化
     m_pCameraMgr = std::make_unique<DrawCameraMgr>(*this);
 
-//    //ライトマネージャ初期化
-//    m_pLightMgr = std::make_unique<LIGHT_MGR>(*this);
-//
-//
-//
+    //ライトマネージャ初期化
+    m_pLightMgr = std::make_unique<DrawLightMgr>(*this);
+
+
+
 //    //【描画テスト】
 //    m_aDrawer.reserve(10);
 //    m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::BOX));
@@ -102,8 +101,8 @@ App64::App64() :
     //カメラ初期化
     m_pCameraMgr->SetCamera(DrawCameraMgr::CameraID::TEST);
 
-//    //太陽光初期化
-//    m_pSunLight = std::make_unique<DIRECTIONAL_LIGHT>(*this);
+    //太陽光初期化
+    m_pSunLight = std::make_unique<DrawDirectionalLight>(*this);
 }
 
 App64::~App64()
@@ -117,19 +116,19 @@ int App64::Run()
     while (true)
     {
         //メッセージ処理
-        if (PeekMessage(&m_Message, nullptr, 0, 0, PM_REMOVE)) {
+        if (PeekMessage(&m_message, nullptr, 0, 0, PM_REMOVE)) {
 
             //終了処理
-            if (m_Message.message == WM_QUIT)
-                return static_cast<int>(m_Message.wParam);
+            if (m_message.message == WM_QUIT)
+                return static_cast<int>(m_message.wParam);
 
             //その他
-            TranslateMessage(&m_Message);
-            DispatchMessage(&m_Message);
+            TranslateMessage(&m_message);
+            DispatchMessage(&m_message);
         }
 
         //FPS判定
-        if (!m_Time.Update())
+        if (!m_time.Update())
             continue;
 
         //ゲーム処理
@@ -147,8 +146,8 @@ void App64::Update()
     //カメラマネージャ更新
     m_pCameraMgr->Update();
 
-    ////太陽光更新
-    //m_pSunLight->Update();
+    //太陽光更新
+    m_pSunLight->Update();
 
     ////3D更新
     //for (auto& d : m_aDrawer)
@@ -189,8 +188,8 @@ void App64::Draw()
     //カメラマネージャ描画
     m_pCameraMgr->Draw();
 
-    ////ライトマネージャ描画
-    //m_pLightMgr->Draw();
+    //ライトマネージャ描画
+    m_pLightMgr->Draw();
 
     ////3D描画
     //for (auto& d : m_aDrawer)
@@ -206,23 +205,23 @@ void App64::Draw()
         //テストメニュー
         if (ImGui::Begin(U8(u8"デバッグUI")))
         {
-            ////性能計測
-            //static float FpsHist[10]{ 0.0f };                                                        //計測履歴
-            //static unsigned short HistSlot = 0;                                                        //計測スロット
-            //static unsigned short TgtFPS = static_cast<unsigned short>(m_Time.GetTargetFPS() / 2);    //計測時刻（フレーム単位)
-            //HistSlot++;                                                                                //スロット更新
-            //if (HistSlot >= _countof(FpsHist) * TgtFPS)
-            //    HistSlot = 0;
-            //float fFps = static_cast<float>(m_Time.GetFPS());
-            //if (HistSlot % TgtFPS == 0) {
-            //    for (int i = 1; i < _countof(FpsHist); i++)                //データシフト
-            //        FpsHist[i - 1] = FpsHist[i];
-            //    FpsHist[_countof(FpsHist) - 1] = fFps;                    //履歴追加
-            //}
-            //ImGui::Text(U8(u8"FPS計測"));
-            //ImGui::SameLine();
-            //ImGui::Text(": %.3f ms/frame (%.0f)", 1000.0f / fFps, fFps);
-            //ImGui::PlotLines(U8(u8"RT図"), FpsHist, IM_ARRAYSIZE(FpsHist), 0, 0, 0.0f, 60.0f);
+            //性能計測
+            static float fpsHist[10]{ 0.0f };                                                        //計測履歴
+            static unsigned short histSlot = 0;                                                        //計測スロット
+            static unsigned short tgtFPS = static_cast<unsigned short>(m_time.GetTargetFPS() / 2);    //計測時刻（フレーム単位)
+            histSlot++;                                                                                //スロット更新
+            if (histSlot >= _countof(fpsHist) * tgtFPS)
+                histSlot = 0;
+            float fFps = static_cast<float>(m_time.GetFPS());
+            if (histSlot % tgtFPS == 0) {
+                for (int i = 1; i < _countof(fpsHist); i++)                //データシフト
+                    fpsHist[i - 1] = fpsHist[i];
+                fpsHist[_countof(fpsHist) - 1] = fFps;                    //履歴追加
+            }
+            ImGui::Text(U8(u8"FPS計測"));
+            ImGui::SameLine();
+            ImGui::Text(": %.3f ms/frame (%.0f)", 1000.0f / fFps, fFps);
+            ImGui::PlotLines(U8(u8"RT図"), fpsHist, IM_ARRAYSIZE(fpsHist), 0, 0, 0.0f, 60.0f);
 
             ////ポリゴン数表示
             //UINT PolyNum = 0;
@@ -260,104 +259,52 @@ void App64::Draw()
             //        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), " Y"); ImGui::SameLine(); ImGui::Text(": %d", MouseMove.y);
             //    }
 
-            //    //コントローラ情報
-            //    ImGui::Text(U8(u8"　パッド"));
-            //    ImGui::Text(U8(u8"接続番号")); ImGui::SameLine(); ImGui::Text(":");
-            //    if (m_pInputMgr->m_GamePad.CheckPad(PAD_1)) {
-            //        ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%d", PAD_1 + 1);
-            //    }
-            //    else if (m_pInputMgr->m_GamePad.CheckPad(PAD_2)) {
-            //        ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%d", PAD_2 + 1);
-            //    }
-            //    else if (m_pInputMgr->m_GamePad.CheckPad(PAD_3)) {
-            //        ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%d", PAD_3 + 1);
-            //    }
-            //    else if (m_pInputMgr->m_GamePad.CheckPad(PAD_4)) {
-            //        ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "%d", PAD_4 + 1);
-            //    }
-            //    else {
-            //        ImGui::SameLine(); ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), "None");
-            //    }
-
-            //    if (m_pInputMgr->m_GamePad.CheckPad(PAD_1)) {
-            //        dx::XMFLOAT2 StickL3 = m_pInputMgr->m_GamePad.GetStickL3(PAD_1);
-            //        dx::XMFLOAT2 StickR3 = m_pInputMgr->m_GamePad.GetStickR3(PAD_1);
-            //        ImGui::Text(U8(u8"スティック"));
-            //        ImGui::Text("(L3)"); ImGui::SameLine();
-            //        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", StickL3.x); ImGui::SameLine();
-            //        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f", StickL3.y);
-            //        ImGui::Text("(R3)"); ImGui::SameLine();
-            //        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", StickR3.x); ImGui::SameLine();
-            //        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f", StickR3.y);
-
-            //        ImGui::Text(U8(u8"トリガー"));
-            //        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "L2"); ImGui::SameLine(); ImGui::Text(": %.1f ", m_pInputMgr->m_GamePad.GetValL2(PAD_1)); ImGui::SameLine();
-            //        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "R2"); ImGui::SameLine(); ImGui::Text(": %.1f", m_pInputMgr->m_GamePad.GetValR2(PAD_1));
-
-            //        ImGui::Text(U8(u8"振動")); ImGui::SameLine(); ImGui::Text(":");
-            //        if (m_pInputMgr->m_GamePad.GetVibeL(PAD_1) == 0.0f && m_pInputMgr->m_GamePad.GetVibeR(PAD_1) == 0.0f) {
-            //            ImGui::SameLine(); ImGui::Text("Off");
-            //        }
-            //        else {
-            //            ImGui::SameLine(); ImGui::Text("On");
-            //        }
-            //        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "L"); ImGui::SameLine(); ImGui::Text(": %.1f ", m_pInputMgr->m_GamePad.GetVibeL(PAD_1)); ImGui::SameLine();
-            //        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "R"); ImGui::SameLine(); ImGui::Text(": %.1f", m_pInputMgr->m_GamePad.GetVibeR(PAD_1));
-            //    }
-
-
-
             //    ImGui::TreePop();
             //}
 
-            ////カメラ情報
-            //if (ImGui::TreeNode(U8(u8"カメラ情報"))) {
+            //カメラ情報
+            if (ImGui::TreeNode(U8(u8"カメラ情報"))) {
 
-            //    //出力処理
-            //    DirectX::XMFLOAT4X4 mtxW = m_pCameraMgr->GetWorldMtx();
-            //    ImGui::Text(U8(u8"　位置")); ImGui::SameLine(); ImGui::Text("(cm)");
-            //    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", mtxW._41); ImGui::SameLine();
-            //    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f ", mtxW._42); ImGui::SameLine();
-            //    ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %.1f", mtxW._43);
+                //出力処理
+                DirectX::XMFLOAT4X4 mtxW = m_pCameraMgr->GetWorldMtx();
+                ImGui::Text(U8(u8"　位置")); ImGui::SameLine(); ImGui::Text("(cm)");
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", mtxW._41); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f ", mtxW._42); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %.1f", mtxW._43);
 
-            //    DirectX::XMFLOAT3 Rot = m_pCameraMgr->GetRotation();
-            //    ImGui::Text(U8(u8"　回転")); ImGui::SameLine(); ImGui::Text("(deg.)");
-            //    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %d ", gMath::GetDegree(Rot.x)); ImGui::SameLine();
-            //    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %d ", gMath::GetDegree(Rot.y)); ImGui::SameLine();
-            //    ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %d", gMath::GetDegree(Rot.z));
+                DirectX::XMFLOAT3 Rot = m_pCameraMgr->GetRotation();
+                ImGui::Text(U8(u8"　回転")); ImGui::SameLine(); ImGui::Text("(deg.)");
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %d ", gMath::GetDegree(Rot.x)); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %d ", gMath::GetDegree(Rot.y)); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %d", gMath::GetDegree(Rot.z));
 
-            //    ImGui::TreePop();
-            //}
+                ImGui::TreePop();
+            }
 
-            ////ライト情報
-            //if (ImGui::TreeNode(U8(u8"ライト情報"))) {
-            //    auto& LightData = m_pLightMgr->GetData();
+            //ライト情報
+            if (ImGui::TreeNode(U8(u8"ライト情報"))) {
+                auto& LightData = m_pLightMgr->GetData();
 
-            //    //平行光源
-            //    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"平行光源"));
+                //平行光源
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"平行光源"));
 
-            //    ImGui::Text(U8(u8"光の向き"));
-            //    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", LightData.DirectionalLight.Pos.x); ImGui::SameLine();
-            //    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f ", LightData.DirectionalLight.Pos.y); ImGui::SameLine();
-            //    ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %.1f", LightData.DirectionalLight.Pos.z);
+                ImGui::Text(U8(u8"光の向き"));
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", LightData.directionalLight.pos.x); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f ", LightData.directionalLight.pos.y); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %.1f", LightData.directionalLight.pos.z);
 
-            //    ImGui::Text(U8(u8"色情報"));
-            //    ImGui::ColorEdit3(U8(u8"拡散色"), &LightData.DirectionalLight.Color_D.x);
-            //    ImGui::Text(U8(u8"拡散光強度")); ImGui::SameLine(); ImGui::Text(": %.2f", LightData.DirectionalLight.Color_D.w);
+                ImGui::Text(U8(u8"色情報"));
+                ImGui::ColorEdit3(U8(u8"拡散色"), &LightData.directionalLight.colorD.x);
+                ImGui::Text(U8(u8"拡散光強度")); ImGui::SameLine(); ImGui::Text(": %.2f", LightData.directionalLight.colorD.w);
 
-            //    //環境光
-            //    ImGui::NewLine();
-            //    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"環境光"));
-            //    ImGui::ColorEdit3(U8(u8"環境色"), &LightData.AmbientLight.x);
-            //    ImGui::Text(U8(u8"環境光強度")); ImGui::SameLine(); ImGui::Text(": %.2f", LightData.AmbientLight.w);
+                //環境光
+                ImGui::NewLine();
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"環境光"));
+                ImGui::ColorEdit3(U8(u8"環境色"), &LightData.ambientLight.x);
+                ImGui::Text(U8(u8"環境光強度")); ImGui::SameLine(); ImGui::Text(": %.2f", LightData.ambientLight.w);
 
-            //    //点光源
-            //    ImGui::NewLine();
-            //    ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"点光源"));
-            //    ImGui::Text(U8(u8"有効光源数")); ImGui::SameLine(); ImGui::Text(": %d", m_pLightMgr->GetLightNum());
-
-            //    ImGui::TreePop();
-            //}
+                ImGui::TreePop();
+            }
         }
         ImGui::End();
     }

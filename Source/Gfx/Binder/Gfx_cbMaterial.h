@@ -10,23 +10,57 @@
 #include <Gfx/Binder/Gfx_ConstantBuffer.h>
 
 //===== 前方宣言 =====
-struct MATERIAL_DATA;
+struct GfxMaterialData;
 
 //===== クラス定義 =====
 
 //***** マテリアルバッファ *****
-class CB_MATERIAL : public GfxBinder
+class GfxCBuffMaterial : public GfxBinder
 {
 public:
 
-    //プロトタイプ宣言
-    CB_MATERIAL(GfxMain& Gfx, const MATERIAL_DATA& Material);
-    ~CB_MATERIAL() noexcept override;
-    void Bind(GfxMain& Gfx) noexcept override;                            //バインド処理
+    //--------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
+    /// コンストラクタ
+    ///
+    /// \param[in] gfx          グラフィック処理の参照先
+    /// \param[in] material     マテリアル情報の参照先
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    GfxCBuffMaterial(
+        /*[in]*/ GfxMain& gfx,
+        /*[in]*/ const GfxMaterialData& material);
+
+    //--------------------------------------------------------------------------
+    /// デストラクタ
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    ~GfxCBuffMaterial() noexcept override;
+
+    //--------------------------------------------------------------------------
+    /// バインド処理
+    ///
+    /// \param[in] gfx  グラフィック処理の参照先
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void Bind(
+        /*[in]*/ GfxMain& gfx) noexcept override;
+
+    //--------------------------------------------------------------------------
 
 private:
 
-    //変数宣言
-    static std::unique_ptr<GfxPixelCBuffer<MATERIAL_DATA>> m_pPcBuff;        //定数バッファのポインタ
-    const MATERIAL_DATA& m_Material;                                    //マテリアル情報の提供先
+    //--------------------------------------------------------------------------
+    static std::unique_ptr<GfxPixelCBuffer<GfxMaterialData>> m_pPcBuff;
+    const GfxMaterialData& m_material;
+    //--------------------------------------------------------------------------
+
+    /// <summary>
+    /// m_pPcBuff   定数バッファのポインタ
+    /// m_material  マテリアル情報の提供先
+    /// </summary>
 };

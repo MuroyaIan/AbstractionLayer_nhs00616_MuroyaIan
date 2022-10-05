@@ -46,7 +46,7 @@ public:
         const int nVtxNumY = divY + 1;        //横・縦頂点数
 
         //頂点作成
-        std::vector<V> aData(nVtxNumX * nVtxNumY);
+        std::vector<V> aData(static_cast<unsigned __int64>(nVtxNumX) * nVtxNumY);
         const dx::XMVECTOR vBottomLeft =
             dx::XMVectorSet(-0.5f, -0.5f, 0.0f, 0.0f);      //板の左下頂点
         const float fUnitSizeX = fWidth / divX;
@@ -67,7 +67,7 @@ public:
 
         //インデックス作成
         std::vector<unsigned short> indices;
-        indices.reserve(static_cast<unsigned short>(divX * divY * 6));    //サイズ指定
+        indices.reserve(static_cast<unsigned short>(static_cast<unsigned __int64>(divX) * divY * 6));   //サイズ指定
         for (int y = 0; y < divY; y++) {
             for (int x = 0; x < divX; x++) {
 
@@ -119,7 +119,7 @@ public:
         const int nVtxNumY = divY + 1;        //横・縦頂点数
 
         //頂点作成
-        std::vector<V> aData(nVtxNumX * nVtxNumY);
+        std::vector<V> aData(static_cast<unsigned __int64>(nVtxNumX) * nVtxNumY);
         const dx::XMVECTOR vBottomLeft =
             dx::XMVectorSet(-0.5f, -0.5f, 0.0f, 0.0f);      //板の左下頂点
         const float fUnitSizeX = fWidth / divX;
@@ -142,7 +142,7 @@ public:
 
         //インデックス作成
         std::vector<unsigned short> indices;
-        indices.reserve(static_cast<unsigned short>(divX * divY * 6));    //サイズ指定
+        indices.reserve(static_cast<unsigned short>(static_cast<unsigned __int64>(divX) * divY * 6));   //サイズ指定
         for (int y = 0; y < divY; y++) {
             for (int x = 0; x < divX; x++) {
 

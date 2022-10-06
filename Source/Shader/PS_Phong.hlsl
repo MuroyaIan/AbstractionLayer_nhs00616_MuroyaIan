@@ -36,27 +36,6 @@ struct LightDirectional     //平行光源
     /// </summary>
 };
 
-struct LightPoint   //点光源
-{
-    //--------------------------------------------------------------------------
-    float4 Pos;
-    float4 Color_D;
-    float AttConst;
-    float AttLinear;
-    float AttQuadratic;
-    float Pad;
-    //--------------------------------------------------------------------------
-
-    /// <summary>
-    /// Pos             ワールド座標
-    /// Color_D         光の色（拡散色, aは強度）
-    /// AttConst        光の減衰係数1
-    /// AttLinear       光の減衰係数2
-    /// AttQuadratic    光の減衰係数3
-    /// Pad             仮置き
-    /// </summary>
-};
-
 //テクスチャ
 Texture2D TexMap[3] : register(t1);     //0:Diffuse, 1:Specular, 2:Normal
 
@@ -67,7 +46,6 @@ SamplerState Sampler;
 cbuffer CB_LIGHT : register(b1)
 {
     LightDirectional DirectionalLight;  //平行光源
-    LightPoint PointLight[16];          //点光源
     float4 AmbientLight;                //環境光
 }
 
@@ -116,8 +94,8 @@ float4 main(PS_IN psi) : SV_Target
     const float3 gAmbient = AmbientLight.rgb * AmbientLight.a;
 
     //最終の出力色計算
-    return float4(saturate(Directional + gAmbient), 1.0f)
-        * TexMap[0].Sample(Sampler, psi.tex);
+    return float4(saturate(Directional + gAmbient), 1.0f);
+        //* TexMap[0].Sample(Sampler, psi.tex);
 }
 
 //平行光源の計算

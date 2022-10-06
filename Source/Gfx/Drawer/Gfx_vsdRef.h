@@ -187,7 +187,7 @@ public:
             case GfxVsdMaker::Shape::BOX:
                 return VsdBox::MakeData_Model<VertexM>();
             case GfxVsdMaker::Shape::SPHERE:
-                return VsdSphere::MakeData_Model<VertexM>();
+                return VsdSphere::MakeData_Model<VertexM>(48, 48);
             default:
                 throw ERROR_EX2(S_OK, "頂点データのタイプエラー。");
         }

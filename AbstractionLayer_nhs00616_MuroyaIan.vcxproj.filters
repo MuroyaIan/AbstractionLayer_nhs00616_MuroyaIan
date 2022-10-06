@@ -247,6 +247,9 @@
     <ClInclude Include="Source\Draw\Draw_LightMgr.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Draw\Draw_Shape.h">
+      <Filter>ヘッダー ファイル\Draw</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Win\Win_Main.cpp">
@@ -358,6 +361,9 @@
       <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
     <ClCompile Include="Source\Draw\Draw_LightMgr.cpp">
+      <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Draw\Draw_Shape.cpp">
       <Filter>ソース ファイル\Draw</Filter>
     </ClCompile>
   </ItemGroup>

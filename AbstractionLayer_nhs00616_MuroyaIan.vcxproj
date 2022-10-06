@@ -193,6 +193,7 @@
     <ClInclude Include="Source\Draw\Draw_Light.h" />
     <ClInclude Include="Source\Draw\Draw_LightMgr.h" />
     <ClInclude Include="Source\Draw\Draw_ShaderMgr.h" />
+    <ClInclude Include="Source\Draw\Draw_Shape.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_Binder.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_BinderRef.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_cbMatrix_VP.h" />
@@ -246,6 +247,7 @@
     <ClCompile Include="Source\Draw\Draw_Light.cpp" />
     <ClCompile Include="Source\Draw\Draw_LightMgr.cpp" />
     <ClCompile Include="Source\Draw\Draw_ShaderMgr.cpp" />
+    <ClCompile Include="Source\Draw\Draw_Shape.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_Binder.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_cbMatrix_VP.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_IndexBuffer.cpp" />

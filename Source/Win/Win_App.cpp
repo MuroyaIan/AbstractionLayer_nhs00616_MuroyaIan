@@ -9,9 +9,7 @@
 #include <Draw/Draw_CameraMgr.h>
 #include <Draw/Draw_LightMgr.h>
 
-//#include <Geometry/Shape_Default.h>            //【描画テスト】
-//#include <Geometry/Shape_Tex.h>
-//#include <Geometry/Shape_Model.h>
+#include <Draw/Draw_Shape.h>            //【描画テスト】
 #include <Draw/Draw_DirectionalLight.h>
 #include <Tool/Tool_Math.h>
 
@@ -27,8 +25,8 @@ constexpr int WND_POS_Y = 50;                           //Window左上座標
 //===== クラス実装 =====
 App64::App64() :
     m_window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_message(), m_time(),
-    m_pDX(), m_pShaderMgr()/*, m_pTextureMgr()*/, m_pGfx()/*, m_pInputMgr()*/, m_pCameraMgr()//, m_pLightMgr(),
-    /*m_aDrawer(0)*/, m_pSunLight()
+    m_pDX(), m_pShaderMgr()/*, m_pTextureMgr()*/, m_pGfx()/*, m_pInputMgr()*/, m_pCameraMgr(), m_pLightMgr(),
+    m_aDrawer(0), m_pSunLight()
 {
     //DirectX初期化
     m_pDX = std::make_unique<GfxMain>(m_window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -53,48 +51,43 @@ App64::App64() :
 
 
 
-//    //【描画テスト】
-//    m_aDrawer.reserve(10);
-//    m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::BOX));
-//    m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PYRAMID));
-//    m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::CONE));
-//    m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PRISM));
-//    m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::CYLINDER));
-//    m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::SPHERE));
-//    m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PLANE));
-//    m_aDrawer.push_back(std::make_unique<SHAPE_TEX>(*m_pGfx, VSD_MAKER::SHAPE::PLANE, TEXTURE_MGR::TEX_ID::TEX_TestPlane));
-//    m_aDrawer.push_back(std::make_unique<SHAPE_TEX>(*m_pGfx, VSD_MAKER::SHAPE::BOX, TEXTURE_MGR::TEX_ID::TEX_TestBox));
-//    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, VSD_MAKER::SHAPE::SPHERE));
-//
-//    //形状生成用ラムダ式
-//    std::vector<std::unique_ptr<DRAWER>>& aDrawer = m_aDrawer;
-//    auto MakeGeom = [&aDrawer]()
-//    {
-//        enum class SHAPE
-//        {
-//            BOX,
-//            PYRAMID,
-//            CONE,
-//            PRISM,
-//            CYLINDER,
-//            SPHERE,
-//            PLANE,
-//            PLANE_TEX,
-//            BOX_TEX,
-//            MODEL,
-//
-//            MAX_NUM
-//        };
-//
-//        SHAPE Shape = static_cast<SHAPE>(RAND_MAKER::MakeRand_Int(9, 9));
-//        //SHAPE shape = static_cast<SHAPE>(RAND_MAKER::MakeRand_Int(0, static_cast<int>(SHAPE::MAX_NUM) - 1));
-//        aDrawer[static_cast<int>(Shape)]->AddInstance();
-//        return;
-//    };
-//
-//    //生成処理
-//    //for (int i = 0; i < nDrawNum; i++)
-//    //    MakeGeom();
+    //【描画テスト】
+    m_aDrawer.reserve(1);
+    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::BOX));
+    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PYRAMID));
+    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::CONE));
+    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PRISM));
+    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::CYLINDER));
+    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::SPHERE));
+    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PLANE));
+    //m_aDrawer.push_back(std::make_unique<SHAPE_TEX>(*m_pGfx, VSD_MAKER::SHAPE::PLANE, TEXTURE_MGR::TEX_ID::TEX_TestPlane));
+    //m_aDrawer.push_back(std::make_unique<SHAPE_TEX>(*m_pGfx, VSD_MAKER::SHAPE::BOX, TEXTURE_MGR::TEX_ID::TEX_TestBox));
+    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::SPHERE));
+
+    //形状生成用ラムダ式
+    std::vector<std::unique_ptr<GfxDrawer>>& aDrawer = m_aDrawer;
+    auto MakeGeom = [&aDrawer]()
+    {
+        enum class SHAPE
+        {
+            BOX,
+            PYRAMID,
+            CONE,
+            PRISM,
+            CYLINDER,
+            SPHERE,
+
+            MAX_NUM
+        };
+
+        SHAPE Shape = SHAPE::BOX;
+        aDrawer[static_cast<int>(Shape)]->AddInstance();
+        return;
+    };
+
+    //生成処理
+    for (int i = 0; i < nDrawNum; i++)
+        MakeGeom();
 
 
 
@@ -149,9 +142,9 @@ void App64::Update()
     //太陽光更新
     m_pSunLight->Update();
 
-    ////3D更新
-    //for (auto& d : m_aDrawer)
-    //    d->Update();
+    //3D更新
+    for (auto& d : m_aDrawer)
+        d->Update();
 
 //#ifdef IMGUI
 //
@@ -191,9 +184,9 @@ void App64::Draw()
     //ライトマネージャ描画
     m_pLightMgr->Draw();
 
-    ////3D描画
-    //for (auto& d : m_aDrawer)
-    //    d->Draw(*m_pDX);
+    //3D描画
+    for (auto& d : m_aDrawer)
+        d->Draw(*m_pDX);
 
 
 
@@ -223,15 +216,12 @@ void App64::Draw()
             ImGui::Text(": %.3f ms/frame (%.0f)", 1000.0f / fFps, fFps);
             ImGui::PlotLines(U8(u8"RT図"), fpsHist, IM_ARRAYSIZE(fpsHist), 0, 0, 0.0f, 60.0f);
 
-            ////ポリゴン数表示
-            //UINT PolyNum = 0;
-            //for (auto& d : m_aDrawer)
-            //    PolyNum += d->GetPolygonNum();
-            //for (auto& m : m_aModel)
-            //    PolyNum += m->GetPolygonNum();
-            //PolyNum += m_pDebugMgr->GetPolygonNum();
-            //ImGui::NewLine();
-            //ImGui::Text(U8(u8"ポリゴン数（三角形）")); ImGui::SameLine(); ImGui::Text(": %d", PolyNum);
+            //ポリゴン数表示
+            UINT PolyNum = 0;
+            for (auto& d : m_aDrawer)
+                PolyNum += d->GetPolygonNum();
+            ImGui::NewLine();
+            ImGui::Text(U8(u8"ポリゴン数（三角形）")); ImGui::SameLine(); ImGui::Text(": %d", PolyNum);
 
             ////入力情報表示
             //ImGui::NewLine();
@@ -262,6 +252,36 @@ void App64::Draw()
             //    ImGui::TreePop();
             //}
 
+            //モデル情報
+            if (ImGui::TreeNode(U8(u8"モデル情報"))) {
+
+                //出力処理
+                DirectX::XMFLOAT4X4 mtxW = m_aDrawer[0]->GetTransformMtx();
+                ImGui::Text(U8(u8"　位置")); ImGui::SameLine(); ImGui::Text("(cm)");
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", mtxW._41); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f ", mtxW._42); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %.1f", mtxW._43);
+
+                DirectX::XMFLOAT3 Rot = m_pCameraMgr->GetRotation();
+                ImGui::Text(U8(u8"　回転")); ImGui::SameLine(); ImGui::Text("(deg.)");
+                static int RotX = 0;
+                static int RotY = 0;
+                static int RotZ = 0;
+                ImGui::SliderInt(U8(u8"X軸"), &RotX, -180, 180);
+                ImGui::SliderInt(U8(u8"Y軸"), &RotY, -180, 180);
+                ImGui::SliderInt(U8(u8"Z軸"), &RotZ, -180, 180);
+                if (ImGui::Button(U8(u8"回転リセット"))) {
+                    RotX = 0;
+                    RotY = 0;
+                    RotZ = 0;
+                }
+                SHAPE_MODEL::RotX = RotX;
+                SHAPE_MODEL::RotY = RotY;
+                SHAPE_MODEL::RotZ = RotZ;
+
+                ImGui::TreePop();
+            }
+
             //カメラ情報
             if (ImGui::TreeNode(U8(u8"カメラ情報"))) {
 
@@ -283,25 +303,26 @@ void App64::Draw()
 
             //ライト情報
             if (ImGui::TreeNode(U8(u8"ライト情報"))) {
-                auto& LightData = m_pLightMgr->GetData();
+                auto& LightDataD = m_pSunLight->GetData();
+                auto& LightDataA = m_pLightMgr->GetData();
 
                 //平行光源
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"平行光源"));
 
                 ImGui::Text(U8(u8"光の向き"));
-                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", LightData.directionalLight.pos.x); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f ", LightData.directionalLight.pos.y); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %.1f", LightData.directionalLight.pos.z);
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", LightDataD.pos.x); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f ", LightDataD.pos.y); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %.1f", LightDataD.pos.z);
 
                 ImGui::Text(U8(u8"色情報"));
-                ImGui::ColorEdit3(U8(u8"拡散色"), &LightData.directionalLight.colorD.x);
-                ImGui::Text(U8(u8"拡散光強度")); ImGui::SameLine(); ImGui::Text(": %.2f", LightData.directionalLight.colorD.w);
+                ImGui::ColorEdit3(U8(u8"拡散色"), &LightDataD.colorD.x);
+                ImGui::Text(U8(u8"拡散光強度")); ImGui::SameLine(); ImGui::Text(": %.2f", LightDataD.colorD.w);
 
                 //環境光
                 ImGui::NewLine();
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"環境光"));
-                ImGui::ColorEdit3(U8(u8"環境色"), &LightData.ambientLight.x);
-                ImGui::Text(U8(u8"環境光強度")); ImGui::SameLine(); ImGui::Text(": %.2f", LightData.ambientLight.w);
+                ImGui::ColorEdit3(U8(u8"環境色"), &LightDataA.ambientLight.x);
+                ImGui::Text(U8(u8"環境光強度")); ImGui::SameLine(); ImGui::Text(": %.2f", LightDataA.ambientLight.w);
 
                 ImGui::TreePop();
             }

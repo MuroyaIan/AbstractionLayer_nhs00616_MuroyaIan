@@ -31,7 +31,7 @@ struct GfxPack                     //グラフィック処理用データ
 //===== 前方宣言 =====
 class DrawCameraMgr;
 class DrawLightMgr;
-//class DRAWER;
+class GfxDrawer;
 class DrawDirectionalLight;
 
 //===== クラス定義 =====
@@ -96,7 +96,7 @@ private:
 
 
 
-    //std::vector<std::unique_ptr<DRAWER>> m_aDrawer;        //【描画テスト】
-    //static constexpr int nDrawNum = 120;                //描画数
+    std::vector<std::unique_ptr<GfxDrawer>> m_aDrawer;        //【描画テスト】
+    static constexpr int nDrawNum = 1;                //描画数
     std::unique_ptr<DrawDirectionalLight> m_pSunLight;        //太陽光
 };

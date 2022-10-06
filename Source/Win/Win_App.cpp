@@ -26,7 +26,7 @@ constexpr int WND_POS_Y = 50;                           //Window左上座標
 App64::App64() :
     m_window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_message(), m_time(),
     m_pDX(), m_pShaderMgr()/*, m_pTextureMgr()*/, m_pGfx()/*, m_pInputMgr()*/, m_pCameraMgr(), m_pLightMgr(),
-    m_aDrawer(0), m_pSunLight()
+    m_aDrawer(0), m_shapeID(0), m_pSunLight()
 {
     //DirectX初期化
     m_pDX = std::make_unique<GfxMain>(m_window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -62,32 +62,12 @@ App64::App64() :
     //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PLANE));
     //m_aDrawer.push_back(std::make_unique<SHAPE_TEX>(*m_pGfx, VSD_MAKER::SHAPE::PLANE, TEXTURE_MGR::TEX_ID::TEX_TestPlane));
     //m_aDrawer.push_back(std::make_unique<SHAPE_TEX>(*m_pGfx, VSD_MAKER::SHAPE::BOX, TEXTURE_MGR::TEX_ID::TEX_TestBox));
+    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::BOX));
     m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::SPHERE));
 
-    //形状生成用ラムダ式
-    std::vector<std::unique_ptr<GfxDrawer>>& aDrawer = m_aDrawer;
-    auto MakeGeom = [&aDrawer]()
-    {
-        enum class SHAPE
-        {
-            BOX,
-            PYRAMID,
-            CONE,
-            PRISM,
-            CYLINDER,
-            SPHERE,
-
-            MAX_NUM
-        };
-
-        SHAPE Shape = SHAPE::BOX;
-        aDrawer[static_cast<int>(Shape)]->AddInstance();
-        return;
-    };
-
     //生成処理
-    for (int i = 0; i < nDrawNum; i++)
-        MakeGeom();
+    for (auto& d : m_aDrawer)
+        d->AddInstance();
 
 
 
@@ -185,8 +165,9 @@ void App64::Draw()
     m_pLightMgr->Draw();
 
     //3D描画
-    for (auto& d : m_aDrawer)
-        d->Draw(*m_pDX);
+    //for (auto& d : m_aDrawer)
+    //    d->Draw(*m_pDX);
+    m_aDrawer[m_shapeID]->Draw(*m_pDX);
 
 
 
@@ -254,6 +235,19 @@ void App64::Draw()
 
             //モデル情報
             if (ImGui::TreeNode(U8(u8"モデル情報"))) {
+
+                //モデル切替
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"モデルID")); ImGui::SameLine(); ImGui::Text(": %d", m_shapeID);
+                ImGui::SameLine();
+                if (ImGui::Button("<")) {
+                    if (m_shapeID > 0)
+                        m_shapeID--;
+                }
+                ImGui::SameLine();
+                if (ImGui::Button(">")) {
+                    if (m_shapeID < m_aDrawer.size() - 1)
+                        m_shapeID++;
+                }
 
                 //出力処理
                 DirectX::XMFLOAT4X4 mtxW = m_aDrawer[0]->GetTransformMtx();

@@ -98,5 +98,6 @@ private:
 
     std::vector<std::unique_ptr<GfxDrawer>> m_aDrawer;        //【描画テスト】
     static constexpr int nDrawNum = 1;                //描画数
+    int m_shapeID;
     std::unique_ptr<DrawDirectionalLight> m_pSunLight;        //太陽光
 };

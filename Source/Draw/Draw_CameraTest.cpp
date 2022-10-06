@@ -20,7 +20,7 @@ constexpr float START_NEAR_Z = 0.5f;
 constexpr float START_FAR_Z = 40.0f;    //クリップ距離
 
 //===== クラス実装 =====
-DrawCameraTest::DrawCameraTest(App64& app) noexcept : DrawCamera(app)//,
+DrawCameraTest::DrawCameraTest(App64& app) noexcept : DrawCamera(app), m_kb(app.GetWindowProc().m_keyboard)//,
     //m_input(m_app.GetInputMgr())
 {
     //親メンバ初期化
@@ -43,6 +43,17 @@ DrawCameraTest::~DrawCameraTest() noexcept
 void DrawCameraTest::Update() noexcept
 {
     //回転制御
+    if (m_kb.KeyIsPressed('W'))
+        m_rot.x += gMath::GetRad(1);
+    else if (m_kb.KeyIsPressed('S'))
+        m_rot.x -= gMath::GetRad(1);
+    if (m_kb.KeyIsPressed('A'))
+        m_rot.y += gMath::GetRad(1);
+    else if (m_kb.KeyIsPressed('D'))
+        m_rot.y -= gMath::GetRad(1);
+    if (m_kb.KeyIsPressed('R'))
+        ResetCamera();
+
     //if (m_input.m_KB.GetPress(VK_W))
     //    m_rot.x += gMath::GetRad(1);
     //else if (m_input.m_KB.GetPress(VK_S))

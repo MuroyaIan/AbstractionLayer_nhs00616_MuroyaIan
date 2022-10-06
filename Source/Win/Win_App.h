@@ -12,7 +12,7 @@
 #include <Gfx/Gfx_Main.h>
 #include <Draw/Draw_ShaderMgr.h>
 //#include <Geometry/TextureMgr.h>
-//#include <Tool/Input/InputMgr.h>
+#include <Tool/Input/Tool_InputMgr.h>
 
 #ifdef IMGUI
 #
@@ -60,10 +60,10 @@ public:
     {
         return *m_pGfx;
     }
-//    INPUT_MGR& GetInputMgr() const noexcept                //入力マネージャ参照
-//    {
-//        return *m_pInputMgr;
-//    }
+    ToolInputMgr& GetInputMgr() const noexcept                //入力マネージャ参照
+    {
+        return *m_pInputMgr;
+    }
     DrawCameraMgr& GetCameraMgr() const noexcept            //カメラマネージャ参照
     {
         return *m_pCameraMgr;
@@ -90,7 +90,7 @@ private:
     std::unique_ptr<DrawShaderMgr> m_pShaderMgr;            //シェーダマネージャ用ポインタ
     //std::unique_ptr<TEXTURE_MGR> m_pTextureMgr;            //テクスチャマネージャ用ポインタ
     std::unique_ptr<GfxPack> m_pGfx;                    //描画データ用ポインタ
-    //std::unique_ptr<INPUT_MGR> m_pInputMgr;                //入力マネージャ用ポインタ
+    std::unique_ptr<ToolInputMgr> m_pInputMgr;                //入力マネージャ用ポインタ
     std::unique_ptr<DrawCameraMgr> m_pCameraMgr;            //カメラマネージャ
     std::unique_ptr<DrawLightMgr> m_pLightMgr;                //ライトマネージャ
 

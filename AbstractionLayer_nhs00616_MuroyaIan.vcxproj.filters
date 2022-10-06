@@ -76,6 +76,12 @@
     <Filter Include="Shader">
       <UniqueIdentifier>{09dae40b-d56c-420f-b35f-20d139e41f16}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Tool\Input">
+      <UniqueIdentifier>{6e3bea81-1d9e-4bf0-ba7a-5e83b5749f78}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ヘッダー ファイル\Tool\Input">
+      <UniqueIdentifier>{c6168faa-c3ca-48fa-8857-215854749743}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc">
@@ -250,6 +256,15 @@
     <ClInclude Include="Source\Draw\Draw_Shape.h">
       <Filter>ヘッダー ファイル\Draw</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Tool\Input\Tool_Keyboard.h">
+      <Filter>ヘッダー ファイル\Tool\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tool\Input\Tool_Mouse.h">
+      <Filter>ヘッダー ファイル\Tool\Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Tool\Input\Tool_InputMgr.h">
+      <Filter>ヘッダー ファイル\Tool\Input</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Win\Win_Main.cpp">
@@ -365,6 +380,15 @@
     </ClCompile>
     <ClCompile Include="Source\Draw\Draw_Shape.cpp">
       <Filter>ソース ファイル\Draw</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Tool\Input\Tool_Keyboard.cpp">
+      <Filter>ソース ファイル\Tool\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Tool\Input\Tool_Mouse.cpp">
+      <Filter>ソース ファイル\Tool\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Tool\Input\Tool_InputMgr.cpp">
+      <Filter>ソース ファイル\Tool\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

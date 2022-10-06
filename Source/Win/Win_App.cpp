@@ -25,7 +25,7 @@ constexpr int WND_POS_Y = 50;                           //Window左上座標
 //===== クラス実装 =====
 App64::App64() :
     m_window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_message(), m_time(),
-    m_pDX(), m_pShaderMgr()/*, m_pTextureMgr()*/, m_pGfx()/*, m_pInputMgr()*/, m_pCameraMgr(), m_pLightMgr(),
+    m_pDX(), m_pShaderMgr()/*, m_pTextureMgr()*/, m_pGfx(), m_pInputMgr(), m_pCameraMgr(), m_pLightMgr(),
     m_aDrawer(0), m_shapeID(0), m_pSunLight()
 {
     //DirectX初期化
@@ -40,8 +40,8 @@ App64::App64() :
     //描画データ初期化
     m_pGfx = std::make_unique<GfxPack>(*m_pDX, *m_pShaderMgr/*, *m_pTextureMgr*/);
 
-//    //入力マネージャ初期化
-//    m_pInputMgr = std::make_unique<INPUT_MGR>(*this);
+    //入力マネージャ初期化
+    m_pInputMgr = std::make_unique<ToolInputMgr>(*this);
 
     //カメラマネージャ初期化
     m_pCameraMgr = std::make_unique<DrawCameraMgr>(*this);
@@ -113,8 +113,8 @@ int App64::Run()
 //更新処理
 void App64::Update()
 {
-    ////入力処理更新
-    //m_pInputMgr->Update();
+    //入力処理更新
+    m_pInputMgr->Update();
 
     //カメラマネージャ更新
     m_pCameraMgr->Update();
@@ -125,29 +125,6 @@ void App64::Update()
     //3D更新
     for (auto& d : m_aDrawer)
         d->Update();
-
-//#ifdef IMGUI
-//
-//    //ImGui描画制御
-//    if (m_pInputMgr->m_KB.GetPress(VK_TAB))
-//        m_pDX->SetImGuiMode(false);
-//    else
-//        m_pDX->SetImGuiMode(true);
-//
-//    //マウス表示・非表示
-//    if (m_pInputMgr->m_KB.GetTrigger(VK_Q)) {
-//        if (m_Window.IsUsingCursor()) {
-//            m_Window.DisableCursor();
-//            m_Window.m_Mouse.SetRawInput(true);
-//        }
-//        else {
-//            m_Window.EnableCursor();
-//            m_Window.m_Mouse.SetRawInput(false);
-//        }
-//    }
-//
-//#endif // IMGUI
-
 }
 
 //描画処理
@@ -156,8 +133,6 @@ void App64::Draw()
     //描画開始
     m_pDX->BeginFrame(0.0f, 0.0f, 0.0f);
 
-
-
     //カメラマネージャ描画
     m_pCameraMgr->Draw();
 
@@ -165,11 +140,7 @@ void App64::Draw()
     m_pLightMgr->Draw();
 
     //3D描画
-    //for (auto& d : m_aDrawer)
-    //    d->Draw(*m_pDX);
     m_aDrawer[m_shapeID]->Draw(*m_pDX);
-
-
 
 #ifdef IMGUI
 
@@ -204,34 +175,34 @@ void App64::Draw()
             ImGui::NewLine();
             ImGui::Text(U8(u8"ポリゴン数（三角形）")); ImGui::SameLine(); ImGui::Text(": %d", PolyNum);
 
-            ////入力情報表示
-            //ImGui::NewLine();
-            //if (ImGui::TreeNode(U8(u8"入力デバイス"))) {
+            //入力情報表示
+            ImGui::NewLine();
+            if (ImGui::TreeNode(U8(u8"入力デバイス"))) {
 
-            //    //マウス情報
-            //    ImGui::Text(U8(u8"　マウス"));
+                //マウス情報
+                ImGui::Text(U8(u8"　マウス"));
 
-            //    dx::XMFLOAT2 MousePos = m_pInputMgr->m_Mouse.GetPos();
-            //    ImGui::Text(U8(u8"座標")); ImGui::SameLine();
-            //    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), " X"); ImGui::SameLine(); ImGui::Text(": %d", static_cast<int>(MousePos.x)); ImGui::SameLine();
-            //    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), " Y"); ImGui::SameLine(); ImGui::Text(": %d", static_cast<int>(MousePos.y));
+                dx::XMFLOAT2 MousePos = m_pInputMgr->m_mouse.GetPos();
+                ImGui::Text(U8(u8"座標")); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), " X"); ImGui::SameLine(); ImGui::Text(": %d", static_cast<int>(MousePos.x)); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), " Y"); ImGui::SameLine(); ImGui::Text(": %d", static_cast<int>(MousePos.y));
 
-            //    ImGui::Text(U8(u8"ホイール値")); ImGui::SameLine(); ImGui::Text(": %d", m_pInputMgr->m_Mouse.GetWheelVal());
+                ImGui::Text(U8(u8"ホイール値")); ImGui::SameLine(); ImGui::Text(": %d", m_pInputMgr->m_mouse.GetWheelVal());
 
-            //    ImGui::Text(U8(u8"マウス表示")); ImGui::SameLine(); ImGui::Text(":"); ImGui::SameLine();
-            //    if (m_Window.IsUsingCursor())
-            //        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "True");
-            //    else {
-            //        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "False");
+                ImGui::Text(U8(u8"マウス表示")); ImGui::SameLine(); ImGui::Text(":"); ImGui::SameLine();
+                if (m_window.IsUsingCursor())
+                    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "True");
+                else {
+                    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "False");
 
-            //        dx::XMINT2 MouseMove = m_pInputMgr->m_Mouse.GetMoveVal();
-            //        ImGui::Text(U8(u8"マウス移動量"));
-            //        ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), " X"); ImGui::SameLine(); ImGui::Text(": %d", MouseMove.x); ImGui::SameLine();
-            //        ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), " Y"); ImGui::SameLine(); ImGui::Text(": %d", MouseMove.y);
-            //    }
+                    dx::XMINT2 MouseMove = m_pInputMgr->m_mouse.GetMoveVal();
+                    ImGui::Text(U8(u8"マウス移動量"));
+                    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), " X"); ImGui::SameLine(); ImGui::Text(": %d", MouseMove.x); ImGui::SameLine();
+                    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), " Y"); ImGui::SameLine(); ImGui::Text(": %d", MouseMove.y);
+                }
 
-            //    ImGui::TreePop();
-            //}
+                ImGui::TreePop();
+            }
 
             //モデル情報
             if (ImGui::TreeNode(U8(u8"モデル情報"))) {

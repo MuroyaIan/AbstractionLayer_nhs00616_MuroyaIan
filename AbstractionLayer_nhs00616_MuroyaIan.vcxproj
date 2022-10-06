@@ -220,6 +220,9 @@
     <ClInclude Include="Source\Gfx\Gfx_Main.h" />
     <ClInclude Include="Source\Resource.h" />
     <ClInclude Include="Source\targetver.h" />
+    <ClInclude Include="Source\Tool\Input\Tool_Keyboard.h" />
+    <ClInclude Include="Source\Tool\Input\Tool_Mouse.h" />
+    <ClInclude Include="Source\Tool\Input\Tool_InputMgr.h" />
     <ClInclude Include="Source\Tool\Tool_Math.h" />
     <ClInclude Include="Source\Tool\Tool_TexLoader.h" />
     <ClInclude Include="Source\Win\Win_App.h" />
@@ -261,6 +264,9 @@
     <ClCompile Include="Source\Gfx\Binder\Gfx_VertexShader.cpp" />
     <ClCompile Include="Source\Gfx\Drawer\Gfx_Drawer.cpp" />
     <ClCompile Include="Source\Gfx\Gfx_Main.cpp" />
+    <ClCompile Include="Source\Tool\Input\Tool_Keyboard.cpp" />
+    <ClCompile Include="Source\Tool\Input\Tool_Mouse.cpp" />
+    <ClCompile Include="Source\Tool\Input\Tool_InputMgr.cpp" />
     <ClCompile Include="Source\Tool\Tool_Math.cpp" />
     <ClCompile Include="Source\Tool\Tool_TexLoader.cpp" />
     <ClCompile Include="Source\Win\Win_App.cpp" />

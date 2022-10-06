@@ -213,7 +213,20 @@ public:
         /*[in]*/ int DivY = 1)
     {
         VsData<V> vsd = MakeTessellation_Tex<V>(DivX, DivY);
-        vsd.ResetDataForModel();
+
+        //頂点情報再作成
+        std::vector<V> Vertices(0);
+        for (auto& i : vsd.m_indices) {
+            V vtx{};
+            vtx.m_pos = vsd.m_vertices[i].m_pos;
+            vtx.m_uv = vsd.m_vertices[i].m_uv;
+            Vertices.emplace_back(std::move(vtx));
+        }
+        vsd.m_vertices = std::move(Vertices);
+        for (size_t i = 0, Cnt = vsd.m_indices.size(); i < Cnt; i++)
+            vsd.m_indices[i] = static_cast<unsigned short>(i);
+
+        //法線計算
         vsd.SetVertexNormal();
         return vsd;
     }

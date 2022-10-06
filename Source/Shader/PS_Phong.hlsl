@@ -37,7 +37,7 @@ struct LightDirectional     //平行光源
 };
 
 //テクスチャ
-Texture2D TexMap[3] : register(t1);     //0:Diffuse, 1:Specular, 2:Normal
+Texture2D TexMap : register(t0);    //Diffuse
 
 //サンプラー
 SamplerState Sampler;
@@ -94,8 +94,8 @@ float4 main(PS_IN psi) : SV_Target
     const float3 gAmbient = AmbientLight.rgb * AmbientLight.a;
 
     //最終の出力色計算
-    return float4(saturate(Directional + gAmbient), 1.0f);
-        //* TexMap[0].Sample(Sampler, psi.tex);
+    return float4(saturate(Directional + gAmbient), 1.0f)
+        * TexMap.Sample(Sampler, psi.tex);
 }
 
 //平行光源の計算

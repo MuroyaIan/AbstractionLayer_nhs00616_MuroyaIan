@@ -367,6 +367,43 @@ public:
     }
 
     //--------------------------------------------------------------------------
+    /// 頂点データ再計算（モデル用）
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void ResetDataForModel() noexcept(!IS_DEBUG)
+    {
+
+#ifdef _DEBUG
+
+        //例外処理
+        if (m_vertices.size() <= 2 || m_indices.size() % 3 != 0)
+            throw ERROR_EX2(S_OK, "【警告】頂点情報がポリゴンの要件を満たさない！");
+        if (m_indices.size() <= 0)
+            throw ERROR_EX2(S_OK, "【警告】インデックス情報は空です！");
+
+#endif // _DEBUG
+
+        //再計算処理
+        std::vector<T> Vertices(0);
+        for (auto& i : m_indices) {
+            T vtx{};
+            vtx.m_pos = m_vertices[i].m_pos;
+            Vertices.emplace_back(std::move(vtx));
+        }
+        m_vertices = std::move(Vertices);
+        for (size_t i = 0, Cnt = m_indices.size(); i < Cnt; i++)
+            m_indices[i] = static_cast<unsigned short>(i);
+
+        //UV作成（デバッグ用、テクスチャなし）
+        for (size_t i = 0, Cnt = m_indices.size() / 3; i < Cnt; i++) {
+            m_vertices[i * 3 + 0].m_uv = { 0.0f, 0.0f };
+            m_vertices[i * 3 + 1].m_uv = { 1.0f, 0.0f };
+            m_vertices[i * 3 + 2].m_uv = { 0.0f, 1.0f };
+        }
+    }
+
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     std::vector<T> m_vertices;

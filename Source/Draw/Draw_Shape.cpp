@@ -31,15 +31,18 @@ SHAPE_MODEL::SHAPE_MODEL(GfxPack& Gfx, GfxVsdMaker::Shape Type) :
     //定数バッファ作成（マテリアル）
     AddBind(std::make_unique<GfxCBuffMaterial>(m_Gfx.m_dx, m_Material));
 
-    ////テクスチャバッファ作成
-    //std::vector<TEX_LOADER::TEX_DATA> aData(static_cast<int>(TEXTURE_MODEL::TEX_TYPE::MAX_TYPE));
-    ////aData[static_cast<int>(TEXTURE_MODEL::TEX_TYPE::DIFFUSE)] = TEX_LOADER::LoadTexture("Asset/Texture/test2.png");
-    //aData[static_cast<int>(TEXTURE_MODEL::TEX_TYPE::DIFFUSE)] = TEX_LOADER::LoadTexture("Asset/Texture/null.png");
-    //aData[static_cast<int>(TEXTURE_MODEL::TEX_TYPE::SPECULAR)] = TEX_LOADER::LoadTexture("Asset/Texture/null.png");
-    //aData[static_cast<int>(TEXTURE_MODEL::TEX_TYPE::NORMAL)] = TEX_LOADER::LoadTexture("Asset/Texture/null.png");
-    //AddBind(std::make_unique<TEXTURE_MODEL>(m_Gfx.m_dx, aData));
-    //for (auto& d : aData)
-    //    TEX_LOADER::ReleaseTexture(d.pImageData);
+    //テクスチャバッファ作成
+    unsigned char color[] = {
+        255, 0, 0, 0,
+        0, 255, 0, 0,
+        0, 0, 255, 0,
+        255, 255, 255, 0,
+    };
+    ToolTexLoader::TexData data;
+    data.pImageData = color;
+    data.nWidth = 2;
+    data.nHeight = 2;
+    AddBind(std::make_unique<GfxTexture>(m_Gfx.m_dx, data));
 
     //マテリアル情報初期化
     m_Material.diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };

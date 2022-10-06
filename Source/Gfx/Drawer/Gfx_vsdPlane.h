@@ -200,6 +200,25 @@ public:
     }
 
     //--------------------------------------------------------------------------
+    /// データ作成（モデル用）
+    ///
+    /// \param[in] divX     x軸分割数
+    /// \param[in] divY     y軸分割数
+    ///
+    /// \return 頂点データ
+    //--------------------------------------------------------------------------
+    template<class V>
+    static VsData<V> MakeData_Model(
+        /*[in]*/ int DivX = 1,
+        /*[in]*/ int DivY = 1)
+    {
+        VsData<V> vsd = MakeTessellation_Tex<V>(DivX, DivY);
+        vsd.ResetDataForModel();
+        vsd.SetVertexNormal();
+        return vsd;
+    }
+
+    //--------------------------------------------------------------------------
 
 private:
 

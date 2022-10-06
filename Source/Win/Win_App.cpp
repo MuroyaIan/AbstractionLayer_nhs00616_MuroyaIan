@@ -52,7 +52,7 @@ App64::App64() :
 
 
     //【描画テスト】
-    m_aDrawer.reserve(1);
+    m_aDrawer.reserve(7);
     //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::BOX));
     //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PYRAMID));
     //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::CONE));
@@ -63,7 +63,12 @@ App64::App64() :
     //m_aDrawer.push_back(std::make_unique<SHAPE_TEX>(*m_pGfx, VSD_MAKER::SHAPE::PLANE, TEXTURE_MGR::TEX_ID::TEX_TestPlane));
     //m_aDrawer.push_back(std::make_unique<SHAPE_TEX>(*m_pGfx, VSD_MAKER::SHAPE::BOX, TEXTURE_MGR::TEX_ID::TEX_TestBox));
     m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::BOX));
+    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::PYRAMID));
+    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::CONE));
+    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::PRISM));
+    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::CYLINDER));
     m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::SPHERE));
+    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::PLANE));
 
     //生成処理
     for (auto& d : m_aDrawer)

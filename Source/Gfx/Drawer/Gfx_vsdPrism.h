@@ -117,6 +117,23 @@ public:
     }
 
     //--------------------------------------------------------------------------
+    /// データ作成（モデル用）
+    ///
+    /// \param[in] divNum   分割数
+    ///
+    /// \return 頂点データ
+    //--------------------------------------------------------------------------
+    template<class V>
+    static VsData<V> MakeData_Model(
+        /*[in]*/ int DivNum = 24)
+    {
+        VsData<V> vsd = MakeTessellation<V>(DivNum);
+        vsd.ResetDataForModel();
+        vsd.SetVertexNormal();
+        return vsd;
+    }
+
+    //--------------------------------------------------------------------------
 
 private:
 

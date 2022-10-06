@@ -184,10 +184,20 @@ public:
     {
         switch (type)
         {
-            case GfxVsdMaker::Shape::BOX:
-                return VsdBox::MakeData_Model<VertexM>();
-            case GfxVsdMaker::Shape::SPHERE:
-                return VsdSphere::MakeData_Model<VertexM>(48, 48);
+			case GfxVsdMaker::Shape::BOX:
+				return VsdBox::MakeData_Model<VertexM>();
+			case GfxVsdMaker::Shape::PYRAMID:
+				return VsdCone::MakeData_Model<VertexM>(4);
+			case GfxVsdMaker::Shape::CONE:
+				return VsdCone::MakeData_Model<VertexM>();
+			case GfxVsdMaker::Shape::PRISM:
+				return VsdPrism::MakeData_Model<VertexM>(3);
+			case GfxVsdMaker::Shape::CYLINDER:
+				return VsdPrism::MakeData_Model<VertexM>();
+			case GfxVsdMaker::Shape::SPHERE:
+				return VsdSphere::MakeData_Model<VertexM>();
+			case GfxVsdMaker::Shape::PLANE:
+				return VsdPlane::MakeData_Model<VertexM>();
             default:
                 throw ERROR_EX2(S_OK, "頂点データのタイプエラー。");
         }

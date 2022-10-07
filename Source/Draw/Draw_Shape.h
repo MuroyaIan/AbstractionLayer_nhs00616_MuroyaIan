@@ -14,37 +14,104 @@
 //===== クラス定義 =====
 
 //***** ジオメトリ描画（モデル表示） *****
-class SHAPE_MODEL : public GfxDrawerEx<SHAPE_MODEL>
+class DrawShapeModel : public GfxDrawerEx<DrawShapeModel>
 {
 public:
 
-    //プロトタイプ宣言
-    SHAPE_MODEL(GfxPack& Gfx, GfxVsdMaker::Shape Type);
-    ~SHAPE_MODEL() noexcept override;
-    void Update() noexcept override;                                                            //更新処理
-    void Draw(GfxMain& Gfx, bool bDrawInstance = false) const noexcept(!IS_DEBUG) override;        //書込み処理
-    int AddInstance() override;                                                                    //インスタンス追加
+    //--------------------------------------------------------------------------
 
-    DirectX::XMFLOAT4X4 GetTransformMtx(int InstanceIndex = 0) const noexcept override            //変形行列取得
+    //--------------------------------------------------------------------------
+    /// コンストラクタ
+    ///
+    /// \param[in] gfx      グラフィック処理の参照先
+    /// \param[in] type     モデルの形状タイプ
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    DrawShapeModel(
+        /*[in]*/ GfxPack& gfx,
+        /*[in]*/ GfxVsdMaker::Shape type);
+
+    //--------------------------------------------------------------------------
+    /// デストラクタ
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    ~DrawShapeModel() noexcept override;
+
+    //--------------------------------------------------------------------------
+    /// 更新処理
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void Update() noexcept override;
+
+    //--------------------------------------------------------------------------
+    /// 描画処理
+    ///
+    /// \param[in] gfx              グラフィック処理の参照先
+    /// \param[in] bDrawInstance    インスタンス描画フラグ
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void Draw(
+        /*[in]*/ GfxMain& gfx,
+        /*[in]*/ bool bDrawInstance = false) const noexcept(!IS_DEBUG) override;
+
+    //--------------------------------------------------------------------------
+    /// インスタンス追加
+    ///
+    /// \return インスタンス番号
+    //--------------------------------------------------------------------------
+    int AddInstance() override;
+
+    //--------------------------------------------------------------------------
+    /// 変形行列取得
+    ///
+    /// \param[in] instanceIndex    変形行列
+    ///
+    /// \return 変形行列
+    //--------------------------------------------------------------------------
+    DirectX::XMFLOAT4X4 GetTransformMtx(
+        /*[in]*/ int instanceIndex = 0) const noexcept override            //変形行列取得
     {
-        return m_aInstanceData[InstanceIndex].mtxWorld;
+        return m_aInstanceData[instanceIndex].mtxWorld;
     }
 
     UINT GetPolygonNum() const noexcept override                                                //ポリゴン数取得
     {
-        return GetIndexNum() / 3 * m_InstanceNum;
+        return GetIndexNum() / 3 * m_instanceNum;
     }
 
-    static int RotX;
-    static int RotY;
-    static int RotZ;
+    //--------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------------
+    static int m_rotX;
+    static int m_rotY;
+    static int m_rotZ;
+    //--------------------------------------------------------------------------
+
+    /// <summary>
+    /// m_rotX  モデル回転量(x軸)
+    /// m_rotY  モデル回転量(y軸)
+    /// m_rotZ  モデル回転量(z軸)
+    /// </summary>
 
 private:
 
-    //変数宣言
-    GfxPack& m_Gfx;                                //描画データ参照
-    GfxVsdMaker::Shape m_Type;                        //形状タイプ
-    int m_InstanceNum;                                //インスタンス数
-    std::vector<GfxInstanceData> m_aInstanceData;        //インスタンス情報
-    GfxMaterialData m_Material;                        //マテリアル情報
+    //--------------------------------------------------------------------------
+    GfxPack& m_gfx;
+    GfxVsdMaker::Shape m_type;
+    int m_instanceNum;
+    std::vector<GfxInstanceData> m_aInstanceData;
+    GfxMaterialData m_material;
+    //--------------------------------------------------------------------------
+
+    /// <summary>
+    /// m_gfx               描画データ参照
+    /// m_type              形状タイプ
+    /// m_instanceNum       インスタンス数
+    /// m_aInstanceData     インスタンス情報
+    /// m_material          マテリアル情報
+    /// </summary>
 };

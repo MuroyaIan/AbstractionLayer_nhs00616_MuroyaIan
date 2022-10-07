@@ -47,13 +47,13 @@ App64::App64() :
 
     //【描画テスト】
     m_aDrawer.reserve(7);
-    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::BOX));
-    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::PYRAMID));
-    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::CONE));
-    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::PRISM));
-    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::CYLINDER));
-    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::SPHERE));
-    m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::PLANE));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::BOX));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::PYRAMID));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::CONE));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::PRISM));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::CYLINDER));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::SPHERE));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::PLANE));
 
     //生成処理
     for (auto& d : m_aDrawer)
@@ -129,8 +129,8 @@ void App64::Update()
             m_rot.y -= 360;
         else if (m_rot.y < -180)
             m_rot.y += 360;
-        SHAPE_MODEL::RotX = m_rot.x;
-        SHAPE_MODEL::RotY = m_rot.y;
+        DrawShapeModel::m_rotX = m_rot.x;
+        DrawShapeModel::m_rotY = m_rot.y;
     }
 }
 
@@ -240,13 +240,13 @@ void App64::Draw()
                 ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %d ", m_rot.y);
                 ImGui::SliderInt(U8(u8"X軸"), &m_rot.x, -180, 180);
                 ImGui::SliderInt(U8(u8"Y軸"), &m_rot.y, -180, 180);
-                ImGui::SliderInt(U8(u8"Z軸"), &SHAPE_MODEL::RotZ, -180, 180);
+                ImGui::SliderInt(U8(u8"Z軸"), &DrawShapeModel::m_rotZ, -180, 180);
                 if (ImGui::Button(U8(u8"回転リセット"))) {
                     m_rot.x = 0;
                     m_rot.y = 0;
-                    SHAPE_MODEL::RotX = m_rot.x;
-                    SHAPE_MODEL::RotY = m_rot.y;
-                    SHAPE_MODEL::RotZ = 0;
+                    DrawShapeModel::m_rotX = m_rot.x;
+                    DrawShapeModel::m_rotY = m_rot.y;
+                    DrawShapeModel::m_rotZ = 0;
                 }
 
                 ImGui::TreePop();

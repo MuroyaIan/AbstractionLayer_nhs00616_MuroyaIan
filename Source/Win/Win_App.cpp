@@ -117,7 +117,7 @@ void App64::Update()
         d->Update();
 
     //モデル回転制御
-    if (m_pInputMgr->m_mouse.GetPress(VK_LBUTTON)) {
+    if (m_pInputMgr->m_mouse.GetPress(VK_LBUTTON) && !m_window.IsUsingImgui()) {
         dx::XMINT2 mouseMove = m_pInputMgr->m_mouse.GetMoveVal();
         m_rot.y -= static_cast<int>(mouseMove.x * 0.5f);
         m_rot.x -= static_cast<int>(mouseMove.y * 0.5f);
@@ -238,11 +238,15 @@ void App64::Draw()
                 ImGui::Text(U8(u8"　回転")); ImGui::SameLine(); ImGui::Text("(deg.)");
                 ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %d ", m_rot.x); ImGui::SameLine();
                 ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %d ", m_rot.y);
+                ImGui::SliderInt(U8(u8"X軸"), &m_rot.x, -180, 180);
+                ImGui::SliderInt(U8(u8"Y軸"), &m_rot.y, -180, 180);
+                ImGui::SliderInt(U8(u8"Z軸"), &SHAPE_MODEL::RotZ, -180, 180);
                 if (ImGui::Button(U8(u8"回転リセット"))) {
                     m_rot.x = 0;
                     m_rot.y = 0;
                     SHAPE_MODEL::RotX = m_rot.x;
                     SHAPE_MODEL::RotY = m_rot.y;
+                    SHAPE_MODEL::RotZ = 0;
                 }
 
                 ImGui::TreePop();

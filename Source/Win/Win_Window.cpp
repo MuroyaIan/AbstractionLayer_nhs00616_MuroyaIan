@@ -118,7 +118,7 @@ WinWindowClass::~WinWindowClass() noexcept(false)
 //コンストラクタ
 WinWindow::WinWindow(LPCWSTR windowName, int nWndWidth, int nWndHeight, int nWndPosX, int nWndPosY) :
     m_posX(nWndPosX), m_posY(nWndPosY), m_width(nWndWidth), m_height(nWndHeight),
-    m_hWindow(nullptr), m_bDrawCursor(true), m_rawBuffer(0), m_keyboard(), m_mouse()
+    m_hWindow(nullptr), m_bDrawCursor(true), m_rawBuffer(0), m_keyboard(), m_mouse(), m_useImgui(false)
 {
     //サイズ算出
     DWORD dwExStyle = 0;
@@ -384,11 +384,14 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
 
 #ifdef IMGUI
 
-            if (io.WantCaptureKeyboard)                 //IMGUI入力切替
+            if (io.WantCaptureKeyboard) {               //IMGUI入力切替
+                m_useImgui = true;
                 break;
+            }
 
 #endif // IMGUI
 
+            m_useImgui = false;
             switch (wParam) {
                 case VK_ESCAPE:                         //「ESC」⇒ウィンドウ終了
                     PostMessage(hWnd, WM_CLOSE, 0, 0);
@@ -401,22 +404,28 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
 
 #ifdef IMGUI
 
-            if (io.WantCaptureKeyboard)                 //IMGUI入力切替
+            if (io.WantCaptureKeyboard) {               //IMGUI入力切替
+                m_useImgui = true;
                 break;
+            }
 
 #endif // IMGUI
 
+            m_useImgui = false;
             m_keyboard.KeyReleased(static_cast<unsigned char>(wParam));
             break;                                      //キーを離した
         case WM_CHAR:
 
 #ifdef IMGUI
 
-            if (io.WantCaptureKeyboard)                 //IMGUI入力切替
+            if (io.WantCaptureKeyboard) {               //IMGUI入力切替
+                m_useImgui = true;
                 break;
+            }
 
 #endif // IMGUI
 
+            m_useImgui = false;
             m_keyboard.CharInput(static_cast<unsigned char>(wParam));
             break;                                      //テキストを入力した
 
@@ -436,11 +445,14 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
 
 #ifdef IMGUI
 
-            if (io.WantCaptureMouse)            //IMGUI入力切替
+            if (io.WantCaptureMouse) {          //IMGUI入力切替
+                m_useImgui = true;
                 break;
+            }
 
 #endif // IMGUI
 
+            m_useImgui = false;
             {
                 POINTS pt = MAKEPOINTS(lParam);
                 if (pt.x >= 0 && pt.x < m_width && pt.y >= 0 && pt.y < m_height) {
@@ -469,22 +481,28 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
 
 #ifdef IMGUI
 
-            if (io.WantCaptureMouse)                            //IMGUI入力切替
+            if (io.WantCaptureMouse) {                          //IMGUI入力切替
+                m_useImgui = true;
                 break;
+            }
 
 #endif // IMGUI
 
+            m_useImgui = false;
             m_mouse.LeftPressed();
             break;
         case WM_LBUTTONUP:
 
 #ifdef IMGUI
 
-            if (io.WantCaptureMouse)                            //IMGUI入力切替
+            if (io.WantCaptureMouse) {                          //IMGUI入力切替
+                m_useImgui = true;
                 break;
+            }
 
 #endif // IMGUI
 
+            m_useImgui = false;
             {
                 POINTS pt = MAKEPOINTS(lParam);
                 if (pt.x < 0 || pt.x >= m_width || pt.y < 0 || pt.y >= m_height) {
@@ -498,22 +516,28 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
 
 #ifdef IMGUI
 
-            if (io.WantCaptureMouse)        //IMGUI入力切替
+            if (io.WantCaptureMouse) {      //IMGUI入力切替
+                m_useImgui = true;
                 break;
+            }
 
 #endif // IMGUI
 
+            m_useImgui = false;
             m_mouse.RightPressed();
             break;
         case WM_RBUTTONUP:
 
 #ifdef IMGUI
 
-            if (io.WantCaptureMouse)        //IMGUI入力切替
+            if (io.WantCaptureMouse) {      //IMGUI入力切替
+                m_useImgui = true;
                 break;
+            }
 
 #endif // IMGUI
 
+            m_useImgui = false;
             {
                 POINTS pt = MAKEPOINTS(lParam);
                 if (pt.x < 0 || pt.x >= m_width || pt.y < 0 || pt.y >= m_height) {
@@ -527,11 +551,14 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
 
 #ifdef IMGUI
 
-            if (io.WantCaptureMouse)        //IMGUI入力切替
+            if (io.WantCaptureMouse) {      //IMGUI入力切替
+                m_useImgui = true;
                 break;
+            }
 
 #endif // IMGUI
 
+            m_useImgui = false;
             {
                 const int nDelta = GET_WHEEL_DELTA_WPARAM(wParam);
                 m_mouse.WheelProc(nDelta);  //ホイール操作量取得(メッセージ一回で+-120)

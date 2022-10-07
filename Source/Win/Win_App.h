@@ -97,4 +97,5 @@ private:
     static constexpr int nDrawNum = 1;                //描画数
     int m_shapeID;
     std::unique_ptr<DrawDirectionalLight> m_pSunLight;        //太陽光
+    DirectX::XMINT2 m_rot;
 };

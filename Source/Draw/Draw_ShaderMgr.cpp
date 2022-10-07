@@ -48,6 +48,8 @@ DrawShaderMgr::DrawShaderMgr(GfxMain& gfx) :
     //ピクセルシェーダ作成
     m_aBinder[static_cast<int>(BinderID::PS_PHONG)] =
         std::make_unique<GfxPixelShader>(m_dx, L"Asset/Shader/PS_Phong.cso");
+    m_aBinder[static_cast<int>(BinderID::PS_PHONG_NO_TEX)] =
+        std::make_unique<GfxPixelShader>(m_dx, L"Asset/Shader/PS_Phong_NoTex.cso");
 
     //定数バッファ作成（VP行列）
     m_aBinder[static_cast<int>(BinderID::CB_VS_MTX_VP)] =
@@ -64,7 +66,7 @@ void DrawShaderMgr::Bind(BinderID id) const noexcept
     m_aBinder[static_cast<int>(id)]->Bind(m_dx);
 }
 
-//バインド処理（インスタンシング＿Phongモデル）
+//バインド処理（インスタンシング_Phongモデル）
 void DrawShaderMgr::Bind_Instance_Phong() const noexcept
 {
     m_aBinder[static_cast<int>(BinderID::VS_INSTANCE_PHONG)]->Bind(m_dx);
@@ -72,4 +74,13 @@ void DrawShaderMgr::Bind_Instance_Phong() const noexcept
     m_aBinder[static_cast<int>(BinderID::PT_TRI)]->Bind(m_dx);
     m_aBinder[static_cast<int>(BinderID::SAMPLER)]->Bind(m_dx);
     m_aBinder[static_cast<int>(BinderID::PS_PHONG)]->Bind(m_dx);
+}
+
+// バインド処理（インスタンシング_Phongモデル_テクスチャなし）
+void DrawShaderMgr::Bind_Instance_Phong_NoTex() const noexcept
+{
+    m_aBinder[static_cast<int>(BinderID::VS_INSTANCE_PHONG)]->Bind(m_dx);
+    m_aBinder[static_cast<int>(BinderID::IL_INSTANCE_PHONG)]->Bind(m_dx);
+    m_aBinder[static_cast<int>(BinderID::PT_TRI)]->Bind(m_dx);
+    m_aBinder[static_cast<int>(BinderID::PS_PHONG_NO_TEX)]->Bind(m_dx);
 }

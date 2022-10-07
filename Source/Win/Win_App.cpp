@@ -25,7 +25,7 @@ constexpr int WND_POS_Y = 50;                           //Window左上座標
 App64::App64() :
     m_window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_message(), m_time(),
     m_pDX(), m_pShaderMgr()/*, m_pTextureMgr()*/, m_pGfx(), m_pInputMgr(), m_pCameraMgr(), m_pLightMgr(),
-    m_aDrawer(0), m_shapeID(0), m_pSunLight()
+    m_aDrawer(0), m_shapeID(0), m_pSunLight(), m_rot()
 {
     //DirectX初期化
     m_pDX = std::make_unique<GfxMain>(m_window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -64,6 +64,8 @@ App64::App64() :
 
     //太陽光初期化
     m_pSunLight = std::make_unique<DrawDirectionalLight>(*this);
+
+    m_window.m_mouse.SetRawInput(true);
 }
 
 App64::~App64()
@@ -113,6 +115,23 @@ void App64::Update()
     //3D更新
     for (auto& d : m_aDrawer)
         d->Update();
+
+    //モデル回転制御
+    if (m_pInputMgr->m_mouse.GetPress(VK_LBUTTON)) {
+        dx::XMINT2 mouseMove = m_pInputMgr->m_mouse.GetMoveVal();
+        m_rot.y -= static_cast<int>(mouseMove.x * 0.5f);
+        m_rot.x -= static_cast<int>(mouseMove.y * 0.5f);
+        if (m_rot.x > 180)
+            m_rot.x -= 360;
+        else if (m_rot.x < -180)
+            m_rot.x += 360;
+        if (m_rot.y > 180)
+            m_rot.y -= 360;
+        else if (m_rot.y < -180)
+            m_rot.y += 360;
+        SHAPE_MODEL::RotX = m_rot.x;
+        SHAPE_MODEL::RotY = m_rot.y;
+    }
 }
 
 //描画処理
@@ -217,20 +236,14 @@ void App64::Draw()
 
                 DirectX::XMFLOAT3 Rot = m_pCameraMgr->GetRotation();
                 ImGui::Text(U8(u8"　回転")); ImGui::SameLine(); ImGui::Text("(deg.)");
-                static int RotX = 0;
-                static int RotY = 0;
-                static int RotZ = 0;
-                ImGui::SliderInt(U8(u8"X軸"), &RotX, -180, 180);
-                ImGui::SliderInt(U8(u8"Y軸"), &RotY, -180, 180);
-                ImGui::SliderInt(U8(u8"Z軸"), &RotZ, -180, 180);
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %d ", m_rot.x); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %d ", m_rot.y);
                 if (ImGui::Button(U8(u8"回転リセット"))) {
-                    RotX = 0;
-                    RotY = 0;
-                    RotZ = 0;
+                    m_rot.x = 0;
+                    m_rot.y = 0;
+                    SHAPE_MODEL::RotX = m_rot.x;
+                    SHAPE_MODEL::RotY = m_rot.y;
                 }
-                SHAPE_MODEL::RotX = RotX;
-                SHAPE_MODEL::RotY = RotY;
-                SHAPE_MODEL::RotZ = RotZ;
 
                 ImGui::TreePop();
             }

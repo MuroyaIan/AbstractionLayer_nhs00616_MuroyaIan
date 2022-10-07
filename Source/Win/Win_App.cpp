@@ -8,7 +8,7 @@
 #include <Win/Win_App.h>
 #include <Draw/Draw_CameraMgr.h>
 #include <Draw/Draw_LightMgr.h>
-#include <Draw/Draw_Shape.h>            //【描画テスト】
+#include <Draw/Draw_Shape.h>
 #include <Draw/Draw_DirectionalLight.h>
 #include <Tool/Tool_Math.h>
 
@@ -23,8 +23,9 @@ constexpr int WND_POS_Y = 50;                           //Window左上座標
 
 //===== クラス実装 =====
 App64::App64() :
-    m_window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH), static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_message(), m_time(),
-    m_pDX(), m_pShaderMgr()/*, m_pTextureMgr()*/, m_pGfx(), m_pInputMgr(), m_pCameraMgr(), m_pLightMgr(),
+    m_window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH),
+    static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_message(), m_time(),
+    m_pDX(), m_pShaderMgr(), m_pGfx(), m_pInputMgr(), m_pCameraMgr(), m_pLightMgr(),
     m_aDrawer(0), m_shapeID(0), m_pSunLight(), m_rot()
 {
     //DirectX初期化
@@ -34,7 +35,7 @@ App64::App64() :
     m_pShaderMgr = std::make_unique<DrawShaderMgr>(*m_pDX);
 
     //描画データ初期化
-    m_pGfx = std::make_unique<GfxPack>(*m_pDX, *m_pShaderMgr/*, *m_pTextureMgr*/);
+    m_pGfx = std::make_unique<GfxPack>(*m_pDX, *m_pShaderMgr);
 
     //入力マネージャ初期化
     m_pInputMgr = std::make_unique<ToolInputMgr>(*this);
@@ -158,17 +159,18 @@ void App64::Draw()
         if (ImGui::Begin(U8(u8"デバッグUI")))
         {
             //性能計測
-            static float fpsHist[10]{ 0.0f };                                                        //計測履歴
-            static unsigned short histSlot = 0;                                                        //計測スロット
-            static unsigned short tgtFPS = static_cast<unsigned short>(m_time.GetTargetFPS() / 2);    //計測時刻（フレーム単位)
-            histSlot++;                                                                                //スロット更新
+            static float fpsHist[10]{ 0.0f };                               //計測履歴
+            static unsigned short histSlot = 0;                             //計測スロット
+            static unsigned short tgtFPS =
+                static_cast<unsigned short>(m_time.GetTargetFPS() / 2);     //計測時刻（フレーム単位)
+            histSlot++;                                                     //スロット更新
             if (histSlot >= _countof(fpsHist) * tgtFPS)
                 histSlot = 0;
             float fFps = static_cast<float>(m_time.GetFPS());
             if (histSlot % tgtFPS == 0) {
-                for (int i = 1; i < _countof(fpsHist); i++)                //データシフト
+                for (int i = 1; i < _countof(fpsHist); i++)                 //データシフト
                     fpsHist[i - 1] = fpsHist[i];
-                fpsHist[_countof(fpsHist) - 1] = fFps;                    //履歴追加
+                fpsHist[_countof(fpsHist) - 1] = fFps;                      //履歴追加
             }
             ImGui::Text(U8(u8"FPS計測"));
             ImGui::SameLine();
@@ -176,11 +178,12 @@ void App64::Draw()
             ImGui::PlotLines(U8(u8"RT図"), fpsHist, IM_ARRAYSIZE(fpsHist), 0, 0, 0.0f, 60.0f);
 
             //ポリゴン数表示
-            UINT PolyNum = 0;
+            UINT polyNum = 0;
             for (auto& d : m_aDrawer)
-                PolyNum += d->GetPolygonNum();
+                polyNum += d->GetPolygonNum();
             ImGui::NewLine();
-            ImGui::Text(U8(u8"ポリゴン数（三角形）")); ImGui::SameLine(); ImGui::Text(": %d", PolyNum);
+            ImGui::Text(U8(u8"ポリゴン数（三角形）")); ImGui::SameLine();
+            ImGui::Text(": %d", polyNum);
 
             //入力情報表示
             ImGui::NewLine();
@@ -189,12 +192,15 @@ void App64::Draw()
                 //マウス情報
                 ImGui::Text(U8(u8"　マウス"));
 
-                dx::XMFLOAT2 MousePos = m_pInputMgr->m_mouse.GetPos();
+                dx::XMFLOAT2 mousePos = m_pInputMgr->m_mouse.GetPos();
                 ImGui::Text(U8(u8"座標")); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), " X"); ImGui::SameLine(); ImGui::Text(": %d", static_cast<int>(MousePos.x)); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), " Y"); ImGui::SameLine(); ImGui::Text(": %d", static_cast<int>(MousePos.y));
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), " X"); ImGui::SameLine();
+                ImGui::Text(": %d", static_cast<int>(mousePos.x)); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), " Y"); ImGui::SameLine();
+                ImGui::Text(": %d", static_cast<int>(mousePos.y));
 
-                ImGui::Text(U8(u8"ホイール値")); ImGui::SameLine(); ImGui::Text(": %d", m_pInputMgr->m_mouse.GetWheelVal());
+                ImGui::Text(U8(u8"ホイール値")); ImGui::SameLine();
+                ImGui::Text(": %d", m_pInputMgr->m_mouse.GetWheelVal());
 
                 ImGui::Text(U8(u8"マウス表示")); ImGui::SameLine(); ImGui::Text(":"); ImGui::SameLine();
                 if (m_window.IsUsingCursor())
@@ -202,10 +208,12 @@ void App64::Draw()
                 else {
                     ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "False");
 
-                    dx::XMINT2 MouseMove = m_pInputMgr->m_mouse.GetMoveVal();
+                    dx::XMINT2 mouseMove = m_pInputMgr->m_mouse.GetMoveVal();
                     ImGui::Text(U8(u8"マウス移動量"));
-                    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), " X"); ImGui::SameLine(); ImGui::Text(": %d", MouseMove.x); ImGui::SameLine();
-                    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), " Y"); ImGui::SameLine(); ImGui::Text(": %d", MouseMove.y);
+                    ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), " X"); ImGui::SameLine();
+                    ImGui::Text(": %d", mouseMove.x); ImGui::SameLine();
+                    ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), " Y"); ImGui::SameLine();
+                    ImGui::Text(": %d", mouseMove.y);
                 }
 
                 ImGui::TreePop();
@@ -215,7 +223,8 @@ void App64::Draw()
             if (ImGui::TreeNode(U8(u8"モデル情報"))) {
 
                 //モデル切替
-                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"モデルID")); ImGui::SameLine(); ImGui::Text(": %d", m_shapeID);
+                ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"モデルID")); ImGui::SameLine();
+                ImGui::Text(": %d", m_shapeID);
                 ImGui::SameLine();
                 if (ImGui::Button("<")) {
                     if (m_shapeID > 0)
@@ -230,14 +239,14 @@ void App64::Draw()
                 //出力処理
                 DirectX::XMFLOAT4X4 mtxW = m_aDrawer[0]->GetTransformMtx();
                 ImGui::Text(U8(u8"　位置")); ImGui::SameLine(); ImGui::Text("(cm)");
-                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", mtxW._41); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f ", mtxW._42); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %.1f", mtxW._43);
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine();
+                ImGui::Text(": %.1f ", mtxW._41); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine();
+                ImGui::Text(": %.1f ", mtxW._42); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine();
+                ImGui::Text(": %.1f", mtxW._43);
 
-                DirectX::XMFLOAT3 Rot = m_pCameraMgr->GetRotation();
                 ImGui::Text(U8(u8"　回転")); ImGui::SameLine(); ImGui::Text("(deg.)");
-                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %d ", m_rot.x); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %d ", m_rot.y);
                 ImGui::SliderInt(U8(u8"X軸"), &m_rot.x, -180, 180);
                 ImGui::SliderInt(U8(u8"Y軸"), &m_rot.y, -180, 180);
                 ImGui::SliderInt(U8(u8"Z軸"), &DrawShapeModel::m_rotZ, -180, 180);
@@ -258,41 +267,52 @@ void App64::Draw()
                 //出力処理
                 DirectX::XMFLOAT4X4 mtxW = m_pCameraMgr->GetWorldMtx();
                 ImGui::Text(U8(u8"　位置")); ImGui::SameLine(); ImGui::Text("(cm)");
-                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", mtxW._41); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f ", mtxW._42); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %.1f", mtxW._43);
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine();
+                ImGui::Text(": %.1f ", mtxW._41); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine();
+                ImGui::Text(": %.1f ", mtxW._42); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine();
+                ImGui::Text(": %.1f", mtxW._43);
 
-                DirectX::XMFLOAT3 Rot = m_pCameraMgr->GetRotation();
+                DirectX::XMFLOAT3 rot = m_pCameraMgr->GetRotation();
                 ImGui::Text(U8(u8"　回転")); ImGui::SameLine(); ImGui::Text("(deg.)");
-                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %d ", gMath::GetDegree(Rot.x)); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %d ", gMath::GetDegree(Rot.y)); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %d", gMath::GetDegree(Rot.z));
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine();
+                ImGui::Text(": %d ", gMath::GetDegree(rot.x)); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine();
+                ImGui::Text(": %d ", gMath::GetDegree(rot.y)); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine();
+                ImGui::Text(": %d", gMath::GetDegree(rot.z));
 
                 ImGui::TreePop();
             }
 
             //ライト情報
             if (ImGui::TreeNode(U8(u8"ライト情報"))) {
-                auto& LightDataD = m_pSunLight->GetData();
-                auto& LightDataA = m_pLightMgr->GetData();
+                auto& lightDataD = m_pSunLight->GetData();
+                auto& lightDataA = m_pLightMgr->GetData();
 
                 //平行光源
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"平行光源"));
 
                 ImGui::Text(U8(u8"光の向き"));
-                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine(); ImGui::Text(": %.1f ", LightDataD.pos.x); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine(); ImGui::Text(": %.1f ", LightDataD.pos.y); ImGui::SameLine();
-                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine(); ImGui::Text(": %.1f", LightDataD.pos.z);
+                ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "X"); ImGui::SameLine();
+                ImGui::Text(": %.1f ", lightDataD.pos.x); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "Y"); ImGui::SameLine();
+                ImGui::Text(": %.1f ", lightDataD.pos.y); ImGui::SameLine();
+                ImGui::TextColored(ImVec4(0.5f, 0.5f, 1.0f, 1.0f), "Z"); ImGui::SameLine();
+                ImGui::Text(": %.1f", lightDataD.pos.z);
 
                 ImGui::Text(U8(u8"色情報"));
-                ImGui::ColorEdit3(U8(u8"拡散色"), &LightDataD.colorD.x);
-                ImGui::Text(U8(u8"拡散光強度")); ImGui::SameLine(); ImGui::Text(": %.2f", LightDataD.colorD.w);
+                ImGui::ColorEdit3(U8(u8"拡散色"), &lightDataD.colorD.x);
+                ImGui::Text(U8(u8"拡散光強度")); ImGui::SameLine();
+                ImGui::Text(": %.2f", lightDataD.colorD.w);
 
                 //環境光
                 ImGui::NewLine();
                 ImGui::TextColored(ImVec4(1.0f, 1.0f, 0.0f, 1.0f), U8(u8"環境光"));
-                ImGui::ColorEdit3(U8(u8"環境色"), &LightDataA.ambientLight.x);
-                ImGui::Text(U8(u8"環境光強度")); ImGui::SameLine(); ImGui::Text(": %.2f", LightDataA.ambientLight.w);
+                ImGui::ColorEdit3(U8(u8"環境色"), &lightDataA.ambientLight.x);
+                ImGui::Text(U8(u8"環境光強度")); ImGui::SameLine();
+                ImGui::Text(": %.2f", lightDataA.ambientLight.w);
 
                 ImGui::TreePop();
             }

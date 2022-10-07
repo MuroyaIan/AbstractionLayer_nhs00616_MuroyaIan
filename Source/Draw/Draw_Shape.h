@@ -68,17 +68,22 @@ public:
     //--------------------------------------------------------------------------
     /// 変形行列取得
     ///
-    /// \param[in] instanceIndex    変形行列
+    /// \param[in] instanceIndex    変形行列の取得先インスタンス番号
     ///
     /// \return 変形行列
     //--------------------------------------------------------------------------
     DirectX::XMFLOAT4X4 GetTransformMtx(
-        /*[in]*/ int instanceIndex = 0) const noexcept override            //変形行列取得
+        /*[in]*/ int instanceIndex = 0) const noexcept override
     {
         return m_aInstanceData[instanceIndex].mtxWorld;
     }
 
-    UINT GetPolygonNum() const noexcept override                                                //ポリゴン数取得
+    //--------------------------------------------------------------------------
+    /// ポリゴン数取得
+    ///
+    /// \return ポリゴン数
+    //--------------------------------------------------------------------------
+    UINT GetPolygonNum() const noexcept override
     {
         return GetIndexNum() / 3 * m_instanceNum;
     }

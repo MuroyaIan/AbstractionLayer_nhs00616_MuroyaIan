@@ -8,7 +8,6 @@
 #include <Win/Win_App.h>
 #include <Draw/Draw_CameraMgr.h>
 #include <Draw/Draw_LightMgr.h>
-
 #include <Draw/Draw_Shape.h>            //【描画テスト】
 #include <Draw/Draw_DirectionalLight.h>
 #include <Tool/Tool_Math.h>
@@ -34,9 +33,6 @@ App64::App64() :
     //シェーダMgr初期化
     m_pShaderMgr = std::make_unique<DrawShaderMgr>(*m_pDX);
 
-//    //テクスチャMgr初期化
-//    m_pTextureMgr = std::make_unique<TEXTURE_MGR>(*m_pDX);
-
     //描画データ初期化
     m_pGfx = std::make_unique<GfxPack>(*m_pDX, *m_pShaderMgr/*, *m_pTextureMgr*/);
 
@@ -49,19 +45,8 @@ App64::App64() :
     //ライトマネージャ初期化
     m_pLightMgr = std::make_unique<DrawLightMgr>(*this);
 
-
-
     //【描画テスト】
     m_aDrawer.reserve(7);
-    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::BOX));
-    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PYRAMID));
-    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::CONE));
-    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PRISM));
-    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::CYLINDER));
-    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::SPHERE));
-    //m_aDrawer.push_back(std::make_unique<SHAPE_DEFAULT>(*m_pGfx, VSD_MAKER::SHAPE::PLANE));
-    //m_aDrawer.push_back(std::make_unique<SHAPE_TEX>(*m_pGfx, VSD_MAKER::SHAPE::PLANE, TEXTURE_MGR::TEX_ID::TEX_TestPlane));
-    //m_aDrawer.push_back(std::make_unique<SHAPE_TEX>(*m_pGfx, VSD_MAKER::SHAPE::BOX, TEXTURE_MGR::TEX_ID::TEX_TestBox));
     m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::BOX));
     m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::PYRAMID));
     m_aDrawer.push_back(std::make_unique<SHAPE_MODEL>(*m_pGfx, GfxVsdMaker::Shape::CONE));
@@ -73,8 +58,6 @@ App64::App64() :
     //生成処理
     for (auto& d : m_aDrawer)
         d->AddInstance();
-
-
 
     //カメラ初期化
     m_pCameraMgr->SetCamera(DrawCameraMgr::CameraID::TEST);

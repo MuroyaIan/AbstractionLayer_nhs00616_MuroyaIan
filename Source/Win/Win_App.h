@@ -11,7 +11,6 @@
 #include <Win/Win_TimeProc.h>
 #include <Gfx/Gfx_Main.h>
 #include <Draw/Draw_ShaderMgr.h>
-//#include <Geometry/TextureMgr.h>
 #include <Tool/Input/Tool_InputMgr.h>
 
 #ifdef IMGUI
@@ -25,7 +24,6 @@ struct GfxPack                     //グラフィック処理用データ
 {
     GfxMain& m_dx;                  //DXオブジェクト参照
     DrawShaderMgr& m_shaderMgr;     //シェーダマネージャ参照
-    //TEXTURE_MGR& m_textureMgr;    //テクスチャマネージャ参照
 };
 
 //===== 前方宣言 =====
@@ -88,7 +86,6 @@ private:
     WinTime m_time;                                    //時間処理
     std::unique_ptr<GfxMain> m_pDX;                        //DirectX用ポインタ
     std::unique_ptr<DrawShaderMgr> m_pShaderMgr;            //シェーダマネージャ用ポインタ
-    //std::unique_ptr<TEXTURE_MGR> m_pTextureMgr;            //テクスチャマネージャ用ポインタ
     std::unique_ptr<GfxPack> m_pGfx;                    //描画データ用ポインタ
     std::unique_ptr<ToolInputMgr> m_pInputMgr;                //入力マネージャ用ポインタ
     std::unique_ptr<DrawCameraMgr> m_pCameraMgr;            //カメラマネージャ

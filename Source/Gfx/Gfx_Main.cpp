@@ -6,6 +6,7 @@
 
 //===== インクルード部 =====
 #include <Gfx/Gfx_Main.h>
+#include <dxgi1_6.h>
 
 #ifdef IMGUI
 #
@@ -17,6 +18,7 @@
 //===== 追加ライブラリ =====
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
+#pragma comment(lib, "dxgi.lib")
 
 namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
@@ -32,6 +34,23 @@ GfxMain::GfxMain(HWND hWindow, float fWidth, float fHeight) :
 
     //エラーハンドル
     HRESULT hr{};
+
+    //GPUデバイス指定(高パフォーマンス)
+    Microsoft::WRL::ComPtr<IDXGIFactory> pFactory;
+    Microsoft::WRL::ComPtr<IDXGIFactory6> pFactory6;
+    Microsoft::WRL::ComPtr<IDXGIAdapter> pAdapter;
+    CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory);
+    pFactory->QueryInterface(__uuidof(IDXGIFactory6), (void**)&pFactory6);
+    pFactory6->EnumAdapterByGpuPreference(0, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, IID_PPV_ARGS(&pAdapter));
+
+    //FeatureLevel設定
+    D3D_FEATURE_LEVEL featureLevels[] =
+    {
+        D3D_FEATURE_LEVEL_11_1,
+        D3D_FEATURE_LEVEL_11_0,
+    };
+    UINT numFeatureLevels = ARRAYSIZE(featureLevels);
+    D3D_FEATURE_LEVEL featureLevel;
 
     //ディスクリプタ作成
     DXGI_SWAP_CHAIN_DESC sd{};
@@ -62,19 +81,39 @@ GfxMain::GfxMain(HWND hWindow, float fWidth, float fHeight) :
 
     //デバイス・スワップチェーン初期化
     hr = D3D11CreateDeviceAndSwapChain(
-        nullptr,
-        D3D_DRIVER_TYPE_HARDWARE,
+        pAdapter.Get(),
+        D3D_DRIVER_TYPE_UNKNOWN,
         nullptr,
         createDeviceFlag,
-        nullptr,
-        0u,
+        featureLevels,
+        numFeatureLevels,
         D3D11_SDK_VERSION,
         &sd,
         &m_pSwapChain,
         &m_pDevice,
-        nullptr,
+        &featureLevel,
         &m_pContext
     );
+    if (hr == E_INVALIDARG) {
+
+        //dx11_1非対応の場合（dx11_0以下を試す）
+        hr = D3D11CreateDeviceAndSwapChain(
+            pAdapter.Get(),
+            D3D_DRIVER_TYPE_UNKNOWN,
+            nullptr,
+            createDeviceFlag,
+            nullptr,
+            0u,
+            D3D11_SDK_VERSION,
+            &sd,
+            &m_pSwapChain,
+            &m_pDevice,
+            &featureLevel,
+            &m_pContext
+        );
+    }
+    if (featureLevel != D3D_FEATURE_LEVEL_11_1 && featureLevel != D3D_FEATURE_LEVEL_11_0)
+        throw ERROR_EX2(S_OK, "GPUはDX11非対応です。");
     ERROR_DX(hr);
 
     //バックバッファアクセス取得

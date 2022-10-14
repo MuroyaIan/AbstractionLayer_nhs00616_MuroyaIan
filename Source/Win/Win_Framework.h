@@ -53,21 +53,27 @@
 #include <malloc.h>
 #include <tchar.h>
 #include <memory>           // スマートポインタ
-
-// 配列系ヘッダファイル
 #include <array>            // 固定配列
 #include <vector>           // 動的配列
 #include <list>             // リスト
 #include <map>              // 連想配列
 #include <algorithm>
-
-// 文字列系ヘッダファイル
 #include <string>           // 文字列
 #include <iostream>         // 文字列入出力
 #include <sstream>          // 文字列ストリーム
 
 //===== 定数・マクロ定義 =====
-//#define DIRECTX_11                  //dx11
-//#define DIRECTX_12                  //dx12
-#define IMGUI                       //ImGui使用
-constexpr bool IS_DEBUG = true;     //デバッグモード
+#define DX_11 (0)                   // dx11
+#define DX_12 (1)                   // dx12
+//#define IMGUI                       // ImGui使用
+constexpr bool IS_DEBUG = true;     // デバッグモード
+
+//デバッグ用
+#ifdef _DEBUG
+
+#include <debugapi.h>	//デバッグ表示
+#include <crtdbg.h>		//メモリリーク検出
+
+#define PrintD(wstr) OutputDebugString(wstr)	//デバッグ出力用
+
+#endif // _DEBUG

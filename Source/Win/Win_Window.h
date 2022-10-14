@@ -8,7 +8,6 @@
 
 //===== インクルード部 =====
 #include <Win/Win_Framework.h>
-#include <crtdbg.h>
 #include <Win/Win_ErrorOutput.h>
 #include <Win/Win_Keyboard.h>
 #include <Win/Win_Mouse.h>

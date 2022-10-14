@@ -7,6 +7,8 @@
 //===== インクルード部 =====
 #include <Draw/Draw_DirectionalLight.h>
 
+#if DX_11
+
 namespace dx = DirectX;
 
 //===== クラス実装 =====
@@ -26,3 +28,8 @@ void DrawDirectionalLight::Update() const noexcept
     //データ更新
     m_lightMgr.GetData().directionalLight = m_lightData;
 }
+
+#elif DX_12
+
+
+#endif // GFX

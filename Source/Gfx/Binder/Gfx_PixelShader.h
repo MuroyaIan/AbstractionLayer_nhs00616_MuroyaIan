@@ -11,6 +11,8 @@
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** ピクセルシェーダ *****
 class GfxPixelShader : public GfxBinder
 {
@@ -59,3 +61,8 @@ protected:
     /// m_pPixelShader  シェーダのポインタ
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

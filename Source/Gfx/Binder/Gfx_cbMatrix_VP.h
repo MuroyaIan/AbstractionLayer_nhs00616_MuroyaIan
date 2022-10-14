@@ -11,6 +11,8 @@
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** 変換行列バッファ（ビュー行列、投影行列） *****
 class GfxCBuffMtxVP : public GfxBinder
 {
@@ -57,3 +59,8 @@ private:
     /// m_pVcBuff   定数バッファのポインタ
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

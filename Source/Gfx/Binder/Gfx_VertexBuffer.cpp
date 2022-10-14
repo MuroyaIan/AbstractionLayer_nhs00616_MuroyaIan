@@ -8,6 +8,9 @@
 #include <Gfx/Binder/Gfx_VertexBuffer.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 GfxVertexBuffer::~GfxVertexBuffer() noexcept
 {
 }
@@ -35,3 +38,8 @@ void GfxVertexBuffer::Bind(GfxMain& gfx) noexcept
         GetContext(gfx)->IASetVertexBuffers(0u, 2u, aBufferPtr, stride, offset);
     }
 }
+
+#elif DX_12
+
+
+#endif // GFX

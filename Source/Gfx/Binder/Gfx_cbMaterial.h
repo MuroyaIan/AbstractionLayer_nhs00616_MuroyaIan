@@ -14,6 +14,8 @@ struct GfxMaterialData;
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** マテリアルバッファ *****
 class GfxCBuffMaterial : public GfxBinder
 {
@@ -64,3 +66,8 @@ private:
     /// m_material  マテリアル情報の提供先
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

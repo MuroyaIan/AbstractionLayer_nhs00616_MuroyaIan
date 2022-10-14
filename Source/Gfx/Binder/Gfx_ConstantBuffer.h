@@ -132,6 +132,8 @@ struct GfxCbMtxVP  //変換行列用定数バッファ
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** 定数バッファ *****
 template<typename C>
 class GfxConstantBuffer : public GfxBinder
@@ -371,3 +373,8 @@ private:
     //テンプレート対策
     using CBuff = GfxConstantBuffer<C>;
 };
+
+#elif DX_12
+
+
+#endif // GFX

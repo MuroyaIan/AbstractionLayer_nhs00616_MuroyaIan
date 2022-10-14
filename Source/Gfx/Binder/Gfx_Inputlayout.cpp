@@ -8,6 +8,9 @@
 #include <Gfx/Binder/Gfx_InputLayout.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 GfxInputLayout::GfxInputLayout(GfxMain& gfx,
     const std::vector<D3D11_INPUT_ELEMENT_DESC>& layout, ID3DBlob* pVertexShaderBytecode) :
     GfxBinder(), m_pInputLayout()
@@ -32,3 +35,8 @@ void GfxInputLayout::Bind(GfxMain& gfx) noexcept
 {
     GetContext(gfx)->IASetInputLayout(m_pInputLayout.Get());
 }
+
+#elif DX_12
+
+
+#endif // GFX

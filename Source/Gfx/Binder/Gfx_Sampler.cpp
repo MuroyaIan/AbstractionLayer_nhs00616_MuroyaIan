@@ -8,6 +8,9 @@
 #include <Gfx/Binder/Gfx_Sampler.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 GfxSampler::GfxSampler(GfxMain& gfx) :
     GfxBinder(), m_pSampler()
 {
@@ -33,3 +36,8 @@ void GfxSampler::Bind(GfxMain& gfx) noexcept
 {
     GetContext(gfx)->PSSetSamplers(0, 1, m_pSampler.GetAddressOf());
 }
+
+#elif DX_12
+
+
+#endif // GFX

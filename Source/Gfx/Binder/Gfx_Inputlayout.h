@@ -11,6 +11,8 @@
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** 入力レイアウト *****
 class GfxInputLayout : public GfxBinder
 {
@@ -61,3 +63,8 @@ protected:
     /// m_pInputLayout  レイアウトのポインタ
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

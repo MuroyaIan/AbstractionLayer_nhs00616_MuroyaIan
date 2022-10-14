@@ -8,6 +8,9 @@
 #include <Gfx/Binder/Gfx_IndexBuffer.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 GfxIndexBuffer::GfxIndexBuffer(GfxMain& gfx, const std::vector<unsigned short>& indices) :
     GfxBinder(), m_count(static_cast<UINT>(indices.size())), m_pIndexBuffer()
 {
@@ -37,3 +40,8 @@ void GfxIndexBuffer::Bind(GfxMain& gfx) noexcept
 {
     GetContext(gfx)->IASetIndexBuffer(m_pIndexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0u);
 }
+
+#elif DX_12
+
+
+#endif // GFX

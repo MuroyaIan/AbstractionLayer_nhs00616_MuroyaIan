@@ -10,6 +10,9 @@
 #include <Gfx/Binder/Gfx_VertexBuffer.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 GfxDrawer::GfxDrawer() noexcept :
     m_aBinder(), m_pIndexBuffer(nullptr), m_instanceNum(0), m_pVertexBuffer(nullptr)
 {
@@ -74,3 +77,8 @@ void GfxDrawer::AddBind(std::unique_ptr<GfxBinder> pBinder)
     //所有権移行
     m_aBinder.push_back(std::move(pBinder));
 }
+
+#elif DX_12
+
+
+#endif // GFX

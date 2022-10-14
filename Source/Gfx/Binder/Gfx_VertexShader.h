@@ -11,6 +11,8 @@
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** 頂点シェーダ *****
 class GfxVertexShader : public GfxBinder
 {
@@ -71,3 +73,8 @@ protected:
     /// m_pVertexShader     ポインタ
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

@@ -8,6 +8,8 @@
 #include <Gfx/Binder/Gfx_cbMatrix_VP.h>
 #include <Tool/Tool_Math.h>
 
+#if DX_11
+
 namespace dx = DirectX;
 using vcbMtx = GfxVertexCBuffer<GfxCbMtxVP>;
 
@@ -40,3 +42,8 @@ void GfxCBuffMtxVP::Bind(GfxMain& gfx) noexcept
     //バインド処理
     m_pVcBuff->Bind(gfx);
 }
+
+#elif DX_12
+
+
+#endif // GFX

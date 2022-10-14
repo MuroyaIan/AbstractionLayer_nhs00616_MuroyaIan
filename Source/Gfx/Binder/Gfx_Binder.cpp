@@ -8,6 +8,9 @@
 #include <Gfx/Binder/Gfx_Binder.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 GfxBinder::GfxBinder() noexcept
 {
 }
@@ -15,3 +18,8 @@ GfxBinder::GfxBinder() noexcept
 GfxBinder::~GfxBinder() noexcept
 {
 }
+
+#elif DX_12
+
+
+#endif // GFX

@@ -11,6 +11,8 @@
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** インデックスバッファ *****
 class GfxIndexBuffer : public GfxBinder
 {
@@ -71,3 +73,8 @@ protected:
     /// m_pIndexBuffer  バッファのポインタ
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

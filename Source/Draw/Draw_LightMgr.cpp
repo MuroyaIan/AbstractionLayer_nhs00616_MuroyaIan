@@ -9,6 +9,9 @@
 #include <Gfx/Binder/Gfx_BinderRef.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 DrawLightMgr::DrawLightMgr(App64& app) noexcept :
     m_gfx(app.GetGfxPack()), m_lightData(), m_pcBuff()
 {
@@ -28,3 +31,8 @@ void DrawLightMgr::Draw() noexcept
     m_pcBuff->Update(m_gfx.m_dx, m_lightData);
     m_pcBuff->Bind(m_gfx.m_dx);
 }
+
+#elif DX_12
+
+
+#endif // GFX

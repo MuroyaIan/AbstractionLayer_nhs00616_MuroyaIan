@@ -8,6 +8,9 @@
 #include <Gfx/Binder/Gfx_PixelShader.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 GfxPixelShader::GfxPixelShader(GfxMain& gfx, const std::wstring& path) :
     GfxBinder(), m_pPixelShader()
 {
@@ -32,3 +35,8 @@ void GfxPixelShader::Bind(GfxMain& gfx) noexcept
 {
     GetContext(gfx)->PSSetShader(m_pPixelShader.Get(), nullptr, 0u);
 }
+
+#elif DX_12
+
+
+#endif // GFX

@@ -13,6 +13,8 @@
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** ジオメトリ描画（モデル表示） *****
 class DrawShapeModel : public GfxDrawerEx<DrawShapeModel>
 {
@@ -120,3 +122,8 @@ private:
     /// m_material          マテリアル情報
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

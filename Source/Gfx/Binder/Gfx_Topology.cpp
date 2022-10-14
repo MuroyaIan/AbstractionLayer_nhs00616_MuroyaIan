@@ -8,6 +8,9 @@
 #include <Gfx/Binder/Gfx_Topology.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 GfxTopology::GfxTopology(D3D11_PRIMITIVE_TOPOLOGY type) noexcept :
     GfxBinder(), m_type(type)
 {
@@ -22,3 +25,8 @@ void GfxTopology::Bind(GfxMain& gfx) noexcept
 {
     GetContext(gfx)->IASetPrimitiveTopology(m_type);
 }
+
+#elif DX_12
+
+
+#endif // GFX

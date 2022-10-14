@@ -8,6 +8,8 @@
 #include <Draw/Draw_CameraMgr.h>
 #include <Draw/Draw_CameraTest.h>
 
+#if DX_11
+
 namespace dx = DirectX;
 
 //===== クラス実装 =====
@@ -62,3 +64,8 @@ DirectX::XMFLOAT3 DrawCameraMgr::GetRotation() const noexcept
 {
     return m_aCamera[static_cast<int>(m_currentCamera)]->GetRotation();
 }
+
+#elif DX_12
+
+
+#endif // GFX

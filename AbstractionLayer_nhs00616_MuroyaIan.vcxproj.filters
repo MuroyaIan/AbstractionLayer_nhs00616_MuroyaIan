@@ -402,4 +402,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Source\Shader\BaseShader.hlsli">
+      <Filter>Shader</Filter>
+    </None>
+  </ItemGroup>
 </Project>

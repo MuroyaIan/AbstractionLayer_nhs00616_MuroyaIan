@@ -11,6 +11,8 @@
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** サンプラー *****
 class GfxSampler : public GfxBinder
 {
@@ -57,3 +59,8 @@ protected:
     /// m_pSampler  サンプラーのポインタ
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

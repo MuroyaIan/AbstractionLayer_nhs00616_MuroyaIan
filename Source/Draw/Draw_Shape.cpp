@@ -8,6 +8,8 @@
 #include <Draw/Draw_Shape.h>
 #include <Gfx/Binder/Gfx_BinderRef.h>
 
+#if DX_11
+
 namespace dx = DirectX;
 
 int DrawShapeModel::m_rotX = 0;
@@ -126,3 +128,8 @@ int DrawShapeModel::AddInstance()
 
     return m_instanceNum - 1;
 }
+
+#elif DX_12
+
+
+#endif // GFX

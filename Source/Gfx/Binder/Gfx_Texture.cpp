@@ -8,6 +8,9 @@
 #include <Gfx/Binder/Gfx_Texture.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 GfxTexture::GfxTexture(GfxMain& gfx, ToolTexLoader::TexData& data) :
     GfxBinder(), m_pTextureView()
 {
@@ -60,3 +63,8 @@ void GfxTexture::Bind(GfxMain& gfx) noexcept
 {
     GetContext(gfx)->PSSetShaderResources(0u, 1u, m_pTextureView.GetAddressOf());
 }
+
+#elif DX_12
+
+
+#endif // GFX

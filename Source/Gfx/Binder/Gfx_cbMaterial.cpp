@@ -8,6 +8,8 @@
 #include <Gfx/Binder/Gfx_cbMaterial.h>
 #include <Gfx/Drawer/Gfx_vsdRef.h>
 
+#if DX_11
+
 using pcbMta = GfxPixelCBuffer<GfxMaterialData>;
 
 //===== 静的メンバ変数 =====
@@ -35,3 +37,8 @@ void GfxCBuffMaterial::Bind(GfxMain& gfx) noexcept
     //バインド処理
     m_pPcBuff->Bind(gfx);
 }
+
+#elif DX_12
+
+
+#endif // GFX

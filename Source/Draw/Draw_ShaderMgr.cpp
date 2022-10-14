@@ -8,6 +8,8 @@
 #include <Draw/Draw_ShaderMgr.h>
 #include <Gfx/Binder/Gfx_BinderRef.h>
 
+#if DX_11
+
 //===== クラス実装 =====
 DrawShaderMgr::DrawShaderMgr(GfxMain& gfx) :
     m_dx(gfx), m_aBinder(static_cast<int>(BinderID::ID_MAX))
@@ -84,3 +86,8 @@ void DrawShaderMgr::Bind_Instance_Phong_NoTex() const noexcept
     m_aBinder[static_cast<int>(BinderID::PT_TRI)]->Bind(m_dx);
     m_aBinder[static_cast<int>(BinderID::PS_PHONG_NO_TEX)]->Bind(m_dx);
 }
+
+#elif DX_12
+
+
+#endif // GFX

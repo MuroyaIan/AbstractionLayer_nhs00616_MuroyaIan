@@ -11,6 +11,8 @@
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** トポロジー *****
 class GfxTopology : public GfxBinder
 {
@@ -57,3 +59,8 @@ protected:
     /// m_type  トポロジータイプ
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

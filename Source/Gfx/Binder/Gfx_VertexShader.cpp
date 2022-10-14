@@ -8,6 +8,9 @@
 #include <Gfx/Binder/Gfx_VertexShader.h>
 
 //===== クラス実装 =====
+
+#if DX_11
+
 GfxVertexShader::GfxVertexShader(GfxMain& gfx, const std::wstring& path) :
     GfxBinder(), m_pBytecodeBlob(), m_pVertexShader()
 {
@@ -32,3 +35,8 @@ void GfxVertexShader::Bind(GfxMain& gfx) noexcept
 {
     GetContext(gfx)->VSSetShader(m_pVertexShader.Get(), nullptr, 0u);
 }
+
+#elif DX_12
+
+
+#endif // GFX

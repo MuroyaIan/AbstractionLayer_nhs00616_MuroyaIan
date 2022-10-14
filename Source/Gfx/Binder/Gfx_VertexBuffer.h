@@ -11,6 +11,8 @@
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** 頂点バッファ *****
 class GfxVertexBuffer : public GfxBinder
 {
@@ -234,3 +236,8 @@ protected:
     /// m_bDynamicBuffer    頂点バッファはダイナミックかどうか
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

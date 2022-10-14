@@ -12,6 +12,8 @@
 
 //===== クラス定義 =====
 
+#if DX_11
+
 //***** テクスチャ *****
 class GfxTexture : public GfxBinder
 {
@@ -60,3 +62,8 @@ protected:
     /// m_pTextureView    テクスチャのポインタ
     /// </summary>
 };
+
+#elif DX_12
+
+
+#endif // GFX

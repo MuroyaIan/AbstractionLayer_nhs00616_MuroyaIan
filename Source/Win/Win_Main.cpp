@@ -5,7 +5,6 @@
 //==============================================================================
 
 // インクルード部
-#include <Win/Win_Framework.h>
 #include <Win/Win_Main.h>
 #include <Win/Win_App.h>
 
@@ -17,6 +16,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     try
     {
+
+#ifdef _DEBUG
+
         //前処理
         UNREFERENCED_PARAMETER(hInstance);
         UNREFERENCED_PARAMETER(hPrevInstance);
@@ -24,8 +26,23 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         UNREFERENCED_PARAMETER(nCmdShow);
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);   //メモリリーク検出
 
+#endif // _DEBUG
+
         //アプリケーション実行
-        return App64{}.Run();
+        int wParam = App64{}.Run();
+
+#ifdef _DEBUG
+
+        IDXGIDebug1* pDebugDxgi;
+        if (SUCCEEDED(DXGIGetDebugInterface1(0u, IID_PPV_ARGS(&pDebugDxgi)))) {
+            pDebugDxgi->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
+            pDebugDxgi->Release();
+        }
+
+#endif // _DEBUG
+
+        //終了処理
+        return wParam;
     }
     catch (const WinErrorProc& e)
     {

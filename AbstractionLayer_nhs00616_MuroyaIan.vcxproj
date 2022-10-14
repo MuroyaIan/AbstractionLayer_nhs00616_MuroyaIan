@@ -178,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx12.h" />
     <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_win32.h" />
     <ClInclude Include="Library\3rd_Party\ImGui\imconfig.h" />
     <ClInclude Include="Library\3rd_Party\ImGui\imgui.h" />
@@ -236,6 +237,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx12.cpp" />
     <ClCompile Include="Library\3rd_Party\ImGui\backends\imgui_impl_win32.cpp" />
     <ClCompile Include="Library\3rd_Party\ImGui\imgui.cpp" />
     <ClCompile Include="Library\3rd_Party\ImGui\imgui_demo.cpp" />

@@ -16,14 +16,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     try
     {
-
-#ifdef _DEBUG
-
         //前処理
         UNREFERENCED_PARAMETER(hInstance);
         UNREFERENCED_PARAMETER(hPrevInstance);
         UNREFERENCED_PARAMETER(lpCmdLine);
         UNREFERENCED_PARAMETER(nCmdShow);
+
+#ifdef _DEBUG
+
         _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);   //メモリリーク検出
 
 #endif // _DEBUG

@@ -123,5 +123,5 @@
 
 float4 main(OutputVS input) : SV_Target
 {
-	return float4(Tex.Sample(Sampler, input.uv));
+    return float4(Tex.Sample(Sampler, input.uv));
 }

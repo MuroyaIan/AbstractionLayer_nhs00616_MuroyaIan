@@ -65,15 +65,15 @@
 //===== 定数・マクロ定義 =====
 #define DX_11 (0)                   // dx11
 #define DX_12 (1)                   // dx12
-//#define IMGUI                       // ImGui使用
+#define IMGUI                       // ImGui使用
 constexpr bool IS_DEBUG = true;     // デバッグモード
 
 //デバッグ用
 #ifdef _DEBUG
 
-#include <debugapi.h>	//デバッグ表示
-#include <crtdbg.h>		//メモリリーク検出
+#include <debugapi.h>    //デバッグ表示
+#include <crtdbg.h>        //メモリリーク検出
 
-#define PrintD(wstr) OutputDebugString(wstr)	//デバッグ出力用
+#define PrintD(wstr) OutputDebugString(wstr)    //デバッグ出力用
 
 #endif // _DEBUG

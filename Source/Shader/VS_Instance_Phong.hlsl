@@ -85,8 +85,8 @@
 
 OutputVS main(float3 pos : POSITION, float2 uv : TEXCOORD)
 {
-	OutputVS output;
-	output.svpos = mul(float4(pos, 1.0f), mtxW);
-	output.uv = uv;
-	return output;
+    OutputVS output;
+    output.svpos = mul(float4(pos, 1.0f), mtxW);
+    output.uv = uv;
+    return output;
 }

@@ -8,8 +8,6 @@
 
 //===== インクルード部 =====
 #include <3rd_Party/ImGui/imgui.h>
-#include <3rd_Party/ImGui/backends/imgui_impl_win32.h>
-#include <3rd_Party/ImGui/backends/imgui_impl_dx11.h>
 
 //===== 定数・マクロ定義 =====
 #define U8(str) reinterpret_cast<const char*>(str)

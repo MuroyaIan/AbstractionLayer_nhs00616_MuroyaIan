@@ -6,13 +6,22 @@
 
 //===== インクルード部 =====
 #include <Debug/Debug_ImguiMgr.h>
+#include <Win/Win_Framework.h>
 
 //===== クラス実装 =====
 DebugImguiMgr::DebugImguiMgr() noexcept
 {
     //初期化処理
     IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
+    if (ImGui::CreateContext() == nullptr) {
+
+#ifdef _DEBUG
+
+        PrintD(L"Error : IMGUI初期化失敗!\n");
+
+#endif // _DEBUG
+
+    }
 
     //スタイル設定
     ImGui::StyleColorsDark();

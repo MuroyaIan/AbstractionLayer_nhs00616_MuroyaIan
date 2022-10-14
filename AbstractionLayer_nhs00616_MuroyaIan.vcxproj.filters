@@ -265,6 +265,9 @@
     <ClInclude Include="Source\Tool\Input\Tool_InputMgr.h">
       <Filter>ヘッダー ファイル\Tool\Input</Filter>
     </ClInclude>
+    <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx12.h">
+      <Filter>Lib\imgui\backends</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Win\Win_Main.cpp">
@@ -389,6 +392,9 @@
     </ClCompile>
     <ClCompile Include="Source\Tool\Input\Tool_InputMgr.cpp">
       <Filter>ソース ファイル\Tool\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx12.cpp">
+      <Filter>Lib\imgui\backends</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

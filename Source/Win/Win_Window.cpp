@@ -91,7 +91,7 @@ WinWindowClass::WinWindowClass() : m_hAppInst(GetModuleHandle(nullptr))
     windowClass.cbClsExtra = 0;
     windowClass.cbWndExtra = 0;
     windowClass.hInstance = m_hAppInst;
-    windowClass.hIcon =LoadIcon(m_hAppInst,
+    windowClass.hIcon = LoadIcon(m_hAppInst,
         MAKEINTRESOURCE(IDI_ABSTRACTIONLAYERNHS00616MUROYAIAN));    //アイコン
     windowClass.hCursor = LoadCursor(m_hAppInst, IDC_ARROW);        //カーソル
     windowClass.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);

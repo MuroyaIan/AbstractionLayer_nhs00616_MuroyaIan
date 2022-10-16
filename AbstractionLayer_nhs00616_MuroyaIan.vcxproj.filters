@@ -268,6 +268,9 @@
     <ClInclude Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx12.h">
       <Filter>Lib\imgui\backends</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Win\Win_VerCheckWindow.h">
+      <Filter>ヘッダー ファイル\Win</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Win\Win_Main.cpp">
@@ -395,6 +398,9 @@
     </ClCompile>
     <ClCompile Include="Library\3rd_Party\ImGui\backends\imgui_impl_dx12.cpp">
       <Filter>Lib\imgui\backends</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Win\Win_VerCheckWindow.cpp">
+      <Filter>ソース ファイル\Win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

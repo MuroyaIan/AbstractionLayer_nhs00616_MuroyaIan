@@ -6,6 +6,7 @@
 
 // インクルード部
 #include <Win/Win_Main.h>
+#include <Win/Win_VerCheckWindow.h>
 #include <Win/Win_App.h>
 
 //エントリーポイント
@@ -28,11 +29,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 #endif // _DEBUG
 
+        //グラフィックスAPI設定
+        WinCheckGfx Window;
+        int wParam = Window.Update();
+        if (wParam != 0 || WinCheckGfx::m_GfxID != WinCheckGfx::GFX_ID::aDX_12)
+            return wParam;
+
         //アプリケーション実行
-        int wParam = App64{}.Run();
+        wParam = App64{}.Run();
 
 #ifdef _DEBUG
 
+        //エラー処理
         IDXGIDebug1* pDebugDxgi;
         if (SUCCEEDED(DXGIGetDebugInterface1(0u, IID_PPV_ARGS(&pDebugDxgi)))) {
             pDebugDxgi->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);

@@ -233,6 +233,7 @@
     <ClInclude Include="Source\Win\Win_Main.h" />
     <ClInclude Include="Source\Win\Win_Mouse.h" />
     <ClInclude Include="Source\Win\Win_TimeProc.h" />
+    <ClInclude Include="Source\Win\Win_VerCheckWindow.h" />
     <ClInclude Include="Source\Win\Win_Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -277,6 +278,7 @@
     <ClCompile Include="Source\Win\Win_Main.cpp" />
     <ClCompile Include="Source\Win\Win_Mouse.cpp" />
     <ClCompile Include="Source\Win\Win_TimeProc.cpp" />
+    <ClCompile Include="Source\Win\Win_VerCheckWindow.cpp" />
     <ClCompile Include="Source\Win\Win_Window.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -15,11 +15,11 @@ class GfxDX11 : public GfxMain
 public:
 
     //プロトタイプ宣言
-    GfxDX11(WinWindow& Window);
+    GfxDX11(WinWindow& window);
     ~GfxDX11() noexcept override;
-    void BeginFrame(float R, float G, float B) noexcept override;                   //フレーム開始
-    void DrawIndexed(UINT IndexNum) const noexcept override;                        //描画処理
-    void DrawInstanced(UINT IndexNum, UINT InstanceNum) const noexcept override;    //インスタンシング描画
+    void BeginFrame(float r, float g, float b) noexcept override;                   //フレーム開始
+    void DrawIndexed(UINT indexNum) const noexcept override;                        //描画処理
+    void DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept override;    //インスタンシング描画
     void EndFrame() override;                                                       //フレーム終了
 
 private:

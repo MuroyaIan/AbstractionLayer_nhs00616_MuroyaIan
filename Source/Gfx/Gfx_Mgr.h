@@ -15,8 +15,9 @@ class GfxMgr
 public:
 
     //プロトタイプ宣言
-    GfxMgr(WinWindow& Window);
+    GfxMgr(WinWindow& window);
     ~GfxMgr() noexcept;
+    void SetAPI(GfxMain::API_MODE mode);    //API切替
 
     GfxMain* const GetGfx() const noexcept  //グラフィックAPI取得
     {
@@ -26,5 +27,6 @@ public:
 private:
 
     //変数宣言
+    WinWindow& m_window;
     std::unique_ptr<GfxMain> m_pGfx;
 };

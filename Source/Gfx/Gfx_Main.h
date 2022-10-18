@@ -53,13 +53,13 @@ public:
     GfxMain& operator=(const GfxMain&) = delete;
 
     //プロトタイプ宣言
-    GfxMain(WinWindow& Window);
+    GfxMain(WinWindow& window);
     virtual ~GfxMain() noexcept = 0;
-    virtual void BeginFrame(float R, float G, float B) noexcept = 0;                    //フレーム開始
-    virtual void DrawIndexed(UINT IndexNum) const noexcept = 0;                         //フレームバッファ書込み
-    virtual void DrawInstanced(UINT IndexNum, UINT InstanceNum) const noexcept = 0;     //インスタンシング描画
+    virtual void BeginFrame(float r, float g, float b) noexcept = 0;                    //フレーム開始
+    virtual void DrawIndexed(UINT indexNum) const noexcept = 0;                         //フレームバッファ書込み
+    virtual void DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept = 0;     //インスタンシング描画
     virtual void EndFrame() = 0;                                                        //フレーム終了⇒描画開始
-    void SetDrawMode(DRAW_MODE Mode) noexcept;                                          //描画モード設定
+    void SetDrawMode(DRAW_MODE mode) noexcept;                                          //描画モード設定
 
     void SetViewMtx(DirectX::XMFLOAT4X4 mtxView) noexcept           //ビュー行列へのアクセス
     {
@@ -95,18 +95,18 @@ public:
 protected:
 
     //変数宣言
-    WinWindow& m_Window;                                //ウィンドウ情報の参照
+    WinWindow& m_window;                                //ウィンドウ情報の参照
     Microsoft::WRL::ComPtr<IDXGIFactory6> m_pFactory;   //DXGIファクトリ
     Microsoft::WRL::ComPtr<IDXGIAdapter> m_pAdapter;    //アダプター
 
 private:
 
     //変数宣言
-    DRAW_MODE m_DrawMode;                               //描画モード
+    DRAW_MODE m_drawMode;                               //描画モード
     DirectX::XMFLOAT4X4 m_mtxView;                      //ビュー行列（カメラ）
     DirectX::XMFLOAT4X4 m_mtxProjection;                //投影行列
 
-    static API_MODE m_Api;                              //GfxApiモード
+    static API_MODE m_api;                              //GfxApiモード
 
 #ifdef IMGUI
 

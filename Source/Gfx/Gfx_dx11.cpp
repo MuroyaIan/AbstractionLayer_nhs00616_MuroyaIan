@@ -11,23 +11,23 @@ namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
 //===== クラス実装 =====
-GfxDX11::GfxDX11(WinWindow& Window) : GfxMain(Window),
+GfxDX11::GfxDX11(WinWindow& window) : GfxMain(window),
 m_pDevice(), m_pSwapChain(), m_pContext(), m_pRTView(), m_pDSView()
 {
     //ウィンドウ情報取得
-    auto [WinWidth, WinHeight] = m_Window.GetSize();
+    auto [winWidth, winHeight] = m_window.GetSize();
 
     //エラーハンドル
     HRESULT hr{};
 
     //FeatureLevel設定
-    D3D_FEATURE_LEVEL FeatureLevels[] =
+    D3D_FEATURE_LEVEL featureLevels[] =
     {
         D3D_FEATURE_LEVEL_11_1,
         D3D_FEATURE_LEVEL_11_0,
     };
-    UINT NumFeatureLevels = ARRAYSIZE(FeatureLevels);
-    D3D_FEATURE_LEVEL FeatureLevel{};
+    UINT numFeatureLevels = ARRAYSIZE(featureLevels);
+    D3D_FEATURE_LEVEL featureLevel{};
 
     //スワップチェーン設定
     DXGI_SWAP_CHAIN_DESC sd{};
@@ -42,17 +42,17 @@ m_pDevice(), m_pSwapChain(), m_pContext(), m_pRTView(), m_pDSView()
     sd.SampleDesc.Quality = 0u;
     sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     sd.BufferCount = 1u;
-    sd.OutputWindow = m_Window.GetHandle();
+    sd.OutputWindow = m_window.GetHandle();
     sd.Windowed = TRUE;
     sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
     sd.Flags = 0u;
 
     //デバッグ設定
-    UINT CreateDeviceFlag = 0u;
+    UINT createDeviceFlag = 0u;
 
 #ifdef _DEBUG
 
-    CreateDeviceFlag = D3D11_CREATE_DEVICE_DEBUG;
+    createDeviceFlag = D3D11_CREATE_DEVICE_DEBUG;
 
 #endif // _DEBUG
 
@@ -61,14 +61,14 @@ m_pDevice(), m_pSwapChain(), m_pContext(), m_pRTView(), m_pDSView()
         m_pAdapter.Get(),
         D3D_DRIVER_TYPE_UNKNOWN,
         nullptr,
-        CreateDeviceFlag,
-        FeatureLevels,
-        NumFeatureLevels,
+        createDeviceFlag,
+        featureLevels,
+        numFeatureLevels,
         D3D11_SDK_VERSION,
         &sd,
         &m_pSwapChain,
         &m_pDevice,
-        &FeatureLevel,
+        &featureLevel,
         &m_pContext
     );
     if (hr == E_INVALIDARG) {
@@ -78,18 +78,18 @@ m_pDevice(), m_pSwapChain(), m_pContext(), m_pRTView(), m_pDSView()
             m_pAdapter.Get(),
             D3D_DRIVER_TYPE_UNKNOWN,
             nullptr,
-            CreateDeviceFlag,
+            createDeviceFlag,
             nullptr,
             0u,
             D3D11_SDK_VERSION,
             &sd,
             &m_pSwapChain,
             &m_pDevice,
-            &FeatureLevel,
+            &featureLevel,
             &m_pContext
         );
     }
-    if (FeatureLevel != D3D_FEATURE_LEVEL_11_1 && FeatureLevel != D3D_FEATURE_LEVEL_11_0)
+    if (featureLevel != D3D_FEATURE_LEVEL_11_1 && featureLevel != D3D_FEATURE_LEVEL_11_0)
         throw ERROR_EX2(S_OK, "GPUはDX11非対応です。");
     ERROR_DX(hr);
 
@@ -116,8 +116,8 @@ m_pDevice(), m_pSwapChain(), m_pContext(), m_pRTView(), m_pDSView()
 
     //深度・ステンシルバッファ作成
     D3D11_TEXTURE2D_DESC descDepth{};
-    descDepth.Width = static_cast<UINT>(WinWidth);
-    descDepth.Height = static_cast<UINT>(WinHeight);
+    descDepth.Width = static_cast<UINT>(winWidth);
+    descDepth.Height = static_cast<UINT>(winHeight);
     descDepth.MipLevels = 1u;
     descDepth.ArraySize = 1u;
     descDepth.Format = DXGI_FORMAT_D32_FLOAT;
@@ -146,8 +146,8 @@ m_pDevice(), m_pSwapChain(), m_pContext(), m_pRTView(), m_pDSView()
     D3D11_VIEWPORT vp{};
     vp.TopLeftX = 0.0f;
     vp.TopLeftY = 0.0f;
-    vp.Width = static_cast<float>(WinWidth);
-    vp.Height = static_cast<float>(WinHeight);
+    vp.Width = static_cast<float>(winWidth);
+    vp.Height = static_cast<float>(winHeight);
     vp.MinDepth = 0.0f;
     vp.MaxDepth = 1.0f;
     m_pContext->RSSetViewports(1u, &vp);
@@ -180,10 +180,10 @@ GfxDX11::~GfxDX11() noexcept
 }
 
 //フレーム開始
-void GfxDX11::BeginFrame(float R, float G, float B) noexcept
+void GfxDX11::BeginFrame(float r, float g, float b) noexcept
 {
     //バッファクリア
-    const float color[] = { R, G, B, 1.0f };
+    const float color[] = { r, g, b, 1.0f };
     m_pContext->ClearRenderTargetView(m_pRTView.Get(), color);
     m_pContext->ClearDepthStencilView(m_pDSView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0u);
 
@@ -201,17 +201,17 @@ void GfxDX11::BeginFrame(float R, float G, float B) noexcept
 }
 
 //描画処理
-void GfxDX11::DrawIndexed(UINT IndexNum) const noexcept
+void GfxDX11::DrawIndexed(UINT indexNum) const noexcept
 {
     //書込み処理
-    m_pContext->DrawIndexed(IndexNum, 0u, 0);
+    m_pContext->DrawIndexed(indexNum, 0u, 0);
 }
 
 //インスタンシング描画
-void GfxDX11::DrawInstanced(UINT IndexNum, UINT InstanceNum) const noexcept
+void GfxDX11::DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept
 {
     //書込み処理
-    m_pContext->DrawIndexedInstanced(IndexNum, InstanceNum, 0u, 0, 0u);
+    m_pContext->DrawIndexedInstanced(indexNum, instanceNum, 0u, 0, 0u);
 }
 
 //フレーム終了

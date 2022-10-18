@@ -107,6 +107,17 @@ void App64::Update()
     //入力処理更新
     m_pInputMgr->Update();
 
+
+    if (m_pInputMgr->m_kb.GetTrigger(VK_Q))
+    {
+        m_pGfxMgr->SetAPI(GfxMain::API_MODE::aDX_11);
+    }
+    else if (m_pInputMgr->m_kb.GetTrigger(VK_E))
+    {
+        m_pGfxMgr->SetAPI(GfxMain::API_MODE::aDX_12);
+    }
+
+
     //カメラマネージャ更新
     //m_pCameraMgr->Update();
 

@@ -11,15 +11,15 @@ namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
 //===== クラス実装 =====
-GfxDX12::GfxDX12(WinWindow& Window) : GfxMain(Window),
-m_pDevice(), m_pCmdAllocator(), m_pCmdList(), m_pCmdQueue(), m_pSwapChain(), m_pBackBuffers(0), m_pHeapsRTV(), m_RtvIncSize(0),
-m_pDepthBuffer(), m_pHeapDSV(), m_pFence(), m_FenceVal(0), m_FenceEvent(), m_ResourceBarrier(),
-m_pVertexBuffer(), m_ViewVB(), m_pIndexBuffer(), m_ViewIB(), m_pBlobVS(), m_pBlobPS(), m_pLayouts(0),
-m_pRootSignature(), m_pGfxPipelineState(), m_Viewport(), m_ScissorRect(),
+GfxDX12::GfxDX12(WinWindow& window) : GfxMain(window),
+m_pDevice(), m_pCmdAllocator(), m_pCmdList(), m_pCmdQueue(), m_pSwapChain(), m_pBackBuffers(0), m_pHeapsRTV(), m_rtvIncSize(0),
+m_pDepthBuffer(), m_pHeapDSV(), m_pFence(), m_fenceVal(0), m_fenceEvent(), m_resourceBarrier(),
+m_pVertexBuffer(), m_viewVB(), m_pIndexBuffer(), m_viewIB(), m_pBlobVS(), m_pBlobPS(), m_pLayouts(0),
+m_pRootSignature(), m_pGfxPipelineState(), m_viewport(), m_scissorRect(),
 m_pTextureBuffer(), m_pBufferHeaps(), m_pConstBuffer(), m_aMatrix(1)
 {
     //ウィンドウ情報取得
-    auto [WinWidth, WinHeight] = m_Window.GetSize();
+    auto [winWidth, winHeight] = m_window.GetSize();
 
     //エラーハンドル
     HRESULT hr{};
@@ -36,16 +36,16 @@ m_pTextureBuffer(), m_pBufferHeaps(), m_pConstBuffer(), m_aMatrix(1)
 #endif // _DEBUG
 
     //FeatureLevel設定
-    D3D_FEATURE_LEVEL FeatureLevels[] =
+    D3D_FEATURE_LEVEL featureLevels[] =
     {
         D3D_FEATURE_LEVEL_12_1,
         D3D_FEATURE_LEVEL_12_0,
     };
 
     //デバイス作成
-    hr = D3D12CreateDevice(m_pAdapter.Get(), FeatureLevels[0], IID_PPV_ARGS(&m_pDevice));
+    hr = D3D12CreateDevice(m_pAdapter.Get(), featureLevels[0], IID_PPV_ARGS(&m_pDevice));
     if (hr != S_OK)
-        hr = D3D12CreateDevice(m_pAdapter.Get(), FeatureLevels[1], IID_PPV_ARGS(&m_pDevice));
+        hr = D3D12CreateDevice(m_pAdapter.Get(), featureLevels[1], IID_PPV_ARGS(&m_pDevice));
     if (hr != S_OK)
         throw ERROR_EX2(S_OK, "GPUはDX12非対応です。");
 
@@ -69,8 +69,8 @@ m_pTextureBuffer(), m_pBufferHeaps(), m_pConstBuffer(), m_aMatrix(1)
 
     //スワップチェーン作成
     DXGI_SWAP_CHAIN_DESC1 scd{};
-    scd.Width = static_cast<UINT>(WinWidth);
-    scd.Height = static_cast<UINT>(WinHeight);
+    scd.Width = static_cast<UINT>(winWidth);
+    scd.Height = static_cast<UINT>(winHeight);
     scd.Format = DXGI_FORMAT_R8G8B8A8_UNORM;                //ピクセルフォーマット
     scd.Stereo = false;                                     //3Dディスプレイのステレオモード
     scd.SampleDesc.Count = 1u;
@@ -82,7 +82,7 @@ m_pTextureBuffer(), m_pBufferHeaps(), m_pConstBuffer(), m_aMatrix(1)
     scd.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;            //指定なし
     scd.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;     //ウィンドウモード切替可能
     wrl::ComPtr<IDXGISwapChain1> m_pSwapChain1;
-    hr = m_pFactory->CreateSwapChainForHwnd(m_pCmdQueue.Get(), m_Window.GetHandle(), &scd,
+    hr = m_pFactory->CreateSwapChainForHwnd(m_pCmdQueue.Get(), m_window.GetHandle(), &scd,
         nullptr,                                                                            //DXGI_SWAP_CHAIN_FULLSCREEN_DESC(?)
         nullptr,                                                                            //IDXGIOutput(?)
         &m_pSwapChain1);
@@ -100,7 +100,7 @@ m_pTextureBuffer(), m_pBufferHeaps(), m_pConstBuffer(), m_aMatrix(1)
     hr = m_pDevice->CreateDescriptorHeap(&dhd, IID_PPV_ARGS(&m_pHeapsRTV));                 //ディスクリプタヒープ作成
     ERROR_DX(hr);
     D3D12_CPU_DESCRIPTOR_HANDLE cdh = m_pHeapsRTV->GetCPUDescriptorHandleForHeapStart();            //RTVヒープのポインタ
-    m_RtvIncSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);     //RTVヒープのインクリメントサイズ取得
+    m_rtvIncSize = m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);     //RTVヒープのインクリメントサイズ取得
     for (size_t i = 0; i < scd.BufferCount; i++) {
         hr = m_pSwapChain->GetBuffer(static_cast<UINT>(i), IID_PPV_ARGS(&m_pBackBuffers[i]));       //ポインタ取得
         ERROR_DX(hr);
@@ -111,7 +111,7 @@ m_pTextureBuffer(), m_pBufferHeaps(), m_pConstBuffer(), m_aMatrix(1)
             cdh);
 
         //次のヒープ
-        cdh.ptr += m_RtvIncSize;
+        cdh.ptr += m_rtvIncSize;
     }
 
     //深度バッファ作成
@@ -157,14 +157,14 @@ m_pTextureBuffer(), m_pBufferHeaps(), m_pConstBuffer(), m_aMatrix(1)
     m_pDevice->CreateDepthStencilView(m_pDepthBuffer.Get(), &dsvd, m_pHeapDSV->GetCPUDescriptorHandleForHeapStart());
 
     //フェンス作成
-    hr = m_pDevice->CreateFence(m_FenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence));
+    hr = m_pDevice->CreateFence(m_fenceVal, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&m_pFence));
     ERROR_DX(hr);
-    m_FenceEvent = CreateEvent(nullptr, false, false, nullptr);         //イベントハンドル取得
+    m_fenceEvent = CreateEvent(nullptr, false, false, nullptr);         //イベントハンドル取得
 
     //リソースバリア作成(状態遷移)
-    m_ResourceBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    m_ResourceBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;         //指定なし
-    m_ResourceBarrier.Transition.Subresource = 0u;                      //配列番号
+    m_resourceBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    m_resourceBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;         //指定なし
+    m_resourceBarrier.Transition.Subresource = 0u;                      //配列番号
 
 
 
@@ -182,18 +182,18 @@ m_pTextureBuffer(), m_pBufferHeaps(), m_pConstBuffer(), m_aMatrix(1)
     //BindConstBuffer();
 
     //ビューポート設定（表示サイズ）
-    m_Viewport.Width = 1600.0f;;
-    m_Viewport.Height = 900.0f;
-    m_Viewport.TopLeftX = 0.0f;
-    m_Viewport.TopLeftY = 0.0f;
-    m_Viewport.MaxDepth = 1.0f;
-    m_Viewport.MinDepth = 0.0f;
+    m_viewport.Width = 1600.0f;;
+    m_viewport.Height = 900.0f;
+    m_viewport.TopLeftX = 0.0f;
+    m_viewport.TopLeftY = 0.0f;
+    m_viewport.MaxDepth = 1.0f;
+    m_viewport.MinDepth = 0.0f;
 
     //シザー矩形設定（切り抜き範囲）
-    m_ScissorRect.top = 0;
-    m_ScissorRect.left = 0;
-    m_ScissorRect.right = 1600;
-    m_ScissorRect.bottom = 900;
+    m_scissorRect.top = 0;
+    m_scissorRect.left = 0;
+    m_scissorRect.right = 1600;
+    m_scissorRect.bottom = 900;
 
     //=============================================================================
 
@@ -215,7 +215,7 @@ m_pTextureBuffer(), m_pBufferHeaps(), m_pConstBuffer(), m_aMatrix(1)
 GfxDX12::~GfxDX12() noexcept
 {
     //フェンス用イベント終了
-    CloseHandle(m_FenceEvent);  //ハンドルを閉じる
+    CloseHandle(m_fenceEvent);  //ハンドルを閉じる
 
 #ifdef IMGUI
 
@@ -227,24 +227,24 @@ GfxDX12::~GfxDX12() noexcept
 }
 
 //フレーム開始
-void GfxDX12::BeginFrame(float R, float G, float B) noexcept
+void GfxDX12::BeginFrame(float r, float g, float b) noexcept
 {
     //リソースバリア更新
-    UINT BufferIdx = m_pSwapChain->GetCurrentBackBufferIndex();                             //現在のバックバッファのインデックス
-    m_ResourceBarrier.Transition.pResource = m_pBackBuffers[BufferIdx].Get();
-    m_ResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
-    m_ResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    m_pCmdList->ResourceBarrier(1u, &m_ResourceBarrier);
+    UINT bufferIdx = m_pSwapChain->GetCurrentBackBufferIndex();                             //現在のバックバッファのインデックス
+    m_resourceBarrier.Transition.pResource = m_pBackBuffers[bufferIdx].Get();
+    m_resourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+    m_resourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    m_pCmdList->ResourceBarrier(1u, &m_resourceBarrier);
 
     //バッファクリア
     D3D12_CPU_DESCRIPTOR_HANDLE cdh = m_pHeapsRTV->GetCPUDescriptorHandleForHeapStart();
-    cdh.ptr += m_RtvIncSize * static_cast<unsigned long long>(BufferIdx);                   //次フレームのバックバッファのRTVヒープ用ポインタ
+    cdh.ptr += m_rtvIncSize * static_cast<unsigned long long>(bufferIdx);                   //次フレームのバックバッファのRTVヒープ用ポインタ
     D3D12_CPU_DESCRIPTOR_HANDLE cdhDSV = m_pHeapDSV->GetCPUDescriptorHandleForHeapStart();
 
     m_pCmdList->OMSetRenderTargets(1u, &cdh,
         false,                                  //マルチRT設定
         &cdhDSV);                               //DSVのハンドル
-    const float color[] = { R, G, B, 1.0f };                            //背景色
+    const float color[] = { r, g, b, 1.0f };                            //背景色
     m_pCmdList->ClearRenderTargetView(cdh, color, 0u, nullptr);         //第3, 4引数⇒クリア範囲（全範囲）
     m_pCmdList->ClearDepthStencilView(cdhDSV, D3D12_CLEAR_FLAG_DEPTH,   //クリア先の指定
         1.0f, 0,                                                        //クリア値
@@ -264,9 +264,9 @@ void GfxDX12::BeginFrame(float R, float G, float B) noexcept
 }
 
 //描画処理
-void GfxDX12::DrawIndexed(UINT IndexNum) const noexcept
+void GfxDX12::DrawIndexed(UINT indexNum) const noexcept
 {
-    (void)IndexNum;
+    (void)indexNum;
 
 #ifdef _DEBUG
 
@@ -277,7 +277,7 @@ void GfxDX12::DrawIndexed(UINT IndexNum) const noexcept
 }
 
 //インスタンシング描画
-void GfxDX12::DrawInstanced(UINT IndexNum, UINT InstanceNum) const noexcept
+void GfxDX12::DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept
 {
     static float fAngle = 0.0f;
     fAngle += 0.025f;
@@ -313,11 +313,11 @@ void GfxDX12::DrawInstanced(UINT IndexNum, UINT InstanceNum) const noexcept
     m_pCmdList->SetGraphicsRootDescriptorTable(1u, gdhBuffer);
 
     m_pCmdList->SetPipelineState(m_pGfxPipelineState.Get());
-    m_pCmdList->IASetVertexBuffers(0u, 1u, &m_ViewVB);
-    m_pCmdList->IASetIndexBuffer(&m_ViewIB);
+    m_pCmdList->IASetVertexBuffers(0u, 1u, &m_viewVB);
+    m_pCmdList->IASetIndexBuffer(&m_viewIB);
     m_pCmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    m_pCmdList->RSSetViewports(1u, &m_Viewport);
-    m_pCmdList->RSSetScissorRects(1u, &m_ScissorRect);
+    m_pCmdList->RSSetViewports(1u, &m_viewport);
+    m_pCmdList->RSSetScissorRects(1u, &m_scissorRect);
 
     //書込み処理
     //m_pCmdList->DrawInstanced(4u, 1u, 0u, 0u);
@@ -342,9 +342,9 @@ void GfxDX12::EndFrame()
     HRESULT hr{};
 
     //リソースバリア更新
-    m_ResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    m_ResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
-    m_pCmdList->ResourceBarrier(1u, &m_ResourceBarrier);
+    m_resourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    m_resourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
+    m_pCmdList->ResourceBarrier(1u, &m_resourceBarrier);
 
     //命令実行
     hr = m_pCmdList->Close();   //命令リストをクローズ
@@ -360,12 +360,12 @@ void GfxDX12::EndFrame()
         ERROR_DX(hr);
 
     //フェンス更新
-    hr = m_pCmdQueue->Signal(m_pFence.Get(), ++m_FenceVal);
+    hr = m_pCmdQueue->Signal(m_pFence.Get(), ++m_fenceVal);
     ERROR_DX(hr);
-    if (m_pFence->GetCompletedValue() < m_FenceVal) {
-        hr = m_pFence->SetEventOnCompletion(m_FenceVal, m_FenceEvent);
+    if (m_pFence->GetCompletedValue() < m_fenceVal) {
+        hr = m_pFence->SetEventOnCompletion(m_fenceVal, m_fenceEvent);
         ERROR_DX(hr);
-        WaitForSingleObject(m_FenceEvent, INFINITE);            //命令実行終了まで待機
+        WaitForSingleObject(m_fenceEvent, INFINITE);            //命令実行終了まで待機
     }
 
     //命令リセット
@@ -424,9 +424,9 @@ void GfxDX12::BindVertexBuffer()
     m_pVertexBuffer->Unmap(0u, nullptr);
 
     //VBV作成
-    m_ViewVB.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
-    m_ViewVB.SizeInBytes = static_cast<UINT>(rdVtx.Width);
-    m_ViewVB.StrideInBytes = sizeof(Vertex);
+    m_viewVB.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
+    m_viewVB.SizeInBytes = static_cast<UINT>(rdVtx.Width);
+    m_viewVB.StrideInBytes = sizeof(Vertex);
 }
 
 void GfxDX12::BindIndexBuffer()
@@ -479,9 +479,9 @@ void GfxDX12::BindIndexBuffer()
     m_pIndexBuffer->Unmap(0u, nullptr);
 
     //IBV作成
-    m_ViewIB.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
-    m_ViewIB.SizeInBytes = static_cast<UINT>(rdIdx.Width);
-    m_ViewIB.Format = DXGI_FORMAT_R16_UINT;
+    m_viewIB.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
+    m_viewIB.SizeInBytes = static_cast<UINT>(rdIdx.Width);
+    m_viewIB.Format = DXGI_FORMAT_R16_UINT;
 }
 
 void GfxDX12::BindVS()
@@ -539,7 +539,7 @@ void GfxDX12::BindPS()
 void GfxDX12::BindLayout()
 {
     //頂点レイアウト作成
-    m_pLayouts.push_back({ "POSITION", 0u, DXGI_FORMAT_R32G32B32_FLOAT,    0u,                              0u, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0u });
+    m_pLayouts.push_back({ "POSITION", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u,                           0u, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0u });
     m_pLayouts.push_back({ "TEXCOORD", 0u, DXGI_FORMAT_R32G32_FLOAT,    0u, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0u });
 }
 
@@ -740,10 +740,10 @@ void GfxDX12::BindTextureBuffer()
     {
         unsigned char R, G, B, A;
     };
-    int ImageW = 4;
-    int ImageH = 4;
-    std::vector<Tex> TexData(ImageW * ImageH);
-    for (auto& d : TexData) {
+    int imageW = 4;
+    int imageH = 4;
+    std::vector<Tex> texData(imageW * static_cast<long long>(imageH));
+    for (auto& d : texData) {
         d.R = rand() % 256;
         d.G = rand() % 256;
         d.B = rand() % 256;
@@ -763,8 +763,8 @@ void GfxDX12::BindTextureBuffer()
     D3D12_RESOURCE_DESC rdTex{};                                    //リソース設定
     rdTex.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;           //バッファかテクスチャか
     rdTex.Alignment = 0;                                            //アラインメント
-    rdTex.Width = ImageW;                                           //データサイズ
-    rdTex.Height = ImageH;
+    rdTex.Width = imageW;                                           //データサイズ
+    rdTex.Height = imageH;
     rdTex.DepthOrArraySize = 1;                                     //配列要素数
     rdTex.MipLevels = 1;                                            //ミップマップ設定
     rdTex.Format = DXGI_FORMAT_R8G8B8A8_UNORM;                      //テクスチャフォーマット
@@ -781,8 +781,8 @@ void GfxDX12::BindTextureBuffer()
 
     //データマップ
     hr = m_pTextureBuffer->WriteToSubresource(0u, nullptr,              //書込み領域設定（全部）
-        TexData.data(), static_cast<UINT>(sizeof(Tex) * rdTex.Width),   //1行当たりのサイズ
-        static_cast<UINT>(sizeof(Tex) * TexData.size()));               //スライス当たりのサイズ
+        texData.data(), static_cast<UINT>(sizeof(Tex) * rdTex.Width),   //1行当たりのサイズ
+        static_cast<UINT>(sizeof(Tex) * texData.size()));               //スライス当たりのサイズ
     ERROR_DX(hr);
 
     //SRV作成
@@ -859,16 +859,16 @@ std::vector<GfxDX12::Vertex> GfxDX12::MakeBox()
 
     //頂点作成
     std::vector<Vertex> aData(24);
-    aData[0].pos = { -size, -size, -size };
-    aData[1].pos = { size, -size, -size };
-    aData[2].pos = { -size,  size, -size };
-    aData[3].pos = { size,  size, -size };      //near
-    aData[4].pos = { size, -size,  size };
-    aData[5].pos = { -size, -size,  size };
-    aData[6].pos = { size,  size,  size };
-    aData[7].pos = { -size,  size,  size };     //far
-    aData[8].pos = { -size, -size,  size };
-    aData[9].pos = { -size, -size, -size };
+    aData[0].pos  = { -size, -size, -size };
+    aData[1].pos  = { size, -size, -size };
+    aData[2].pos  = { -size,  size, -size };
+    aData[3].pos  = { size,  size, -size };     //near
+    aData[4].pos  = { size, -size,  size };
+    aData[5].pos  = { -size, -size,  size };
+    aData[6].pos  = { size,  size,  size };
+    aData[7].pos  = { -size,  size,  size };    //far
+    aData[8].pos  = { -size, -size,  size };
+    aData[9].pos  = { -size, -size, -size };
     aData[10].pos = { -size,  size,  size };
     aData[11].pos = { -size,  size, -size };    //left
     aData[12].pos = { size, -size, -size };
@@ -883,16 +883,16 @@ std::vector<GfxDX12::Vertex> GfxDX12::MakeBox()
     aData[21].pos = { size,  size, -size };
     aData[22].pos = { -size,  size,  size };
     aData[23].pos = { size,  size,  size };     //top
-    aData[0].uv = { 0.0f, 1.0f };
-    aData[1].uv = { 1.0f, 1.0f };
-    aData[2].uv = { 0.0f, 0.0f };
-    aData[3].uv = { 1.0f, 0.0f };               //near
-    aData[4].uv = { 0.0f, 1.0f };
-    aData[5].uv = { 1.0f, 1.0f };
-    aData[6].uv = { 0.0f, 0.0f };
-    aData[7].uv = { 1.0f, 0.0f };               //far
-    aData[8].uv = { 0.0f, 1.0f };
-    aData[9].uv = { 1.0f, 1.0f };
+    aData[0].uv  = { 0.0f, 1.0f };
+    aData[1].uv  = { 1.0f, 1.0f };
+    aData[2].uv  = { 0.0f, 0.0f };
+    aData[3].uv  = { 1.0f, 0.0f };              //near
+    aData[4].uv  = { 0.0f, 1.0f };
+    aData[5].uv  = { 1.0f, 1.0f };
+    aData[6].uv  = { 0.0f, 0.0f };
+    aData[7].uv  = { 1.0f, 0.0f };              //far
+    aData[8].uv  = { 0.0f, 1.0f };
+    aData[9].uv  = { 1.0f, 1.0f };
     aData[10].uv = { 0.0f, 0.0f };
     aData[11].uv = { 1.0f, 0.0f };              //left
     aData[12].uv = { 0.0f, 1.0f };

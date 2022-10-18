@@ -24,11 +24,11 @@ namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
 //===== 静的メンバ変数 =====
-GfxMain::API_MODE GfxMain::m_Api = GfxMain::API_MODE::aDX_11;    //GfxApiモード
+GfxMain::API_MODE GfxMain::m_api = GfxMain::API_MODE::aDX_11;    //GfxApiモード
 
 //===== クラス実装 =====
-GfxMain::GfxMain(WinWindow& Window) :
-    m_Window(Window), m_pFactory(), m_pAdapter(), m_DrawMode(DRAW_MODE::DRAW_3D), m_mtxView(), m_mtxProjection()
+GfxMain::GfxMain(WinWindow& window) :
+    m_window(window), m_pFactory(), m_pAdapter(), m_drawMode(DRAW_MODE::DRAW_3D), m_mtxView(), m_mtxProjection()
 {
     //エラーハンドル
     HRESULT hr{};
@@ -91,7 +91,7 @@ GfxMain::~GfxMain() noexcept
 }
 
 //描画モード設定
-void GfxMain::SetDrawMode(DRAW_MODE Mode) noexcept
+void GfxMain::SetDrawMode(DRAW_MODE mode) noexcept
 {
-    m_DrawMode = Mode;
+    m_drawMode = mode;
 }

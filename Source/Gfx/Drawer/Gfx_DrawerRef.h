@@ -12,8 +12,6 @@
 
 //===== クラス定義 =====
 
-#if DX_11
-
 //***** ドロワーテンプレ *****
 template<class T>
 class GfxDrawerEx : public GfxDrawer
@@ -119,8 +117,3 @@ std::vector<std::unique_ptr<GfxBinder>> GfxDrawerEx<T>::ms_aBinder{};
 
 template<class T>
 const GfxIndexBuffer* GfxDrawerEx<T>::ms_pIndexBuffer = nullptr;
-
-#elif DX_12
-
-
-#endif // GFX

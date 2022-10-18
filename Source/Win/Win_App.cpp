@@ -6,10 +6,10 @@
 
 //===== インクルード部 =====
 #include <Win/Win_App.h>
-#include <Draw/Draw_CameraMgr.h>
-#include <Draw/Draw_LightMgr.h>
-#include <Draw/Draw_Shape.h>
-#include <Draw/Draw_DirectionalLight.h>
+//#include <Draw/Draw_CameraMgr.h>
+//#include <Draw/Draw_LightMgr.h>
+//#include <Draw/Draw_Shape.h>
+//#include <Draw/Draw_DirectionalLight.h>
 #include <Tool/Tool_Math.h>
 
 namespace dx = DirectX;
@@ -25,26 +25,26 @@ constexpr int WND_POS_Y = 50;                           //Window左上座標
 App64::App64() :
     m_window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH),
     static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_message(), m_time(),
-    m_pDX(), m_pShaderMgr(), m_pGfx(), m_pInputMgr(), m_pCameraMgr(), m_pLightMgr(),
+    m_pGfxMgr(), /*m_pShaderMgr(), m_pGfx(),*/ m_pInputMgr(), /*m_pCameraMgr(), m_pLightMgr(),*/
     /*m_aDrawer(0),*/ m_shapeID(0), /*m_pSunLight(),*/ m_rot()
 {
     //DirectX初期化
-    m_pDX = std::make_unique<GfxMain>(m_window.GetHandle(), SCREEN_WIDTH, SCREEN_HEIGHT);
+    m_pGfxMgr = std::make_unique<GfxMgr>(m_window);
 
     //シェーダMgr初期化
-    m_pShaderMgr = std::make_unique<DrawShaderMgr>(*m_pDX);
+    //m_pShaderMgr = std::make_unique<DrawShaderMgr>(*m_pDX);
 
     //描画データ初期化
-    m_pGfx = std::make_unique<GfxPack>(*m_pDX, *m_pShaderMgr);
+    //m_pGfx = std::make_unique<GfxPack>(*m_pDX, *m_pShaderMgr);
 
     //入力マネージャ初期化
     m_pInputMgr = std::make_unique<ToolInputMgr>(*this);
 
     //カメラマネージャ初期化
-    m_pCameraMgr = std::make_unique<DrawCameraMgr>(*this);
+    //m_pCameraMgr = std::make_unique<DrawCameraMgr>(*this);
 
     //ライトマネージャ初期化
-    m_pLightMgr = std::make_unique<DrawLightMgr>(*this);
+    //m_pLightMgr = std::make_unique<DrawLightMgr>(*this);
 
     //【描画テスト】
     //m_aDrawer.reserve(7);
@@ -108,7 +108,7 @@ void App64::Update()
     m_pInputMgr->Update();
 
     //カメラマネージャ更新
-    m_pCameraMgr->Update();
+    //m_pCameraMgr->Update();
 
     //太陽光更新
     //m_pSunLight->Update();
@@ -139,14 +139,14 @@ void App64::Update()
 void App64::Draw()
 {
     //描画開始
-    m_pDX->BeginFrame(0.0f, 0.0f, 0.0f);
+    m_pGfxMgr->GetGfx()->BeginFrame(0.0f, 0.0f, 0.0f);
     //m_pDX->DrawInstanced(3u, 1u);
 
     //カメラマネージャ描画
-    m_pCameraMgr->Draw();
+    //m_pCameraMgr->Draw();
 
     //ライトマネージャ描画
-    m_pLightMgr->Draw();
+    //m_pLightMgr->Draw();
 
     //3D描画
     //m_aDrawer[m_shapeID]->Draw(*m_pDX);
@@ -324,5 +324,5 @@ void App64::Draw()
 #endif // IMGUI
 
     //描画終了
-    m_pDX->EndFrame();
+    m_pGfxMgr->GetGfx()->EndFrame();
 }

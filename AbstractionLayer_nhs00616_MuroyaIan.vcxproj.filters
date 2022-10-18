@@ -271,6 +271,15 @@
     <ClInclude Include="Source\Win\Win_VerCheckWindow.h">
       <Filter>ヘッダー ファイル\Win</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Gfx\Gfx_Mgr.h">
+      <Filter>ヘッダー ファイル\GFX</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Gfx_dx11.h">
+      <Filter>ヘッダー ファイル\GFX</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Gfx_dx12.h">
+      <Filter>ヘッダー ファイル\GFX</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Win\Win_Main.cpp">
@@ -401,6 +410,15 @@
     </ClCompile>
     <ClCompile Include="Source\Win\Win_VerCheckWindow.cpp">
       <Filter>ソース ファイル\Win</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Gfx\Gfx_Mgr.cpp">
+      <Filter>ソース ファイル\GFX</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Gfx\Gfx_dx11.cpp">
+      <Filter>ソース ファイル\GFX</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Gfx\Gfx_dx12.cpp">
+      <Filter>ソース ファイル\GFX</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

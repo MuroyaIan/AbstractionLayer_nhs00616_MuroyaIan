@@ -9,8 +9,6 @@
 //===== インクルード部 =====
 #include <Gfx/Gfx_Main.h>
 
-#if DX_11
-
 //===== 前方宣言 =====
 class GfxBinder;
 
@@ -104,8 +102,3 @@ private:
     /// m_aBinder   バインダのポインタ配列
     /// </summary>
 };
-
-#elif DX_12
-
-
-#endif // GFX

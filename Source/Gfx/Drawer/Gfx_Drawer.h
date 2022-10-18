@@ -10,8 +10,6 @@
 #include <Gfx/Gfx_Main.h>
 #include <typeinfo>
 
-#if DX_11
-
 //===== 前方宣言 =====
 class GfxBinder;
 class GfxIndexBuffer;
@@ -179,8 +177,3 @@ private:
     /// m_pVertexBuffer     頂点バッファのポインタ（インスタンス更新用）
     /// </summary>
 };
-
-#elif DX_12
-
-
-#endif // GFX

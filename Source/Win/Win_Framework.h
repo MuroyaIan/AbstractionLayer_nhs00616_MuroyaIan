@@ -63,8 +63,8 @@
 #include <sstream>          // 文字列ストリーム
 
 //===== 定数・マクロ定義 =====
-#define DX_11 (0)                   // dx11
-#define DX_12 (1)                   // dx12
+#define DX_11 (1)                   // dx11
+#define DX_12 (0)                   // dx12
 #define IMGUI                       // ImGui使用
 constexpr bool IS_DEBUG = true;     // デバッグモード
 

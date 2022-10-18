@@ -32,7 +32,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         //グラフィックスAPI設定
         WinCheckGfx Window;
         int wParam = Window.Update();
-        if (wParam != 0 || WinCheckGfx::m_GfxID != WinCheckGfx::GFX_ID::aDX_12)
+        if (wParam != 0 || WinCheckGfx::m_GfxID != WinCheckGfx::GFX_ID::aDX_11)
             return wParam;
 
         //アプリケーション実行

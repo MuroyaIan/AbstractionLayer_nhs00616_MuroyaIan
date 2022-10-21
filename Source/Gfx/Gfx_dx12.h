@@ -60,9 +60,9 @@ private:
     D3D12_VIEWPORT m_viewport;
     D3D12_RECT m_scissorRect;
 
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pBufferHeaps;            //バッファ用ヒープ
     Microsoft::WRL::ComPtr<ID3D12Resource> m_pTextureBuffer;                //テクスチャバッファ
     Microsoft::WRL::ComPtr<ID3D12Resource> m_pConstBuffer;                  //定数バッファ（変換行列）
-    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pBufferHeaps;            //バッファ用ヒープ
     std::vector<DirectX::XMMATRIX> m_aMatrix;                               //変換行列
 
     //プロトタイプ宣言
@@ -78,4 +78,7 @@ private:
     void BindTextureBuffer();
     void BindConstBuffer();
     std::vector<Vertex> MakeBox();
+
+    //権限指定
+    friend class GfxBinder;
 };

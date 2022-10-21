@@ -13,16 +13,7 @@
 GfxMgr::GfxMgr(WinWindow& window) : m_window(window), m_pGfx()
 {
     //GfxAPI初期化
-    switch (GfxMain::m_api) {
-        case GfxMain::API_MODE::aDX_11:
-            m_pGfx = std::make_unique<GfxDX11>(m_window);
-            break;
-        case GfxMain::API_MODE::aDX_12:
-            m_pGfx = std::make_unique<GfxDX12>(m_window);
-            break;
-        default:
-            break;
-    }
+    InitAPI();
 }
 
 GfxMgr::~GfxMgr() noexcept
@@ -37,15 +28,21 @@ void GfxMgr::SetAPI(GfxMain::API_MODE mode)
         //API再初期化
         m_pGfx.reset();
         GfxMain::m_api = mode;
-        switch (GfxMain::m_api) {
-            case GfxMain::API_MODE::aDX_11:
-                m_pGfx = std::make_unique<GfxDX11>(m_window);
-                break;
-            case GfxMain::API_MODE::aDX_12:
-                m_pGfx = std::make_unique<GfxDX12>(m_window);
-                break;
-            default:
-                break;
-        }
+        InitAPI();
+    }
+}
+
+//GfxApi初期化
+void GfxMgr::InitAPI()
+{
+    switch (GfxMain::m_api) {
+        case GfxMain::API_MODE::DX_11:
+            m_pGfx = std::make_unique<GfxDX11>(m_window);
+            break;
+        case GfxMain::API_MODE::DX_12:
+            m_pGfx = std::make_unique<GfxDX12>(m_window);
+            break;
+        default:
+            break;
     }
 }

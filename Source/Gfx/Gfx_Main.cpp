@@ -24,7 +24,7 @@ namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
 //===== 静的メンバ変数 =====
-GfxMain::API_MODE GfxMain::m_api = GfxMain::API_MODE::aDX_11;    //GfxApiモード
+GfxMain::API_MODE GfxMain::m_api = GfxMain::API_MODE::DX_11;    //GfxApiモード
 
 //===== クラス実装 =====
 GfxMain::GfxMain(WinWindow& window) :

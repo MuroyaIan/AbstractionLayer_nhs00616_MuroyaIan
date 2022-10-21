@@ -29,4 +29,7 @@ private:
     //変数宣言
     WinWindow& m_window;
     std::unique_ptr<GfxMain> m_pGfx;
+
+    //プロトタイプ宣言
+    void InitAPI();     //GfxApi初期化
 };

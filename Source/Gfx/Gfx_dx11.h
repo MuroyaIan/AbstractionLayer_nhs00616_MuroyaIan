@@ -30,4 +30,7 @@ private:
     Microsoft::WRL::ComPtr<ID3D11DeviceContext> m_pContext;     //コンテキスト
     Microsoft::WRL::ComPtr<ID3D11RenderTargetView> m_pRTView;   //ターゲットビュー
     Microsoft::WRL::ComPtr<ID3D11DepthStencilView> m_pDSView;   //深度・ステンシルビュー
+
+    //権限指定
+    friend class GfxBinder;
 };

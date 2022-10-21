@@ -1,6 +1,6 @@
 ﻿//==============================================================================
-// Filename: Gfx_VertexShader.h
-// Description: 頂点シェーダ処理
+// Filename: Gfx_RootSignature.h
+// Description: ルートシグネチャ処理
 // Copyright (C) 2022 Silicon Studio Co., Ltd. All rights reserved.
 //==============================================================================
 
@@ -8,11 +8,12 @@
 
 //===== インクルード部 =====
 #include <Gfx/Binder/Gfx_Binder.h>
+#include <Tool/Tool_TexLoader.h>
 
 //===== クラス定義 =====
 
-//***** 頂点シェーダ *****
-class GfxVertexShader : public GfxBinder
+//***** テクスチャ *****
+class GfxRootSignature : public GfxBinder
 {
 public:
 
@@ -22,20 +23,18 @@ public:
     /// コンストラクタ
     ///
     /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] path     シェーダファイルのディレクトリ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    GfxVertexShader(
-        /*[in]*/ GfxMain& gfx,
-        /*[in]*/ const std::wstring& path);
+    GfxRootSignature(
+        /*[in]*/ GfxMain& gfx);
 
     //--------------------------------------------------------------------------
     /// デストラクタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    ~GfxVertexShader() noexcept override;
+    ~GfxRootSignature() noexcept override;
 
     //--------------------------------------------------------------------------
     /// バインド処理
@@ -45,16 +44,16 @@ public:
     /// \return void
     //--------------------------------------------------------------------------
     void Bind(
-        /*[in]*/ GfxMain& gfx) noexcept override;
+        /*[in]*/ GfxMain& gfx) noexcept override;    //バインド処理
 
     //--------------------------------------------------------------------------
-    /// シェーダファイル取得
+    /// ルートシグネチャ取得
     ///
-    /// \return シェーダファイルの参照
+    /// \return ルートシグネチャのポインタ
     //--------------------------------------------------------------------------
-    ID3DBlob& GetBytecode() const noexcept
+    ID3D12RootSignature* GetRootSignature() const noexcept
     {
-        return *m_pBytecodeVS.Get();
+        return m_pRootSignature.Get();
     }
 
     //--------------------------------------------------------------------------
@@ -62,12 +61,10 @@ public:
 protected:
 
     //--------------------------------------------------------------------------
-    Microsoft::WRL::ComPtr<ID3DBlob> m_pBytecodeVS;
-    Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;
     //--------------------------------------------------------------------------
 
     /// <summary>
-    /// m_pBytecodeVS       シェーダファイル読込み用
-    /// m_pVertexShader     ポインタ
+    /// m_pRootSignature    ルートシグネチャのポインタ
     /// </summary>
 };

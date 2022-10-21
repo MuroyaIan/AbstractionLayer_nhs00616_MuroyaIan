@@ -306,22 +306,21 @@ void GfxDX12::DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept
 
     //バインド処理
     m_pCmdList->SetDescriptorHeaps(1u, m_pBufferHeaps.GetAddressOf());                              //ディスクリプタヒープ指定
-    m_pCmdList->SetGraphicsRootSignature(m_pRootSignature.Get());
+    //m_pCmdList->SetGraphicsRootSignature(m_pRootSignature.Get());
     D3D12_GPU_DESCRIPTOR_HANDLE gdhBuffer = m_pBufferHeaps->GetGPUDescriptorHandleForHeapStart();   //ルートパラメータと関連付け
     m_pCmdList->SetGraphicsRootDescriptorTable(0u, gdhBuffer);
     gdhBuffer.ptr += m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     m_pCmdList->SetGraphicsRootDescriptorTable(1u, gdhBuffer);
 
-    m_pCmdList->SetPipelineState(m_pGfxPipelineState.Get());
-    m_pCmdList->IASetVertexBuffers(0u, 1u, &m_viewVB);
-    m_pCmdList->IASetIndexBuffer(&m_viewIB);
-    m_pCmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    //m_pCmdList->SetPipelineState(m_pGfxPipelineState.Get());
+    //m_pCmdList->IASetVertexBuffers(0u, 1u, &m_viewVB);
+    //m_pCmdList->IASetIndexBuffer(&m_viewIB);
+    //m_pCmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     m_pCmdList->RSSetViewports(1u, &m_viewport);
     m_pCmdList->RSSetScissorRects(1u, &m_scissorRect);
 
     //書込み処理
-    //m_pCmdList->DrawInstanced(4u, 1u, 0u, 0u);
-    m_pCmdList->DrawIndexedInstanced(36u, 1u, 0u, 0u, 0u);
+    m_pCmdList->DrawIndexedInstanced(indexNum, instanceNum, 0u, 0u, 0u);
 }
 
 //フレーム終了
@@ -563,51 +562,48 @@ void GfxDX12::BindRootSignature()
     //ルートパラメータ設定
     D3D12_DESCRIPTOR_RANGE1 dr1[2]{};
     D3D12_ROOT_PARAMETER1 rp1[2]{};
+    dr1[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    dr1[0].NumDescriptors = 1u;
+    dr1[0].BaseShaderRegister = 0u;     //最初の入力スロット
+    dr1[0].RegisterSpace = 0u;          //合わせるためのスペース(?)
+    //dr1[0].Flags;
+    dr1[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    dr1[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+    dr1[1].NumDescriptors = 1u;
+    dr1[1].BaseShaderRegister = 0u;
+    dr1[1].RegisterSpace = 0u;
+    dr1[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    rp1[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;  //タイプ
+    rp1[0].DescriptorTable.pDescriptorRanges = &dr1[0];                 //ディスクリプタレンジのポインタ
+    rp1[0].DescriptorTable.NumDescriptorRanges = 1u;                    //ディスクリプタレンジ数
+    rp1[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;            //PSシェーダ利用許可
+    rp1[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;  //タイプ
+    rp1[1].DescriptorTable.pDescriptorRanges = &dr1[1];                 //ディスクリプタレンジのポインタ
+    rp1[1].DescriptorTable.NumDescriptorRanges = 1u;                    //ディスクリプタレンジ数
+    rp1[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;           //VSシェーダ利用許可
+
     D3D12_DESCRIPTOR_RANGE dr[2]{};
     D3D12_ROOT_PARAMETER rp[2]{};
-    if (vrsd.Version == D3D_ROOT_SIGNATURE_VERSION_1_1) {
-        dr1[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-        dr1[0].NumDescriptors = 1u;
-        dr1[0].BaseShaderRegister = 0u;     //最初の入力スロット
-        dr1[0].RegisterSpace = 0u;          //合わせるためのスペース(?)
-        //dr1[0].Flags;
-        dr1[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-        dr1[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-        dr1[1].NumDescriptors = 1u;
-        dr1[1].BaseShaderRegister = 0u;
-        dr1[1].RegisterSpace = 0u;
-        dr1[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    dr[0].RangeType = dr1[0].RangeType;
+    dr[0].NumDescriptors = dr1[0].NumDescriptors;
+    dr[0].BaseShaderRegister = dr1[0].BaseShaderRegister;
+    dr[0].RegisterSpace = dr1[0].RegisterSpace;
+    dr[0].OffsetInDescriptorsFromTableStart = dr1[0].OffsetInDescriptorsFromTableStart;
+    dr[1].RangeType = dr1[1].RangeType;
+    dr[1].NumDescriptors = dr1[1].NumDescriptors;
+    dr[1].BaseShaderRegister = dr1[1].BaseShaderRegister;
+    dr[1].RegisterSpace = dr1[1].RegisterSpace;
+    dr[1].OffsetInDescriptorsFromTableStart = dr1[1].OffsetInDescriptorsFromTableStart;
 
-        rp1[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;  //タイプ
-        rp1[0].DescriptorTable.pDescriptorRanges = &dr1[0];                 //ディスクリプタレンジのポインタ
-        rp1[0].DescriptorTable.NumDescriptorRanges = 1u;                    //ディスクリプタレンジ数
-        rp1[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;            //PSシェーダ利用許可
-        rp1[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;  //タイプ
-        rp1[1].DescriptorTable.pDescriptorRanges = &dr1[1];                 //ディスクリプタレンジのポインタ
-        rp1[1].DescriptorTable.NumDescriptorRanges = 1u;                    //ディスクリプタレンジ数
-        rp1[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;           //PSシェーダ利用許可
-    }
-    else {
-        dr[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-        dr[0].NumDescriptors = 1u;
-        dr[0].BaseShaderRegister = 0u;
-        dr[0].RegisterSpace = 0u;
-        dr[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-        dr[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-        dr[1].NumDescriptors = 1u;
-        dr[1].BaseShaderRegister = 0u;
-        dr[1].RegisterSpace = 0u;
-        dr[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-        rp[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        rp[0].DescriptorTable.pDescriptorRanges = &dr[0];
-        rp[0].DescriptorTable.NumDescriptorRanges = 1u;
-        rp[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-        rp[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-        rp[1].DescriptorTable.pDescriptorRanges = &dr[1];
-        rp[1].DescriptorTable.NumDescriptorRanges = 1u;
-        rp[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-    }
+    rp[0].ParameterType = rp1[0].ParameterType;
+    rp[0].DescriptorTable.pDescriptorRanges = &dr[0];
+    rp[0].DescriptorTable.NumDescriptorRanges = rp1[0].DescriptorTable.NumDescriptorRanges;
+    rp[0].ShaderVisibility = rp1[0].ShaderVisibility;
+    rp[1].ParameterType = rp1[1].ParameterType;
+    rp[1].DescriptorTable.pDescriptorRanges = &dr[1];
+    rp[1].DescriptorTable.NumDescriptorRanges = rp1[1].DescriptorTable.NumDescriptorRanges;
+    rp[1].ShaderVisibility = rp1[1].ShaderVisibility;
 
     //サンプラー設定
     D3D12_STATIC_SAMPLER_DESC ssd{};
@@ -615,8 +611,8 @@ void GfxDX12::BindRootSignature()
     ssd.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;             //アドレッシングモード（繰り返し）
     ssd.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
     ssd.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
-    ssd.MipLODBias;                                             //計算結果ミップマップレベルからのオフセット(?)
-    ssd.MaxAnisotropy;                                          //異方性フィルタの最大値
+    //ssd.MipLODBias;                                             //計算結果ミップマップレベルからのオフセット(?)
+    //ssd.MaxAnisotropy;                                          //異方性フィルタの最大値
     ssd.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;           //比較関数（サンプリングなし）
     ssd.BorderColor = D3D12_STATIC_BORDER_COLOR_OPAQUE_BLACK;   //端の色
     ssd.MinLOD = 0.0f;

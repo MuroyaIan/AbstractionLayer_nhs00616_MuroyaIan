@@ -110,11 +110,11 @@ void App64::Update()
 
     if (m_pInputMgr->m_kb.GetTrigger(VK_Q))
     {
-        m_pGfxMgr->SetAPI(GfxMain::API_MODE::aDX_11);
+        m_pGfxMgr->SetAPI(GfxMain::API_MODE::DX_11);
     }
     else if (m_pInputMgr->m_kb.GetTrigger(VK_E))
     {
-        m_pGfxMgr->SetAPI(GfxMain::API_MODE::aDX_12);
+        m_pGfxMgr->SetAPI(GfxMain::API_MODE::DX_12);
     }
 
 

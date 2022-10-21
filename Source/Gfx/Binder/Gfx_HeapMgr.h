@@ -1,6 +1,6 @@
 ﻿//==============================================================================
-// Filename: Gfx_VertexShader.h
-// Description: 頂点シェーダ処理
+// Filename: Gfx_HeapMgr.h
+// Description: ヒープマネージャ
 // Copyright (C) 2022 Silicon Studio Co., Ltd. All rights reserved.
 //==============================================================================
 
@@ -8,12 +8,20 @@
 
 //===== インクルード部 =====
 #include <Gfx/Binder/Gfx_Binder.h>
+#include <Tool/Tool_TexLoader.h>
 
 //===== クラス定義 =====
 
-//***** 頂点シェーダ *****
-class GfxVertexShader : public GfxBinder
+//***** テクスチャ *****
+class GfxHeapMgr : public GfxBinder
 {
+    //--------------------------------------------------------------------------
+    friend class GfxTexture;
+
+    template<typename C>
+    friend class GfxConstantBuffer;
+    //--------------------------------------------------------------------------
+
 public:
 
     //--------------------------------------------------------------------------
@@ -21,21 +29,23 @@ public:
     //--------------------------------------------------------------------------
     /// コンストラクタ
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] path     シェーダファイルのディレクトリ
+    /// \param[in] gfx          グラフィック処理の参照先
+    /// \param[in] bufferNum    バッファ作成数
+    /// \param[in] pRef         自身のポインタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    GfxVertexShader(
+    GfxHeapMgr(
         /*[in]*/ GfxMain& gfx,
-        /*[in]*/ const std::wstring& path);
+        /*[in]*/ UINT bufferNum,
+        /*[in]*/ GfxHeapMgr* pRef);
 
     //--------------------------------------------------------------------------
     /// デストラクタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    ~GfxVertexShader() noexcept override;
+    ~GfxHeapMgr() noexcept override;
 
     //--------------------------------------------------------------------------
     /// バインド処理
@@ -45,29 +55,21 @@ public:
     /// \return void
     //--------------------------------------------------------------------------
     void Bind(
-        /*[in]*/ GfxMain& gfx) noexcept override;
-
-    //--------------------------------------------------------------------------
-    /// シェーダファイル取得
-    ///
-    /// \return シェーダファイルの参照
-    //--------------------------------------------------------------------------
-    ID3DBlob& GetBytecode() const noexcept
-    {
-        return *m_pBytecodeVS.Get();
-    }
+        /*[in]*/ GfxMain& gfx) noexcept override;    //バインド処理
 
     //--------------------------------------------------------------------------
 
 protected:
 
     //--------------------------------------------------------------------------
-    Microsoft::WRL::ComPtr<ID3DBlob> m_pBytecodeVS;
-    Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pBufferHeaps;
+    std::vector<D3D12_CPU_DESCRIPTOR_HANDLE> m_ahCPU;
+    std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> m_ahGPU;
     //--------------------------------------------------------------------------
 
     /// <summary>
-    /// m_pBytecodeVS       シェーダファイル読込み用
-    /// m_pVertexShader     ポインタ
+    /// m_pBufferHeaps  バッファ用ヒープ
+    /// m_ahCPU         ヒープハンドル(CPU)
+    /// m_ahGPU         ヒープハンドル(GPU)
     /// </summary>
 };

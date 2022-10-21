@@ -199,10 +199,13 @@
     <ClInclude Include="Source\Gfx\Binder\Gfx_BinderRef.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_cbMatrix_VP.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_ConstantBuffer.h" />
+    <ClInclude Include="Source\Gfx\Binder\Gfx_HeapMgr.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_IndexBuffer.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_Inputlayout.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_cbMaterial.h" />
+    <ClInclude Include="Source\Gfx\Binder\Gfx_PipelineState.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_PixelShader.h" />
+    <ClInclude Include="Source\Gfx\Binder\Gfx_RootSignature.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_Sampler.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_Texture.h" />
     <ClInclude Include="Source\Gfx\Binder\Gfx_Topology.h" />
@@ -259,10 +262,13 @@
     <ClCompile Include="Source\Draw\Draw_Shape.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_Binder.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_cbMatrix_VP.cpp" />
+    <ClCompile Include="Source\Gfx\Binder\Gfx_HeapMgr.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_IndexBuffer.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_Inputlayout.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_cbMaterial.cpp" />
+    <ClCompile Include="Source\Gfx\Binder\Gfx_PipelineState.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_PixelShader.cpp" />
+    <ClCompile Include="Source\Gfx\Binder\Gfx_RootSignature.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_Sampler.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_Texture.cpp" />
     <ClCompile Include="Source\Gfx\Binder\Gfx_Topology.cpp" />

@@ -35,8 +35,8 @@ public:
     enum class API_MODE
     {
         NONE,
-        aDX_11,
-        aDX_12,
+        DX_11,
+        DX_12,
         OPEN_GL,
         VULKAN
     };
@@ -116,5 +116,5 @@ private:
 
     //権限指定
     friend class GfxMgr;
-    friend class BINDER;
+    friend class GfxBinder;
 };

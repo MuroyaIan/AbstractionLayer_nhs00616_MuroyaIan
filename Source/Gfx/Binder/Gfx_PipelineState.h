@@ -1,6 +1,6 @@
 ﻿//==============================================================================
-// Filename: Gfx_VertexShader.h
-// Description: 頂点シェーダ処理
+// Filename: Gfx_PipelineState.h
+// Description: パイプラインステート処理
 // Copyright (C) 2022 Silicon Studio Co., Ltd. All rights reserved.
 //==============================================================================
 
@@ -8,11 +8,12 @@
 
 //===== インクルード部 =====
 #include <Gfx/Binder/Gfx_Binder.h>
+#include <Tool/Tool_TexLoader.h>
 
 //===== クラス定義 =====
 
-//***** 頂点シェーダ *****
-class GfxVertexShader : public GfxBinder
+//***** テクスチャ *****
+class GfxPipelineState : public GfxBinder
 {
 public:
 
@@ -21,21 +22,27 @@ public:
     //--------------------------------------------------------------------------
     /// コンストラクタ
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] path     シェーダファイルのディレクトリ
+    /// \param[in] gfx              グラフィック処理の参照先
+    /// \param[in] BytecodeVS       VSシェーダのバイナリデータ
+    /// \param[in] BytecodePS       PSシェーダのバイナリデータ
+    /// \param[in] aLayoutDesc      レイアウト設定の配列
+    /// \param[in] pRootSignature   ルートシグネチャのポインタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    GfxVertexShader(
+    GfxPipelineState(
         /*[in]*/ GfxMain& gfx,
-        /*[in]*/ const std::wstring& path);
+        /*[in]*/ ID3DBlob& BytecodeVS,
+        /*[in]*/ ID3DBlob& BytecodePS,
+        /*[in]*/ std::vector<D3D12_INPUT_ELEMENT_DESC>& aLayoutDesc,
+        /*[in]*/ ID3D12RootSignature* pRootSignature);
 
     //--------------------------------------------------------------------------
     /// デストラクタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    ~GfxVertexShader() noexcept override;
+    ~GfxPipelineState() noexcept override;
 
     //--------------------------------------------------------------------------
     /// バインド処理
@@ -45,29 +52,17 @@ public:
     /// \return void
     //--------------------------------------------------------------------------
     void Bind(
-        /*[in]*/ GfxMain& gfx) noexcept override;
-
-    //--------------------------------------------------------------------------
-    /// シェーダファイル取得
-    ///
-    /// \return シェーダファイルの参照
-    //--------------------------------------------------------------------------
-    ID3DBlob& GetBytecode() const noexcept
-    {
-        return *m_pBytecodeVS.Get();
-    }
+        /*[in]*/ GfxMain& gfx) noexcept override;    //バインド処理
 
     //--------------------------------------------------------------------------
 
 protected:
 
     //--------------------------------------------------------------------------
-    Microsoft::WRL::ComPtr<ID3DBlob> m_pBytecodeVS;
-    Microsoft::WRL::ComPtr<ID3D11VertexShader> m_pVertexShader;
+    Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pGfxPipelineState;
     //--------------------------------------------------------------------------
 
     /// <summary>
-    /// m_pBytecodeVS       シェーダファイル読込み用
-    /// m_pVertexShader     ポインタ
+    /// m_pGfxPipelineState     GFXパイプラインステートのポインタ
     /// </summary>
 };

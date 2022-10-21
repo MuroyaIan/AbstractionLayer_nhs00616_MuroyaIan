@@ -280,6 +280,15 @@
     <ClInclude Include="Source\Gfx\Gfx_dx12.h">
       <Filter>ヘッダー ファイル\GFX</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Gfx\Binder\Gfx_RootSignature.h">
+      <Filter>ヘッダー ファイル\GFX\Binder</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Binder\Gfx_PipelineState.h">
+      <Filter>ヘッダー ファイル\GFX\Binder</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Gfx\Binder\Gfx_HeapMgr.h">
+      <Filter>ヘッダー ファイル\GFX\Binder</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Win\Win_Main.cpp">
@@ -419,6 +428,15 @@
     </ClCompile>
     <ClCompile Include="Source\Gfx\Gfx_dx12.cpp">
       <Filter>ソース ファイル\GFX</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Gfx\Binder\Gfx_RootSignature.cpp">
+      <Filter>ソース ファイル\GFX\Binder</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Gfx\Binder\Gfx_PipelineState.cpp">
+      <Filter>ソース ファイル\GFX\Binder</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Gfx\Binder\Gfx_HeapMgr.cpp">
+      <Filter>ソース ファイル\GFX\Binder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -98,7 +98,7 @@ private:
     //--------------------------------------------------------------------------
     GfxPack& m_gfx;
     LightPack m_lightData;
-    std::unique_ptr<GfxPixelCBuffer<LightPack>> m_pcBuff;
+    GfxPixelCBuffer<DrawLightMgr::LightPack>* m_pcBuff;
     //--------------------------------------------------------------------------
 
     /// <summary>

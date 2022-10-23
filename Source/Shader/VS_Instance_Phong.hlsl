@@ -43,7 +43,7 @@ struct VS_OUT
 };
 
 //定数バッファ（変換行列）
-cbuffer CB_CAMERA : register(b1)
+cbuffer CB_CAMERA : register(b0)
 {
     matrix mtxView; //ビュー行列
     matrix mtxProj; //投影行列

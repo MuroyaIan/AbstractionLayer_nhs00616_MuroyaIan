@@ -10,7 +10,7 @@
 namespace wrl = Microsoft::WRL;
 
 //===== クラス実装 =====
-GfxHeapMgr::GfxHeapMgr(GfxMain& gfx, HeapInfo& heapInfo, GfxHeapMgr* pRef) :
+GfxHeapMgr::GfxHeapMgr(GfxMain& gfx, HeapInfo& heapInfo, GfxHeapMgr** ppRef) :
     GfxBinder(), m_pBufferHeaps(), m_ahCPU(0), m_ahGPU(0)
 {
     //例外処理
@@ -44,41 +44,57 @@ GfxHeapMgr::GfxHeapMgr(GfxMain& gfx, HeapInfo& heapInfo, GfxHeapMgr* pRef) :
         m_ahGPU.push_back(gdh);
     }
 
+    //自身のポインタを提供
+    *ppRef = this;
+
     //CBV作成(VS)
+    if (m_ahCPU.size() == 0)
+        return;
     D3D12_CPU_DESCRIPTOR_HANDLE* cdhPtr = &m_ahCPU[0];
-    HeapInfo::InfoCBV* icbvPtr = &heapInfo.slotCBV_VS[0];
-    for (size_t i = 0, Cnt = heapInfo.slotCBV_VS.size(); i < Cnt; i++){
-        GetDevice<DevDX12*>(&gfx)->CreateConstantBufferView(&icbvPtr->cbvd, *cdhPtr);
-        icbvPtr++;
-        cdhPtr++;
+    HeapInfo::InfoCBV* icbvPtr = nullptr;
+    if (heapInfo.slotCBV_VS.size() > 0) {
+        icbvPtr = &heapInfo.slotCBV_VS[0];
+        for (size_t i = 0, Cnt = heapInfo.slotCBV_VS.size(); i < Cnt; i++){
+            if (icbvPtr->cbvd.SizeInBytes != 0)
+                GetDevice<DevDX12*>(&gfx)->CreateConstantBufferView(&icbvPtr->cbvd, *cdhPtr);
+            icbvPtr++;
+            cdhPtr++;
+        }
     }
 
     //SRV作成(VS)
-    HeapInfo::InfoSRV* isrvPtr = &heapInfo.slotSRV_VS[0];
-    for (size_t i = 0, Cnt = heapInfo.slotSRV_VS.size(); i < Cnt; i++) {
-        GetDevice<DevDX12*>(&gfx)->CreateShaderResourceView(isrvPtr->pBuffer, &isrvPtr->srvd, *cdhPtr);
-        isrvPtr++;
-        cdhPtr++;
+    HeapInfo::InfoSRV* isrvPtr = nullptr;
+    if (heapInfo.slotSRV_VS.size() > 0) {
+        isrvPtr = &heapInfo.slotSRV_VS[0];
+        for (size_t i = 0, Cnt = heapInfo.slotSRV_VS.size(); i < Cnt; i++) {
+            if (isrvPtr->pBuffer != nullptr)
+                GetDevice<DevDX12*>(&gfx)->CreateShaderResourceView(isrvPtr->pBuffer, &isrvPtr->srvd, *cdhPtr);
+            isrvPtr++;
+            cdhPtr++;
+        }
     }
 
     //CBV作成(PS)
-    icbvPtr = &heapInfo.slotCBV_PS[0];
-    for (size_t i = 0, Cnt = heapInfo.slotCBV_PS.size(); i < Cnt; i++) {
-        GetDevice<DevDX12*>(&gfx)->CreateConstantBufferView(&icbvPtr->cbvd, *cdhPtr);
-        icbvPtr++;
-        cdhPtr++;
+    if (heapInfo.slotCBV_PS.size() > 0) {
+        icbvPtr = &heapInfo.slotCBV_PS[0];
+        for (size_t i = 0, Cnt = heapInfo.slotCBV_PS.size(); i < Cnt; i++) {
+            if (icbvPtr->cbvd.SizeInBytes != 0)
+                GetDevice<DevDX12*>(&gfx)->CreateConstantBufferView(&icbvPtr->cbvd, *cdhPtr);
+            icbvPtr++;
+            cdhPtr++;
+        }
     }
 
     //SRV作成(PS)
-    isrvPtr = &heapInfo.slotSRV_PS[0];
-    for (size_t i = 0, Cnt = heapInfo.slotSRV_PS.size(); i < Cnt; i++) {
-        GetDevice<DevDX12*>(&gfx)->CreateShaderResourceView(isrvPtr->pBuffer, &isrvPtr->srvd, *cdhPtr);
-        isrvPtr++;
-        cdhPtr++;
+    if (heapInfo.slotSRV_PS.size() > 0) {
+        isrvPtr = &heapInfo.slotSRV_PS[0];
+        for (size_t i = 0, Cnt = heapInfo.slotSRV_PS.size(); i < Cnt; i++) {
+            if (isrvPtr->pBuffer != nullptr)
+                GetDevice<DevDX12*>(&gfx)->CreateShaderResourceView(isrvPtr->pBuffer, &isrvPtr->srvd, *cdhPtr);
+            isrvPtr++;
+            cdhPtr++;
+        }
     }
-
-    //自身のポインタを提供
-    pRef = this;
 }
 
 GfxHeapMgr::~GfxHeapMgr() noexcept

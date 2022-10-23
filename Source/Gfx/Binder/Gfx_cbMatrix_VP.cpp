@@ -46,3 +46,9 @@ void GfxCBuffMtxVP::Bind(GfxMain& gfx) noexcept
     //バインド処理
     m_pVcBuff->Bind(gfx);
 }
+
+//ビュー情報登録
+void GfxCBuffMtxVP::AddViewInfo(GfxHeapMgr::HeapInfo* pheapInfo) const noexcept
+{
+    m_pVcBuff->AddViewInfo(pheapInfo);
+}

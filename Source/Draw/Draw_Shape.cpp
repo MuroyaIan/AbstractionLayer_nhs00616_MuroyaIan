@@ -7,6 +7,7 @@
 //===== インクルード部 =====
 #include <Draw/Draw_Shape.h>
 #include <Gfx/Binder/Gfx_BinderRef.h>
+#include <Draw/Draw_LightMgr.h>
 
 namespace dx = DirectX;
 
@@ -29,8 +30,19 @@ DrawShapeModel::DrawShapeModel(GfxPack& gfx, GfxVsdMaker::Shape type) :
     //インデックス情報作成
     AddBind(std::make_unique<GfxIndexBuffer>(m_gfx.m_dx, model.m_indices));
 
+    //ヒープ設定
+    GfxHeapMgr::HeapInfo heapInfo(1, 1, 2, 1);
+
+    //CBV登録（カメラ）
+    GfxCBuffMtxVP* pCamera = dynamic_cast<GfxCBuffMtxVP*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::CB_VS_MTX_VP).get());
+    pCamera->AddViewInfo(&heapInfo);
+
+    //CBV登録（ライト）
+    GfxPixelCBuffer<DrawLightMgr::LightPack>* pLight = dynamic_cast<GfxPixelCBuffer<DrawLightMgr::LightPack>*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::CB_PS_LIGHT).get());
+    pLight->AddViewInfo(&heapInfo);
+
     //定数バッファ作成（マテリアル）
-    AddBind(std::make_unique<GfxCBuffMaterial>(m_gfx.m_dx, nullptr, m_material));
+    AddBind(std::make_unique<GfxCBuffMaterial>(m_gfx.m_dx, &heapInfo, m_material));
 
     //テクスチャバッファ作成
     if (m_type == GfxVsdMaker::Shape::BOX) {
@@ -56,8 +68,25 @@ DrawShapeModel::DrawShapeModel(GfxPack& gfx, GfxVsdMaker::Shape type) :
         data.pImageData = color;
         data.nWidth = 8;
         data.nHeight = 8;
-        AddBind(std::make_unique<GfxTexture>(m_gfx.m_dx, data, nullptr, -1, 0));
+        AddBind(std::make_unique<GfxTexture>(m_gfx.m_dx, data, &heapInfo, -1, 0));
     }
+
+    //ディスクリプタヒープ作成
+    GfxHeapMgr* pHeapMgr = nullptr;
+    AddBind(std::make_unique<GfxHeapMgr>(m_gfx.m_dx, heapInfo, &pHeapMgr));
+
+    //ルートシグネチャ初期化
+    GfxSampler* pSampler = dynamic_cast<GfxSampler*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::SAMPLER).get());
+    GfxRootSignature* pRS = nullptr;
+    AddBind(std::make_unique<GfxRootSignature>(m_gfx.m_dx, heapInfo, *pSampler, *pHeapMgr, &pRS));
+
+    //パイプラインステート初期化
+    GfxVertexShader* pVS = dynamic_cast<GfxVertexShader*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::VS_INSTANCE_PHONG).get());
+    GfxPixelShader* pPS = dynamic_cast<GfxPixelShader*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::PS_PHONG).get());
+    GfxInputLayout* pLayout = dynamic_cast<GfxInputLayout*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::IL_INSTANCE_PHONG).get());
+    AddBind(std::make_unique<GfxPipelineState>(m_gfx.m_dx, *pVS->GetBytecode(), *pPS->GetBytecode(), pLayout->GetLayout(), pRS->GetRootSignature()));
+
+
 
     //マテリアル情報初期化
     m_material.diffuse = { 1.0f, 1.0f, 1.0f, 1.0f };

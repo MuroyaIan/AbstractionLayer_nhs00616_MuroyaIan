@@ -10,10 +10,10 @@
 
 //===== クラス実装 =====
 DrawLightMgr::DrawLightMgr(App64& app) noexcept :
-    m_gfx(app.GetGfxPack()), m_lightData(), m_pcBuff()
+    m_gfx(app.GetGfxPack()), m_lightData(), m_pcBuff(nullptr)
 {
     //定数バッファ作成
-    m_pcBuff = std::make_unique<GfxPixelCBuffer<LightPack>>(m_gfx.m_dx, nullptr, static_cast<UINT>(CB_SLOT_PS::LIGHT));
+    m_pcBuff = dynamic_cast<GfxPixelCBuffer<LightPack>*>(app.GetGfxPack().m_shaderMgr.GetBind(DrawShaderMgr::BinderID::CB_PS_LIGHT).get());
 }
 
 DrawLightMgr::~DrawLightMgr() noexcept

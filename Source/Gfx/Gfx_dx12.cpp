@@ -279,7 +279,6 @@ void GfxDX12::DrawIndexed(UINT indexNum) const noexcept
 //インスタンシング描画
 void GfxDX12::DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept
 {
-    return;
     //バインド処理
     //m_pCmdList->SetDescriptorHeaps(1u, m_pBufferHeaps.GetAddressOf());                              //ディスクリプタヒープ指定
     //m_pCmdList->SetGraphicsRootSignature(m_pRootSignature.Get());

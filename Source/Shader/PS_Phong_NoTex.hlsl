@@ -37,14 +37,14 @@ struct LightDirectional     //平行光源
 };
 
 //定数バッファ（ライト情報）
-cbuffer CB_LIGHT : register(b1)
+cbuffer CB_LIGHT : register(b0)
 {
     LightDirectional DirectionalLight; //平行光源
     float4 AmbientLight; //環境光
 }
 
 //定数バッファ（マテリアル）
-cbuffer CB_MATERIAL : register(b2)
+cbuffer CB_MATERIAL : register(b1)
 {
     float4 mAmbient; //環境光
     float4 mDiffuse; //拡散反射光

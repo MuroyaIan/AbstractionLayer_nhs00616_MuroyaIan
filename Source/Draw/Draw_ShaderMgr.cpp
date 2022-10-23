@@ -7,6 +7,7 @@
 //===== インクルード部 =====
 #include <Draw/Draw_ShaderMgr.h>
 #include <Gfx/Binder/Gfx_BinderRef.h>
+#include <Draw/Draw_LightMgr.h>
 
 //===== クラス実装 =====
 DrawShaderMgr::DrawShaderMgr(GfxMain& gfx) :
@@ -67,9 +68,13 @@ DrawShaderMgr::DrawShaderMgr(GfxMain& gfx) :
     m_aBinder[static_cast<int>(BinderID::PS_PHONG_NO_TEX)] =
         std::make_unique<GfxPixelShader>(m_dx, L"Asset/Shader/PS_Phong_NoTex.cso");
 
-    ////定数バッファ作成（VP行列）
+    //定数バッファ作成（VP行列）
     m_aBinder[static_cast<int>(BinderID::CB_VS_MTX_VP)] =
         std::make_unique<GfxCBuffMtxVP>(m_dx, nullptr);
+
+    //定数バッファ作成（ライト情報）
+    m_aBinder[static_cast<int>(BinderID::CB_PS_LIGHT)] =
+        std::make_unique<GfxPixelCBuffer<DrawLightMgr::LightPack>>(m_dx, nullptr, static_cast<UINT>(CB_SLOT_PS::LIGHT));
 }
 
 DrawShaderMgr::~DrawShaderMgr() noexcept

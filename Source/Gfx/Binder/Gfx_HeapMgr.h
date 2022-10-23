@@ -16,10 +16,7 @@
 class GfxHeapMgr : public GfxBinder
 {
     //--------------------------------------------------------------------------
-    friend class GfxTexture;
-
-    template<typename C>
-    friend class GfxConstantBuffer;
+    friend class GfxRootSignature;
     //--------------------------------------------------------------------------
 
 public:
@@ -142,14 +139,14 @@ public:
     ///
     /// \param[in] gfx          グラフィック処理の参照先
     /// \param[in] heapInfo     ヒープ登録用情報の参照先
-    /// \param[in] pRef         自身のポインタ
+    /// \param[in] ppRef    自身のダブルポインタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
     GfxHeapMgr(
         /*[in]*/ GfxMain& gfx,
         /*[in]*/ HeapInfo& heapInfo,
-        /*[in]*/ GfxHeapMgr* pRef);
+        /*[in]*/ GfxHeapMgr** ppRef);
 
     //--------------------------------------------------------------------------
     /// デストラクタ

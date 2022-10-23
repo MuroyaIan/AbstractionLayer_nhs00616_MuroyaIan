@@ -13,13 +13,11 @@
 //===== 列挙型宣言 =====
 enum class CB_SLOT_VS       //頂点シェーダ用定数バッファID
 {
-    DEFAULT,
-    CAMERA,
+    CAMERA
 };
 
 enum class CB_SLOT_PS       //ピクセルシェーダ用定数バッファID
 {
-    DEFAULT,
     LIGHT,
     MATERIAL
 };
@@ -511,6 +509,19 @@ public:
     }
 
     //--------------------------------------------------------------------------
+    /// ビュー情報登録
+    ///
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void AddViewInfo(
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo) const noexcept
+    {
+        CBuff::AddViewInfo(pheapInfo);
+    }
+
+    //--------------------------------------------------------------------------
 
 private:
 
@@ -585,6 +596,19 @@ public:
             default:
                 break;
         }
+    }
+
+    //--------------------------------------------------------------------------
+    /// ビュー情報登録
+    ///
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void AddViewInfo(
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo) const noexcept
+    {
+        CBuff::AddViewInfo(pheapInfo);
     }
 
     //--------------------------------------------------------------------------

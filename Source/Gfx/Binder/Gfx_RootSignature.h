@@ -8,7 +8,8 @@
 
 //===== インクルード部 =====
 #include <Gfx/Binder/Gfx_Binder.h>
-#include <Tool/Tool_TexLoader.h>
+#include <Gfx/Binder/Gfx_HeapMgr.h>
+#include <Gfx/Binder/Gfx_Sampler.h>
 
 //===== クラス定義 =====
 
@@ -22,12 +23,20 @@ public:
     //--------------------------------------------------------------------------
     /// コンストラクタ
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
+    /// \param[in] gfx          グラフィック処理の参照先
+    /// \param[in] heapInfo     ヒープ登録用情報の参照先
+    /// \param[in] Sampler      サンプラー情報の参照先
+    /// \param[in] heapMgr      ヒープマネージャの参照先
+    /// \param[in] ppRef        自身のダブルポインタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
     GfxRootSignature(
-        /*[in]*/ GfxMain& gfx);
+        /*[in]*/ GfxMain& gfx,
+        /*[in]*/ GfxHeapMgr::HeapInfo& heapInfo,
+        /*[in]*/ GfxSampler& sampler,
+        /*[in]*/ GfxHeapMgr& heapMgr,
+        /*[in]*/ GfxRootSignature** ppRef);
 
     //--------------------------------------------------------------------------
     /// デストラクタ
@@ -51,10 +60,7 @@ public:
     ///
     /// \return ルートシグネチャのポインタ
     //--------------------------------------------------------------------------
-    ID3D12RootSignature* GetRootSignature() const noexcept
-    {
-        return m_pRootSignature.Get();
-    }
+    ID3D12RootSignature* GetRootSignature() const noexcept;
 
     //--------------------------------------------------------------------------
 
@@ -62,9 +68,13 @@ protected:
 
     //--------------------------------------------------------------------------
     Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;
+    GfxHeapMgr& m_heapMgr;
+    int m_startIndexPS;
     //--------------------------------------------------------------------------
 
     /// <summary>
     /// m_pRootSignature    ルートシグネチャのポインタ
+    /// m_heapMgr           ヒープマネージャの参照先
+    /// m_startIndexPS      ルートパラメータのディスクリプタ開始位置(PS)
     /// </summary>
 };

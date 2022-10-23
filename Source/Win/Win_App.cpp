@@ -149,10 +149,7 @@ void App64::Update()
 void App64::Draw()
 {
     //描画開始
-    if (GfxMain::CheckApiVer(GfxMain::API_MODE::DX_11))
-        m_pGfxMgr->GetGfx()->BeginFrame(1.0f, 0.0f, 0.0f);
-    else if (GfxMain::CheckApiVer(GfxMain::API_MODE::DX_12))
-        m_pGfxMgr->GetGfx()->BeginFrame(0.0f, 0.0f, 0.0f);
+    m_pGfxMgr->GetGfx()->BeginFrame(0.0f, 0.0f, 0.0f);
 
     //カメラマネージャ描画
     m_pCameraMgr->Draw();

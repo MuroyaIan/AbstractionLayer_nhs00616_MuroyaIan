@@ -144,26 +144,29 @@ public:
     //--------------------------------------------------------------------------
     /// コンストラクタ
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] consts   定数バッファ
-    /// \param[in] heapMgr  ヒープマネージャの参照
-    /// \param[in] slot     入力スロット
+    /// \param[in] gfx          グラフィック処理の参照先
+    /// \param[in] consts       定数バッファ
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
+    /// \param[in] slotVS       入力スロット(VS)
+    /// \param[in] slotPS       入力スロット(PS)
     ///
     /// \return void
     //--------------------------------------------------------------------------
     GfxConstantBuffer(
         /*[in]*/ GfxMain& gfx,
         /*[in]*/ const C& consts,
-        /*[in]*/ GfxHeapMgr& heapMgr,
-        /*[in]*/ UINT slot = 0u) :
-        GfxBinder(), m_pConstantBuffer11(), m_pConstantBuffer12(), m_slot(slot)
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo,
+        /*[in]*/ int slotVS = -1,
+        /*[in]*/ int slotPS = -1) :
+    GfxBinder(), m_pConstantBuffer11(), m_pConstantBuffer12(), m_cbvd(),
+    m_slotVS(slotVS), m_slotPS(slotPS)
     {
         switch (GetApiMode()) {
             case GfxMain::API_MODE::DX_11:
                 CreateBufferDX11(gfx, consts);
                 break;
             case GfxMain::API_MODE::DX_12:
-                CreateBufferDX12(gfx, consts, heapMgr);
+                CreateBufferDX12(gfx, consts, pheapInfo);
                 break;
             default:
                 break;
@@ -173,24 +176,27 @@ public:
     //--------------------------------------------------------------------------
     /// コンストラクタ（バッファ初期化なし）
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] heapMgr  ヒープマネージャ
-    /// \param[in] slot     入力スロット
+    /// \param[in] gfx          グラフィック処理の参照先
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
+    /// \param[in] slotVS       入力スロット(VS)
+    /// \param[in] slotPS       入力スロット(PS)
     ///
     /// \return void
     //--------------------------------------------------------------------------
     GfxConstantBuffer(
         /*[in]*/ GfxMain& gfx,
-        /*[in]*/ GfxHeapMgr& heapMgr,
-        /*[in]*/ UINT slot = 0u) :
-        GfxBinder(), m_pConstantBuffer11(), m_pConstantBuffer12(), m_slot(slot)
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo,
+        /*[in]*/ int slotVS = -1,
+        /*[in]*/ int slotPS = -1) :
+    GfxBinder(), m_pConstantBuffer11(), m_pConstantBuffer12(), m_cbvd(),
+    m_slotVS(slotVS), m_slotPS(slotPS)
     {
         switch (GetApiMode()) {
             case GfxMain::API_MODE::DX_11:
                 CreateBufferDX11(gfx);
                 break;
             case GfxMain::API_MODE::DX_12:
-                CreateBufferDX12(gfx, heapMgr);
+                CreateBufferDX12(gfx, pheapInfo);
                 break;
             default:
                 break;
@@ -226,6 +232,29 @@ public:
             default:
                 break;
         }
+    }
+
+    //--------------------------------------------------------------------------
+    /// ビュー情報登録
+    ///
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void AddViewInfo(
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo) const noexcept
+    {
+        //例外処理
+        if (GetApiMode() != GfxMain::API_MODE::DX_12)
+            return;
+        if (pheapInfo == nullptr)
+            return;
+
+        //登録処理
+        if (m_slotVS >= 0)
+            pheapInfo->slotCBV_VS[m_slotVS].cbvd = m_cbvd;
+        if (m_slotPS >= 0)
+            pheapInfo->slotCBV_PS[m_slotPS].cbvd = m_cbvd;
     }
 
     //--------------------------------------------------------------------------
@@ -293,14 +322,14 @@ protected:
     ///
     /// \param[in] gfx          グラフィック処理の参照先
     /// \param[in] consts       定数バッファ
-    /// \param[in] heapMgr      ヒープマネージャの参照
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
     void CreateBufferDX12(
         /*[in]*/ GfxMain& gfx,
         /*[in]*/ const C& consts,
-        /*[in]*/ GfxHeapMgr& heapMgr)
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo)
     {
         //エラーハンドル
         HRESULT hr{};
@@ -335,24 +364,25 @@ protected:
         //データマップ
         UpdateBuffer(consts, m_pConstantBuffer12.Get());
 
-        //CBV作成
-        D3D12_CONSTANT_BUFFER_VIEW_DESC cbvd{};
-        cbvd.BufferLocation = m_pConstantBuffer12->GetGPUVirtualAddress();  //バッファアドレス
-        cbvd.SizeInBytes = static_cast<UINT>(rd.Width);                     //バッファサイズ
-        GetDevice<DevDX12*>(&gfx)->CreateConstantBufferView(&cbvd, heapMgr.m_ahCPU[m_slot]);
+        //CBV情報作成
+        m_cbvd.BufferLocation = m_pConstantBuffer12->GetGPUVirtualAddress();  //バッファアドレス
+        m_cbvd.SizeInBytes = static_cast<UINT>(rd.Width);                     //バッファサイズ
+
+        //CBV情報登録
+        AddViewInfo(pheapInfo);
     }
 
     //--------------------------------------------------------------------------
     /// 初期化なしバッファ作成(DX12)
     ///
     /// \param[in] gfx          グラフィック処理の参照先
-    /// \param[in] heapMgr      ヒープマネージャの参照
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
     void CreateBufferDX12(
         /*[in]*/ GfxMain& gfx,
-        /*[in]*/ GfxHeapMgr& heapMgr)
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo)
     {
         //エラーハンドル
         HRESULT hr{};
@@ -384,11 +414,12 @@ protected:
             nullptr, IID_PPV_ARGS(&m_pConstantBuffer12));
         ERROR_DX(hr);
 
-        //CBV作成
-        D3D12_CONSTANT_BUFFER_VIEW_DESC cbvd{};
-        cbvd.BufferLocation = m_pConstantBuffer12->GetGPUVirtualAddress();  //バッファアドレス
-        cbvd.SizeInBytes = static_cast<UINT>(rd.Width);                     //バッファサイズ
-        GetDevice<DevDX12*>(&gfx)->CreateConstantBufferView(&cbvd, heapMgr.m_ahCPU[m_slot]);
+        //CBV情報作成
+        m_cbvd.BufferLocation = m_pConstantBuffer12->GetGPUVirtualAddress();  //バッファアドレス
+        m_cbvd.SizeInBytes = static_cast<UINT>(rd.Width);                     //バッファサイズ
+
+        //CBV情報登録
+        AddViewInfo(pheapInfo);
     }
 
     //--------------------------------------------------------------------------
@@ -396,13 +427,17 @@ protected:
     //--------------------------------------------------------------------------
     Microsoft::WRL::ComPtr<ID3D11Buffer> m_pConstantBuffer11;
     Microsoft::WRL::ComPtr<ID3D12Resource> m_pConstantBuffer12;
-    UINT m_slot;
+    D3D12_CONSTANT_BUFFER_VIEW_DESC m_cbvd;
+    int m_slotVS;
+    int m_slotPS;
     //--------------------------------------------------------------------------
 
     /// <summary>
     /// m_pConstantBuffer11     バッファのポインタ
     /// m_pConstantBuffer12     バッファのポインタ
-    /// m_slot                  入力スロット
+    /// m_cbvd                  CBV情報
+    /// m_slotVS                入力スロット(VS)
+    /// m_slotPS                入力スロット(PS)
     /// </summary>
 };
 
@@ -417,34 +452,34 @@ public:
     //--------------------------------------------------------------------------
     /// コンストラクタ
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] consts   定数バッファ
-    /// \param[in] heapMgr  ヒープマネージャの参照
-    /// \param[in] slot     入力スロット
+    /// \param[in] gfx          グラフィック処理の参照先
+    /// \param[in] consts       定数バッファ
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
+    /// \param[in] slotVS       入力スロット(VS)
     ///
     /// \return void
     //--------------------------------------------------------------------------
     GfxVertexCBuffer(
         /*[in]*/ GfxMain& gfx,
         /*[in]*/ const C& consts,
-        /*[in]*/ GfxHeapMgr& heapMgr,
-        /*[in]*/ UINT slot = 0u) :
-        CBuff::GfxConstantBuffer(gfx, consts, heapMgr, slot) {}
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo,
+        /*[in]*/ int slotVS = -1) :
+        CBuff::GfxConstantBuffer(gfx, consts, pheapInfo, slotVS) {}
 
     //--------------------------------------------------------------------------
     /// コンストラクタ（バッファ初期化なし）
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] heapMgr  ヒープマネージャの参照
-    /// \param[in] slot     入力スロット
+    /// \param[in] gfx          グラフィック処理の参照先
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
+    /// \param[in] slotVS       入力スロット(VS)
     ///
     /// \return void
     //--------------------------------------------------------------------------
     GfxVertexCBuffer(
         /*[in]*/ GfxMain& gfx,
-        /*[in]*/ GfxHeapMgr& heapMgr,
-        /*[in]*/ UINT slot = 0u) :
-        CBuff::GfxConstantBuffer(gfx, heapMgr, slot) {}
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo,
+        /*[in]*/ int slotVS = -1) :
+        CBuff::GfxConstantBuffer(gfx, pheapInfo, slotVS) {}
 
     //--------------------------------------------------------------------------
     /// デストラクタ
@@ -465,7 +500,8 @@ public:
     {
         switch (GfxBinder::GetApiMode()) {
             case GfxMain::API_MODE::DX_11:
-                GfxBinder::GetCommand<GfxBinder::CmdDX11*>(&gfx)->VSSetConstantBuffers(CBuff::m_slot, 1u, CBuff::m_pConstantBuffer11.GetAddressOf());
+                if (CBuff::m_slotVS >= 0)
+                    GfxBinder::GetCommand<GfxBinder::CmdDX11*>(&gfx)->VSSetConstantBuffers(CBuff::m_slotVS, 1u, CBuff::m_pConstantBuffer11.GetAddressOf());
                 break;
             case GfxMain::API_MODE::DX_12:
                 break;
@@ -493,34 +529,34 @@ public:
     //--------------------------------------------------------------------------
     /// コンストラクタ
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] consts   定数バッファ
-    /// \param[in] heapMgr  ヒープマネージャの参照
-    /// \param[in] slot     入力スロット
+    /// \param[in] gfx          グラフィック処理の参照先
+    /// \param[in] consts       定数バッファ
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
+    /// \param[in] slotPS       入力スロット(PS)
     ///
     /// \return void
     //--------------------------------------------------------------------------
     GfxPixelCBuffer(
         /*[in]*/ GfxMain& gfx,
         /*[in]*/ const C& consts,
-        /*[in]*/ GfxHeapMgr& heapMgr,
-        /*[in]*/ UINT slot = 0u) :
-        CBuff::GfxConstantBuffer(gfx, consts, heapMgr, slot) {}
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo,
+        /*[in]*/ int slotPS = -1) :
+        CBuff::GfxConstantBuffer(gfx, consts, pheapInfo, -1, slotPS) {}
 
     //--------------------------------------------------------------------------
     /// コンストラクタ（バッファ初期化なし）
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] heapMgr  ヒープマネージャの参照
-    /// \param[in] slot     入力スロット
+    /// \param[in] gfx          グラフィック処理の参照先
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
+    /// \param[in] slotPS       入力スロット(PS)
     ///
     /// \return void
     //--------------------------------------------------------------------------
     GfxPixelCBuffer(
         /*[in]*/ GfxMain& gfx,
-        /*[in]*/ GfxHeapMgr& heapMgr,
-        /*[in]*/ UINT slot = 0u) :
-        CBuff::GfxConstantBuffer(gfx, heapMgr, slot) {}
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo,
+        /*[in]*/ int slotPS = -1) :
+        CBuff::GfxConstantBuffer(gfx, pheapInfo, -1, slotPS) {}
 
     //--------------------------------------------------------------------------
     /// デストラクタ
@@ -541,7 +577,8 @@ public:
     {
         switch (GfxBinder::GetApiMode()) {
             case GfxMain::API_MODE::DX_11:
-                GfxBinder::GetCommand<GfxBinder::CmdDX11*>(&gfx)->PSSetConstantBuffers(CBuff::m_slot, 1u, CBuff::m_pConstantBuffer11.GetAddressOf());
+                if (CBuff::m_slotPS >= 0)
+                    GfxBinder::GetCommand<GfxBinder::CmdDX11*>(&gfx)->PSSetConstantBuffers(CBuff::m_slotPS, 1u, CBuff::m_pConstantBuffer11.GetAddressOf());
                 break;
             case GfxMain::API_MODE::DX_12:
                 break;

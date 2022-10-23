@@ -10,7 +10,7 @@
 #include <Win/Win_Window.h>
 #include <Win/Win_TimeProc.h>
 #include <Gfx/Gfx_Mgr.h>
-//#include <Draw/Draw_ShaderMgr.h>
+#include <Draw/Draw_ShaderMgr.h>
 #include <Tool/Input/Tool_InputMgr.h>
 
 #ifdef IMGUI
@@ -20,24 +20,24 @@
 #endif // IMGUI
 
 //===== 構造体定義 =====
-//struct GfxPack              //グラフィック処理用データ
-//{
-//    //--------------------------------------------------------------------------
-//    GfxMain& m_dx;
-//    DrawShaderMgr& m_shaderMgr;
-//    //--------------------------------------------------------------------------
-//
-//    /// <summary>
-//    /// m_dx            DXオブジェクト参照
-//    /// m_shaderMgr     シェーダマネージャ参照
-//    /// </summary>
-//};
+struct GfxPack              //グラフィック処理用データ
+{
+    //--------------------------------------------------------------------------
+    GfxMain& m_dx;
+    DrawShaderMgr& m_shaderMgr;
+    //--------------------------------------------------------------------------
+
+    /// <summary>
+    /// m_dx            DXオブジェクト参照
+    /// m_shaderMgr     シェーダマネージャ参照
+    /// </summary>
+};
 
 //===== 前方宣言 =====
-//class DrawCameraMgr;
-//class DrawLightMgr;
-//class GfxDrawer;
-//class DrawDirectionalLight;
+class DrawCameraMgr;
+class DrawLightMgr;
+class GfxDrawer;
+class DrawDirectionalLight;
 
 //===== クラス定義 =====
 
@@ -108,10 +108,10 @@ public:
     ///
     /// \return 描画データの参照先
     //--------------------------------------------------------------------------
-    //GfxPack& GetGfxPack() const noexcept
-    //{
-    //    return *m_pGfx;
-    //}
+    GfxPack& GetGfxPack() const noexcept
+    {
+        return *m_pGfx;
+    }
 
     //--------------------------------------------------------------------------
     /// 入力マネージャ参照
@@ -128,20 +128,20 @@ public:
     ///
     /// \return カメラマネージャの参照先
     //--------------------------------------------------------------------------
-    //DrawCameraMgr& GetCameraMgr() const noexcept
-    //{
-    //    return *m_pCameraMgr;
-    //}
+    DrawCameraMgr& GetCameraMgr() const noexcept
+    {
+        return *m_pCameraMgr;
+    }
 
     //--------------------------------------------------------------------------
     /// ライトマネージャ参照
     ///
     /// \return ライトマネージャの参照先
     //--------------------------------------------------------------------------
-    //DrawLightMgr& GetLightMgr() const noexcept
-    //{
-    //    return *m_pLightMgr;
-    //}
+    DrawLightMgr& GetLightMgr() const noexcept
+    {
+        return *m_pLightMgr;
+    }
 
     //--------------------------------------------------------------------------
 
@@ -159,14 +159,14 @@ private:
     MSG m_message;
     WinTime m_time;
     std::unique_ptr<GfxMgr> m_pGfxMgr;
-    //std::unique_ptr<DrawShaderMgr> m_pShaderMgr;
-    //std::unique_ptr<GfxPack> m_pGfx;
+    std::unique_ptr<DrawShaderMgr> m_pShaderMgr;
+    std::unique_ptr<GfxPack> m_pGfx;
     std::unique_ptr<ToolInputMgr> m_pInputMgr;
-    //std::unique_ptr<DrawCameraMgr> m_pCameraMgr;
-    //std::unique_ptr<DrawLightMgr> m_pLightMgr;
-    //std::vector<std::unique_ptr<GfxDrawer>> m_aDrawer;
+    std::unique_ptr<DrawCameraMgr> m_pCameraMgr;
+    std::unique_ptr<DrawLightMgr> m_pLightMgr;
+    std::vector<std::unique_ptr<GfxDrawer>> m_aDrawer;
     int m_shapeID;
-    //std::unique_ptr<DrawDirectionalLight> m_pSunLight;
+    std::unique_ptr<DrawDirectionalLight> m_pSunLight;
     DirectX::XMINT2 m_rot;
     //--------------------------------------------------------------------------
 

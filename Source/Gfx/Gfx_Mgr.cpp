@@ -26,9 +26,8 @@ void GfxMgr::SetAPI(GfxMain::API_MODE mode)
     if (GfxMain::m_api != mode)
     {
         //API再初期化
-        m_pGfx.reset();
         GfxMain::m_api = mode;
-        InitAPI();
+        PostQuitMessage(0);
     }
 }
 

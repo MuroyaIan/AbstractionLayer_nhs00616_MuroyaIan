@@ -242,7 +242,9 @@ protected:
         ERROR_DX(hr);
 
         //データマップ
+        m_bDynamicBuffer = true;
         UpdateBufferDX12(vertices, Type::VERTEX);
+        m_bDynamicBuffer = false;
 
         //VBV作成
         m_viewVB[bufferIdx].BufferLocation = m_pVertexBuffer12[bufferIdx]->GetGPUVirtualAddress();
@@ -298,6 +300,11 @@ protected:
         int bufferIdx = static_cast<int>(Type::INSTANCE);
 
         //頂点バッファ設定
+        int size{};
+        if (instances.size() == 0)
+            size = 1;
+        else
+            size = static_cast<int>(instances.size());
         D3D12_HEAP_PROPERTIES hp2{};                            //頂点ヒープ
         hp2.Type = D3D12_HEAP_TYPE_UPLOAD;                      //ヒープ種別
         hp2.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;  //CPUのページング設定
@@ -307,7 +314,7 @@ protected:
         D3D12_RESOURCE_DESC rd2{};                              //リソース設定
         rd2.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;        //バッファかテクスチャか
         rd2.Alignment = 0;                                      //アラインメント
-        rd2.Width = sizeof(I) * instances.size();                //データサイズ
+        rd2.Width = sizeof(I) * size;                           //データサイズ
         rd2.Height = 1u;                                        //テクスチャじゃないので⇒1
         rd2.DepthOrArraySize = 1;                               //配列要素数
         rd2.MipLevels = 1;                                      //ミップマップ設定
@@ -322,9 +329,6 @@ protected:
             &rd2, D3D12_RESOURCE_STATE_GENERIC_READ,                                            //読み取り専用
             nullptr, IID_PPV_ARGS(&m_pVertexBuffer12[bufferIdx]));
         ERROR_DX(hr);
-
-        //データマップ
-        UpdateBufferDX12(instances, Type::INSTANCE);
 
         //VBV作成
         m_viewVB[bufferIdx].BufferLocation = m_pVertexBuffer12[bufferIdx]->GetGPUVirtualAddress();

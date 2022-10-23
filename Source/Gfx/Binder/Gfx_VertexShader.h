@@ -52,9 +52,9 @@ public:
     ///
     /// \return シェーダファイルの参照
     //--------------------------------------------------------------------------
-    ID3DBlob& GetBytecode() const noexcept
+    ID3DBlob* GetBytecode() noexcept
     {
-        return *m_pBytecodeVS.Get();
+        return m_pBytecodeVS.Get();
     }
 
     //--------------------------------------------------------------------------

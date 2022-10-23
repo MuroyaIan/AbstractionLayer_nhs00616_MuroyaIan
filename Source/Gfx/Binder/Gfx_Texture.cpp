@@ -8,8 +8,8 @@
 #include <Gfx/Binder/Gfx_Texture.h>
 
 //===== クラス実装 =====
-GfxTexture::GfxTexture(GfxMain& gfx, ToolTexLoader::TexData& data, GfxHeapMgr& heapMgr, UINT slot) :
-    GfxBinder(), m_pTextureView(), m_pTextureBuffer(), m_heapMgr(heapMgr), m_slot(slot)
+GfxTexture::GfxTexture(GfxMain& gfx, ToolTexLoader::TexData& data, GfxHeapMgr::HeapInfo* pheapInfo, int slotVS, int slotPS) :
+    GfxBinder(), m_pTextureView(), m_pTextureBuffer(), m_srvd(), m_slotVS(slotVS), m_slotPS(slotPS)
 {
     //例外処理
     if (data.pImageData == nullptr)
@@ -21,7 +21,7 @@ GfxTexture::GfxTexture(GfxMain& gfx, ToolTexLoader::TexData& data, GfxHeapMgr& h
             CreateBufferDX11(gfx, data);
             break;
         case GfxMain::API_MODE::DX_12:
-            CreateBufferDX12(gfx, data);
+            CreateBufferDX12(gfx, data, pheapInfo);
             break;
         default:
             break;
@@ -37,12 +37,30 @@ void GfxTexture::Bind(GfxMain& gfx) noexcept
 {
     switch (GetApiMode()) {
         case GfxMain::API_MODE::DX_11:
-            GetCommand<CmdDX11*>(&gfx)->PSSetShaderResources(m_slot, 1u, m_pTextureView.GetAddressOf());
+            if (m_slotVS >= 0)
+                GetCommand<CmdDX11*>(&gfx)->VSSetShaderResources(m_slotVS, 1u, m_pTextureView.GetAddressOf());
+            if (m_slotPS >= 0)
+                GetCommand<CmdDX11*>(&gfx)->PSSetShaderResources(m_slotPS, 1u, m_pTextureView.GetAddressOf());
             break;
         case GfxMain::API_MODE::DX_12:
             break;
         default:
             break;
+    }
+}
+
+//ビュー情報登録
+void GfxTexture::AddViewInfo(GfxHeapMgr::HeapInfo* pheapInfo) const noexcept
+{
+    if (pheapInfo == nullptr)
+        return;
+    if (m_slotVS >= 0) {
+        pheapInfo->slotSRV_VS[m_slotVS].pBuffer = m_pTextureBuffer.Get();
+        pheapInfo->slotSRV_VS[m_slotVS].srvd = m_srvd;
+    }
+    if (m_slotPS >= 0) {
+        pheapInfo->slotSRV_PS[m_slotPS].pBuffer = m_pTextureBuffer.Get();
+        pheapInfo->slotSRV_PS[m_slotPS].srvd = m_srvd;
     }
 }
 
@@ -83,7 +101,7 @@ void GfxTexture::CreateBufferDX11(GfxMain& gfx, ToolTexLoader::TexData& data)
     ERROR_DX(hr);
 }
 
-void GfxTexture::CreateBufferDX12(GfxMain& gfx, ToolTexLoader::TexData& data)
+void GfxTexture::CreateBufferDX12(GfxMain& gfx, ToolTexLoader::TexData& data, GfxHeapMgr::HeapInfo* pheapInfo)
 {
     //エラーハンドル
     HRESULT hr{};
@@ -122,11 +140,12 @@ void GfxTexture::CreateBufferDX12(GfxMain& gfx, ToolTexLoader::TexData& data)
         data.pImageData, rowPitch, depthPitch);
     ERROR_DX(hr);
 
-    //SRV作成
-    D3D12_SHADER_RESOURCE_VIEW_DESC srvd{};
-    srvd.Format = rd.Format;
-    srvd.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-    srvd.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;    //データの順序通りに割当て
-    srvd.Texture2D.MipLevels = 1u;                                              //ミップマップなし
-    GetDevice<DevDX12*>(&gfx)->CreateShaderResourceView(m_pTextureBuffer.Get(), &srvd, m_heapMgr.m_ahCPU[m_slot]);
+    //SRV情報作成
+    m_srvd.Format = rd.Format;
+    m_srvd.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+    m_srvd.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;  //データの順序通りに割当て
+    m_srvd.Texture2D.MipLevels = 1u;                                            //ミップマップなし
+
+    //SRV情報登録
+    AddViewInfo(pheapInfo);
 }

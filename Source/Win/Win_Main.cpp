@@ -32,11 +32,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         //グラフィックスAPI設定
         WinCheckGfx Window;
         int wParam = Window.Update();
-        if (wParam != 0 || WinCheckGfx::m_GfxID != WinCheckGfx::GFX_ID::aDX_11)
+        if (wParam != 0 || GfxMain::CheckApiVer(GfxMain::API_MODE::NONE)
+            || GfxMain::CheckApiVer(GfxMain::API_MODE::OPEN_GL)
+            || GfxMain::CheckApiVer(GfxMain::API_MODE::VULKAN))
             return wParam;
 
         //アプリケーション実行
-        wParam = App64{}.Run();
+        while (!GfxMain::CheckApiVer(GfxMain::API_MODE::NONE))
+            wParam = App64{}.Run();
 
 #ifdef _DEBUG
 

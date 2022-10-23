@@ -78,6 +78,8 @@ public:
         return m_mtxProjection;
     }
 
+    static bool CheckApiVer(API_MODE mode) noexcept;                //グラフィックAPIのモード確認
+
 #ifdef IMGUI
 
     void SetImGuiMode(const bool bEnable) noexcept                  //ImGui描画ON/OFF
@@ -115,6 +117,8 @@ private:
 #endif // IMGUI
 
     //権限指定
+    friend class WinCheckGfx;
+    friend class WinWindow;
     friend class GfxMgr;
     friend class GfxBinder;
 };

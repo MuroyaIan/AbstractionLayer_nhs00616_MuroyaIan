@@ -8,20 +8,12 @@
 
 //===== インクルード部 =====
 #include <Win/Win_Framework.h>
+#include <Gfx/Gfx_Main.h>
 
 //===== クラス定義 =====
 class WinCheckGfx
 {
 public:
-
-    enum class GFX_ID
-    {
-        GFX_NONE,
-        aDX_11,
-        aDX_12,
-        OPEN_GL,
-        VULKAN
-    };
 
     WinCheckGfx();
     ~WinCheckGfx() noexcept(false);
@@ -105,13 +97,13 @@ public:
 
                 //選択確認
                 if (SendMessage(hBtnRadio1, BM_GETCHECK, NULL, NULL) == BST_CHECKED)
-                    m_GfxID = GFX_ID::aDX_11;
+                    GfxMain::m_api = GfxMain::API_MODE::DX_11;
                 if (SendMessage(hBtnRadio2, BM_GETCHECK, NULL, NULL) == BST_CHECKED)
-                    m_GfxID = GFX_ID::aDX_12;
+                    GfxMain::m_api = GfxMain::API_MODE::DX_12;
                 if (SendMessage(hBtnRadio3, BM_GETCHECK, NULL, NULL) == BST_CHECKED)
-                    m_GfxID = GFX_ID::OPEN_GL;
+                    GfxMain::m_api = GfxMain::API_MODE::OPEN_GL;
                 if (SendMessage(hBtnRadio4, BM_GETCHECK, NULL, NULL) == BST_CHECKED)
-                    m_GfxID = GFX_ID::VULKAN;
+                    GfxMain::m_api = GfxMain::API_MODE::VULKAN;
 
                 //クリック処理
                 switch (LOWORD(wp)) {
@@ -123,8 +115,6 @@ public:
         }
         return DefWindowProc(hwnd, msg, wp, lp);
     }
-
-    static GFX_ID m_GfxID;
 
 private:
 

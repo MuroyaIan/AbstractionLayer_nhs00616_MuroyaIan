@@ -13,17 +13,23 @@ using vcbMtx = GfxVertexCBuffer<GfxCbMtxVP>;
 
 //===== 静的メンバ変数 =====
 std::unique_ptr<vcbMtx> GfxCBuffMtxVP::m_pVcBuff = nullptr;
+int GfxCBuffMtxVP::m_refCount = 0;
 
 //===== クラス実装 =====
-GfxCBuffMtxVP::GfxCBuffMtxVP(GfxMain& gfx, GfxHeapMgr& heapMgr) : GfxBinder()
+GfxCBuffMtxVP::GfxCBuffMtxVP(GfxMain& gfx, GfxHeapMgr::HeapInfo* pheapInfo) : GfxBinder()
 {
     //定数バッファ初期化
+    m_refCount++;
     if (!m_pVcBuff)
-        m_pVcBuff = std::make_unique<vcbMtx>(gfx, heapMgr, static_cast<UINT>(CB_SLOT_VS::CAMERA));
+        m_pVcBuff = std::make_unique<vcbMtx>(gfx, pheapInfo, static_cast<UINT>(CB_SLOT_VS::CAMERA));
 }
 
 GfxCBuffMtxVP::~GfxCBuffMtxVP() noexcept
 {
+    //定数バッファ終了
+    m_refCount--;
+    if (m_refCount == 0)
+        m_pVcBuff.reset();
 }
 
 //バインド処理

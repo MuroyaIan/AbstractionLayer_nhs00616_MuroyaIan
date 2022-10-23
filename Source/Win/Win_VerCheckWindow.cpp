@@ -10,7 +10,6 @@
 
 //===== 静的メンバ =====
 HWND WinCheckGfx::m_hWindow{};
-WinCheckGfx::GFX_ID WinCheckGfx::m_GfxID = GFX_ID::GFX_NONE;
 
 //===== クラス実装 =====
 WinCheckGfx::WinCheckGfx() : m_hAppInst(GetModuleHandle(nullptr))

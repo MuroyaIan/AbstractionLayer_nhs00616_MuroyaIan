@@ -279,38 +279,14 @@ void GfxDX12::DrawIndexed(UINT indexNum) const noexcept
 //インスタンシング描画
 void GfxDX12::DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept
 {
-    static float fAngle = 0.0f;
-    fAngle += 0.025f;
-    if (fAngle > 3.14f)
-        fAngle -= 6.28f;
-    else if (fAngle < -3.14f)
-        fAngle += 6.28f;
-
-    dx::XMMATRIX mtxW = dx::XMMatrixRotationRollPitchYaw(fAngle, fAngle, 0.0f);
-    dx::XMMATRIX mtxV = dx::XMMatrixLookAtLH(
-        dx::XMVectorSet(0.0f, 0.0f, -5.0f, 0.0f),
-        dx::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f),
-        dx::XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
-    dx::XMMATRIX mtxP = dx::XMMatrixPerspectiveFovLH(6.28f / 360.0f * 60.0f, 16.0f / 9.0f, 0.5f, 40.0f);
-    //m_aMatrix[0] = dx::XMMatrixTranspose(mtxW * mtxV * mtxP);
-
-    //データマップ
-    dx::XMMATRIX* pMtxMap = nullptr;
-    m_pConstBuffer->Map(0u,             //ミップマップ設定
-        nullptr,                        //範囲指定⇒nullptr(全範囲)
-        (void**)&pMtxMap);
-    std::copy(std::begin(m_aMatrix), std::end(m_aMatrix), pMtxMap);
-    m_pConstBuffer->Unmap(0u, nullptr);
-
-
-
+    return;
     //バインド処理
-    m_pCmdList->SetDescriptorHeaps(1u, m_pBufferHeaps.GetAddressOf());                              //ディスクリプタヒープ指定
+    //m_pCmdList->SetDescriptorHeaps(1u, m_pBufferHeaps.GetAddressOf());                              //ディスクリプタヒープ指定
     //m_pCmdList->SetGraphicsRootSignature(m_pRootSignature.Get());
-    D3D12_GPU_DESCRIPTOR_HANDLE gdhBuffer = m_pBufferHeaps->GetGPUDescriptorHandleForHeapStart();   //ルートパラメータと関連付け
-    m_pCmdList->SetGraphicsRootDescriptorTable(0u, gdhBuffer);
-    gdhBuffer.ptr += m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-    m_pCmdList->SetGraphicsRootDescriptorTable(1u, gdhBuffer);
+    //D3D12_GPU_DESCRIPTOR_HANDLE gdhBuffer = m_pBufferHeaps->GetGPUDescriptorHandleForHeapStart();   //ルートパラメータと関連付け
+    //m_pCmdList->SetGraphicsRootDescriptorTable(0u, gdhBuffer);
+    //gdhBuffer.ptr += m_pDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+    //m_pCmdList->SetGraphicsRootDescriptorTable(1u, gdhBuffer);
 
     //m_pCmdList->SetPipelineState(m_pGfxPipelineState.Get());
     //m_pCmdList->IASetVertexBuffers(0u, 1u, &m_viewVB);
@@ -538,7 +514,7 @@ void GfxDX12::BindPS()
 void GfxDX12::BindLayout()
 {
     //頂点レイアウト作成
-    m_pLayouts.push_back({ "POSITION", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u,                           0u, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0u });
+    m_pLayouts.push_back({ "POSITION", 0u, DXGI_FORMAT_R32G32B32_FLOAT, 0u, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0u });
     m_pLayouts.push_back({ "TEXCOORD", 0u, DXGI_FORMAT_R32G32_FLOAT,    0u, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0u });
 }
 

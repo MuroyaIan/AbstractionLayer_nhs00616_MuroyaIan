@@ -6,10 +6,10 @@
 
 //===== インクルード部 =====
 #include <Win/Win_App.h>
-//#include <Draw/Draw_CameraMgr.h>
-//#include <Draw/Draw_LightMgr.h>
-//#include <Draw/Draw_Shape.h>
-//#include <Draw/Draw_DirectionalLight.h>
+#include <Draw/Draw_CameraMgr.h>
+#include <Draw/Draw_LightMgr.h>
+#include <Draw/Draw_Shape.h>
+#include <Draw/Draw_DirectionalLight.h>
 #include <Tool/Tool_Math.h>
 
 namespace dx = DirectX;
@@ -25,46 +25,46 @@ constexpr int WND_POS_Y = 50;                           //Window左上座標
 App64::App64() :
     m_window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH),
     static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_message(), m_time(),
-    m_pGfxMgr(), /*m_pShaderMgr(), m_pGfx(),*/ m_pInputMgr(), /*m_pCameraMgr(), m_pLightMgr(),*/
-    /*m_aDrawer(0),*/ m_shapeID(0), /*m_pSunLight(),*/ m_rot()
+    m_pGfxMgr(), m_pShaderMgr(), m_pGfx(), m_pInputMgr(), m_pCameraMgr(), m_pLightMgr(),
+    m_aDrawer(0), m_shapeID(0), m_pSunLight(), m_rot()
 {
     //DirectX初期化
     m_pGfxMgr = std::make_unique<GfxMgr>(m_window);
 
     //シェーダMgr初期化
-    //m_pShaderMgr = std::make_unique<DrawShaderMgr>(*m_pDX);
+    m_pShaderMgr = std::make_unique<DrawShaderMgr>(*m_pGfxMgr->GetGfx());
 
-    //描画データ初期化
-    //m_pGfx = std::make_unique<GfxPack>(*m_pDX, *m_pShaderMgr);
+    ////描画データ初期化
+    m_pGfx = std::make_unique<GfxPack>(*m_pGfxMgr->GetGfx(), *m_pShaderMgr);
 
     //入力マネージャ初期化
     m_pInputMgr = std::make_unique<ToolInputMgr>(*this);
 
     //カメラマネージャ初期化
-    //m_pCameraMgr = std::make_unique<DrawCameraMgr>(*this);
+    m_pCameraMgr = std::make_unique<DrawCameraMgr>(*this);
 
     //ライトマネージャ初期化
-    //m_pLightMgr = std::make_unique<DrawLightMgr>(*this);
+    m_pLightMgr = std::make_unique<DrawLightMgr>(*this);
 
     //【描画テスト】
-    //m_aDrawer.reserve(7);
-    //m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::BOX));
-    //m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::PYRAMID));
-    //m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::CONE));
-    //m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::PRISM));
-    //m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::CYLINDER));
-    //m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::SPHERE));
-    //m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::PLANE));
+    m_aDrawer.reserve(7);
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::BOX));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::PYRAMID));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::CONE));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::PRISM));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::CYLINDER));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::SPHERE));
+    m_aDrawer.push_back(std::make_unique<DrawShapeModel>(*m_pGfx, GfxVsdMaker::Shape::PLANE));
 
     //生成処理
-    //for (auto& d : m_aDrawer)
-    //    d->AddInstance();
+    for (auto& d : m_aDrawer)
+        d->AddInstance();
 
     //カメラ初期化
-    //m_pCameraMgr->SetCamera(DrawCameraMgr::CameraID::TEST);
+    m_pCameraMgr->SetCamera(DrawCameraMgr::CameraID::TEST);
 
     //太陽光初期化
-    //m_pSunLight = std::make_unique<DrawDirectionalLight>(*this);
+    m_pSunLight = std::make_unique<DrawDirectionalLight>(*this);
 
     m_window.m_mouse.SetRawInput(true);
 }
@@ -76,7 +76,7 @@ App64::~App64()
 //アプリケーション実行
 int App64::Run()
 {
-    //ゲームループ
+    //実行ループ
     while (true)
     {
         //メッセージ処理
@@ -91,6 +91,10 @@ int App64::Run()
             DispatchMessage(&m_message);
         }
 
+        //API判定（終了待ち）
+        if (GfxMain::CheckApiVer(GfxMain::API_MODE::NONE))
+            continue;
+
         //FPS判定
         if (!m_time.Update())
             continue;
@@ -98,6 +102,12 @@ int App64::Run()
         //ゲーム処理
         Update();
         Draw();
+
+        //GfxAPI切替（ウィンドウ再起動）
+        if (m_pInputMgr->m_kb.GetTrigger(VK_Q))
+            m_pGfxMgr->SetAPI(GfxMain::API_MODE::DX_11);
+        else if (m_pInputMgr->m_kb.GetTrigger(VK_E))
+            m_pGfxMgr->SetAPI(GfxMain::API_MODE::DX_12);
     }
 }
 
@@ -107,26 +117,15 @@ void App64::Update()
     //入力処理更新
     m_pInputMgr->Update();
 
-
-    if (m_pInputMgr->m_kb.GetTrigger(VK_Q))
-    {
-        m_pGfxMgr->SetAPI(GfxMain::API_MODE::DX_11);
-    }
-    else if (m_pInputMgr->m_kb.GetTrigger(VK_E))
-    {
-        m_pGfxMgr->SetAPI(GfxMain::API_MODE::DX_12);
-    }
-
-
     //カメラマネージャ更新
-    //m_pCameraMgr->Update();
+    m_pCameraMgr->Update();
 
     //太陽光更新
-    //m_pSunLight->Update();
+    m_pSunLight->Update();
 
     //3D更新
-    //for (auto& d : m_aDrawer)
-    //    d->Update();
+    for (auto& d : m_aDrawer)
+        d->Update();
 
     //モデル回転制御
     if (m_pInputMgr->m_mouse.GetPress(VK_LBUTTON) && !m_window.IsUsingImgui()) {
@@ -141,8 +140,8 @@ void App64::Update()
             m_rot.y -= 360;
         else if (m_rot.y < -180)
             m_rot.y += 360;
-        //DrawShapeModel::m_rotX = m_rot.x;
-        //DrawShapeModel::m_rotY = m_rot.y;
+        DrawShapeModel::m_rotX = m_rot.x;
+        DrawShapeModel::m_rotY = m_rot.y;
     }
 }
 
@@ -150,17 +149,19 @@ void App64::Update()
 void App64::Draw()
 {
     //描画開始
-    m_pGfxMgr->GetGfx()->BeginFrame(0.0f, 0.0f, 0.0f);
-    //m_pDX->DrawInstanced(3u, 1u);
+    if (GfxMain::CheckApiVer(GfxMain::API_MODE::DX_11))
+        m_pGfxMgr->GetGfx()->BeginFrame(1.0f, 0.0f, 0.0f);
+    else if (GfxMain::CheckApiVer(GfxMain::API_MODE::DX_12))
+        m_pGfxMgr->GetGfx()->BeginFrame(0.0f, 0.0f, 0.0f);
 
     //カメラマネージャ描画
-    //m_pCameraMgr->Draw();
+    m_pCameraMgr->Draw();
 
     //ライトマネージャ描画
-    //m_pLightMgr->Draw();
+    m_pLightMgr->Draw();
 
     //3D描画
-    //m_aDrawer[m_shapeID]->Draw(*m_pDX);
+    m_aDrawer[m_shapeID]->Draw(*m_pGfxMgr->GetGfx());
 
 #ifdef IMGUI
 

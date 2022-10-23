@@ -24,7 +24,7 @@ namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
 //===== 静的メンバ変数 =====
-GfxMain::API_MODE GfxMain::m_api = GfxMain::API_MODE::DX_11;    //GfxApiモード
+GfxMain::API_MODE GfxMain::m_api = GfxMain::API_MODE::NONE;     //GfxApiモード
 
 //===== クラス実装 =====
 GfxMain::GfxMain(WinWindow& window) :
@@ -94,4 +94,13 @@ GfxMain::~GfxMain() noexcept
 void GfxMain::SetDrawMode(DRAW_MODE mode) noexcept
 {
     m_drawMode = mode;
+}
+
+//グラフィックAPIのモード確認
+bool GfxMain::CheckApiVer(API_MODE mode) noexcept
+{
+    if (m_api == mode)
+        return true;
+    else
+        return false;
 }

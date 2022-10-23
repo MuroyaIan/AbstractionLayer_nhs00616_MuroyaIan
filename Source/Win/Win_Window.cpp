@@ -7,6 +7,7 @@
 //===== インクルード部 =====
 #include <Win/Win_Window.h>
 #include <Resource.h>
+#include <Gfx/Gfx_Main.h>
 
 #ifdef IMGUI
 #
@@ -356,8 +357,9 @@ LRESULT WinWindow::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) n
             if (MessageBox(hWnd, L"ウィンドウを閉じますか？", L"終了確認",
                 MB_OKCANCEL | MB_ICONQUESTION) != IDOK)
                 return 0;
-            PostQuitMessage(0);             //WM_QUITを生成
-            return 0;                       //デストラクタ呼び出し
+            GfxMain::m_api= GfxMain::API_MODE::NONE;    //GfxAPI終了
+            PostQuitMessage(0);                         //WM_QUITを生成
+            return 0;                                   //デストラクタ呼び出し
 
         //ウィンドウアクティブ判定
         case WM_ACTIVATE:

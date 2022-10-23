@@ -23,18 +23,20 @@ public:
     //--------------------------------------------------------------------------
     /// コンストラクタ
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] data     テクスチャのデータ
-    /// \param[in] heapMgr  ヒープマネージャ
-    /// \param[in] slot     入力スロット
+    /// \param[in] gfx          グラフィック処理の参照先
+    /// \param[in] data         テクスチャのデータ
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
+    /// \param[in] slotVS       入力スロット(VS)
+    /// \param[in] slotPS       入力スロット(PS)
     ///
     /// \return void
     //--------------------------------------------------------------------------
     GfxTexture(
         /*[in]*/ GfxMain& gfx,
         /*[in]*/ ToolTexLoader::TexData& data,
-        /*[in]*/ GfxHeapMgr& heapMgr,
-        /*[in]*/ UINT slot = 0u);
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo,
+        /*[in]*/ int slotVS = -1,
+        /*[in]*/ int slotPS = -1);
 
     //--------------------------------------------------------------------------
     /// デストラクタ
@@ -54,16 +56,14 @@ public:
         /*[in]*/ GfxMain& gfx) noexcept override;
 
     //--------------------------------------------------------------------------
-    /// ヒープ登録
+    /// ビュー情報登録
     ///
-    /// \param[in] gfx      グラフィック処理の参照先
-    /// \param[in] slot     入力スロット
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
-    void BindHeap(
-        /*[in]*/ GfxMain& gfx,
-        /*[in]*/ UINT slot);
+    void AddViewInfo(
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo) const noexcept;
 
     //--------------------------------------------------------------------------
 
@@ -88,26 +88,30 @@ protected:
     ///
     /// \param[in] gfx          グラフィック処理の参照先
     /// \param[in] data         テクスチャのデータ
+    /// \param[in] pheapInfo    ヒープ登録用情報のポインタ
     ///
     /// \return void
     //--------------------------------------------------------------------------
     void CreateBufferDX12(
         /*[in]*/ GfxMain& gfx,
-        /*[in]*/ ToolTexLoader::TexData& data);
+        /*[in]*/ ToolTexLoader::TexData& data,
+        /*[in]*/ GfxHeapMgr::HeapInfo* pheapInfo);
 
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     Microsoft::WRL::ComPtr<ID3D11ShaderResourceView> m_pTextureView;
     Microsoft::WRL::ComPtr<ID3D12Resource> m_pTextureBuffer;
-    GfxHeapMgr& m_heapMgr;
-    UINT m_slot;
+    D3D12_SHADER_RESOURCE_VIEW_DESC m_srvd;
+    int m_slotVS;
+    int m_slotPS;
     //--------------------------------------------------------------------------
 
     /// <summary>
     /// m_pTextureView      SRVのポインタ
     /// m_pTextureBuffer    テクスチャバッファのポインタ
-    /// m_heapMgr           ヒープマネージャの参照
-    /// m_slot              入力スロット
+    /// m_srvd              SRV情報
+    /// m_slotVS            入力スロット(VS)
+    /// m_slotPS            入力スロット(PS)
     /// </summary>
 };

@@ -22,6 +22,8 @@ GfxCBuffMaterial::GfxCBuffMaterial(GfxMain& gfx, GfxHeapMgr::HeapInfo* pheapInfo
     m_refCount++;
     if (!m_pPcBuff)
         m_pPcBuff = std::make_unique<pcbMta>(gfx, pheapInfo, static_cast<UINT>(CB_SLOT_PS::MATERIAL));
+    else
+        m_pPcBuff->AddViewInfo(pheapInfo);
 }
 
 GfxCBuffMaterial::~GfxCBuffMaterial() noexcept

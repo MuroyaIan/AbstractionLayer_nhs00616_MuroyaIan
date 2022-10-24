@@ -46,38 +46,14 @@ private:
     HANDLE m_fenceEvent;                                                    //フェンス用イベント
     D3D12_RESOURCE_BARRIER m_resourceBarrier;                               //リソースバリア
 
+#ifdef IMGUI
 
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pHeapImgui;
 
-    Microsoft::WRL::ComPtr<ID3D12Resource> m_pVertexBuffer;                 //頂点バッファ
-    D3D12_VERTEX_BUFFER_VIEW m_viewVB;                                      //頂点バッファビュー
-    Microsoft::WRL::ComPtr<ID3D12Resource> m_pIndexBuffer;                  //インデックスバッファ
-    D3D12_INDEX_BUFFER_VIEW m_viewIB;                                       //インデックスバッファビュー
-    Microsoft::WRL::ComPtr<ID3DBlob> m_pBlobVS;                             //VSバイナリ
-    Microsoft::WRL::ComPtr<ID3DBlob> m_pBlobPS;                             //PSバイナリ
-    std::vector<D3D12_INPUT_ELEMENT_DESC> m_pLayouts;                       //インプットレイアウト
-    Microsoft::WRL::ComPtr<ID3D12RootSignature> m_pRootSignature;           //ルールシグネチャ
-    Microsoft::WRL::ComPtr<ID3D12PipelineState> m_pGfxPipelineState;        //GFXパイプラインステート
+#endif // IMGUI
+
     D3D12_VIEWPORT m_viewport;
     D3D12_RECT m_scissorRect;
-
-    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> m_pBufferHeaps;            //バッファ用ヒープ
-    Microsoft::WRL::ComPtr<ID3D12Resource> m_pTextureBuffer;                //テクスチャバッファ
-    Microsoft::WRL::ComPtr<ID3D12Resource> m_pConstBuffer;                  //定数バッファ（変換行列）
-    std::vector<DirectX::XMMATRIX> m_aMatrix;                               //変換行列
-
-    //プロトタイプ宣言
-    void BindVertexBuffer();
-    void BindIndexBuffer();
-    void BindVS();
-    void BindPS();
-    void BindLayout();
-    void BindRootSignature();
-    void BindPipelineState();
-
-    void BindBufferHeaps();
-    void BindTextureBuffer();
-    void BindConstBuffer();
-    std::vector<Vertex> MakeBox();
 
     //権限指定
     friend class GfxBinder;

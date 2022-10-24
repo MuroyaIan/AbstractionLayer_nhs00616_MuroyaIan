@@ -63,7 +63,7 @@
 #include <sstream>          // 文字列ストリーム
 
 //===== 定数・マクロ定義 =====
-//#define IMGUI                       // ImGui使用
+#define IMGUI                       // ImGui使用
 constexpr bool IS_DEBUG = true;     // デバッグモード
 
 //デバッグ用

@@ -7,6 +7,13 @@
 //===== インクルード部 =====
 #include <Gfx/Gfx_dx11.h>
 
+#ifdef IMGUI
+#
+#   include <3rd_Party/ImGui/backends/imgui_impl_win32.h>
+#   include <3rd_Party/ImGui/backends/imgui_impl_dx11.h>
+#
+#endif // IMGUI
+
 namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 

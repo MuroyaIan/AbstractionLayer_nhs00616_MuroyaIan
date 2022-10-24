@@ -22,6 +22,8 @@ GfxCBuffMtxVP::GfxCBuffMtxVP(GfxMain& gfx, GfxHeapMgr::HeapInfo* pheapInfo) : Gf
     m_refCount++;
     if (!m_pVcBuff)
         m_pVcBuff = std::make_unique<vcbMtx>(gfx, pheapInfo, static_cast<UINT>(CB_SLOT_VS::CAMERA));
+    else
+        m_pVcBuff->AddViewInfo(pheapInfo);
 }
 
 GfxCBuffMtxVP::~GfxCBuffMtxVP() noexcept

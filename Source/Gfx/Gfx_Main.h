@@ -101,20 +101,19 @@ protected:
     Microsoft::WRL::ComPtr<IDXGIFactory6> m_pFactory;   //DXGIファクトリ
     Microsoft::WRL::ComPtr<IDXGIAdapter> m_pAdapter;    //アダプター
 
+#ifdef IMGUI
+
+    bool m_bDrawImGui = true;                           //ImGUI描画制御
+
+#endif // IMGUI
+
 private:
 
     //変数宣言
     DRAW_MODE m_drawMode;                               //描画モード
     DirectX::XMFLOAT4X4 m_mtxView;                      //ビュー行列（カメラ）
     DirectX::XMFLOAT4X4 m_mtxProjection;                //投影行列
-
     static API_MODE m_api;                              //GfxApiモード
-
-#ifdef IMGUI
-
-    bool m_bDrawImGui = true;                           //ImGUI描画制御
-
-#endif // IMGUI
 
     //権限指定
     friend class WinCheckGfx;

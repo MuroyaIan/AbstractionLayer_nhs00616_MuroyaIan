@@ -7,13 +7,6 @@
 //===== インクルード部 =====
 #include <Gfx/Gfx_Main.h>
 
-#ifdef IMGUI
-#
-#   include <3rd_Party/ImGui/backends/imgui_impl_win32.h>
-#   include <3rd_Party/ImGui/backends/imgui_impl_dx11.h>
-#
-#endif // IMGUI
-
 //===== 追加ライブラリ =====
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dCompiler.lib")

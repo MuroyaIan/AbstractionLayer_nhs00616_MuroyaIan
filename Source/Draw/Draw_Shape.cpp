@@ -31,18 +31,23 @@ DrawShapeModel::DrawShapeModel(GfxPack& gfx, GfxVsdMaker::Shape type) :
     AddBind(std::make_unique<GfxIndexBuffer>(m_gfx.m_dx, model.m_indices));
 
     //ヒープ設定
-    GfxHeapMgr::HeapInfo heapInfo(1, 0, 2, 1);
+    std::unique_ptr<GfxHeapMgr::HeapInfo> pheapInfo;
+    if (m_type == GfxVsdMaker::Shape::BOX)
+        pheapInfo = std::make_unique<GfxHeapMgr::HeapInfo>(1, 0, 2, 1);
+    else
+        pheapInfo = std::make_unique<GfxHeapMgr::HeapInfo>(1, 0, 2, 0);
+
 
     //CBV登録（カメラ）
     GfxCBuffMtxVP* pCamera = dynamic_cast<GfxCBuffMtxVP*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::CB_VS_MTX_VP).get());
-    pCamera->AddViewInfo(&heapInfo);
+    pCamera->AddViewInfo(pheapInfo.get());
 
     //CBV登録（ライト）
     GfxPixelCBuffer<DrawLightMgr::LightPack>* pLight = dynamic_cast<GfxPixelCBuffer<DrawLightMgr::LightPack>*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::CB_PS_LIGHT).get());
-    pLight->AddViewInfo(&heapInfo);
+    pLight->AddViewInfo(pheapInfo.get());
 
     //定数バッファ作成（マテリアル）
-    AddBind(std::make_unique<GfxCBuffMaterial>(m_gfx.m_dx, &heapInfo, m_material));
+    AddBind(std::make_unique<GfxCBuffMaterial>(m_gfx.m_dx, pheapInfo.get(), m_material));
 
     //テクスチャバッファ作成
     if (m_type == GfxVsdMaker::Shape::BOX) {
@@ -68,21 +73,25 @@ DrawShapeModel::DrawShapeModel(GfxPack& gfx, GfxVsdMaker::Shape type) :
         data.pImageData = color;
         data.nWidth = 8;
         data.nHeight = 8;
-        AddBind(std::make_unique<GfxTexture>(m_gfx.m_dx, data, &heapInfo, -1, 0));
+        AddBind(std::make_unique<GfxTexture>(m_gfx.m_dx, data, pheapInfo.get(), -1, 0));
     }
 
     //ディスクリプタヒープ作成
     GfxHeapMgr* pHeapMgr = nullptr;
-    AddBind(std::make_unique<GfxHeapMgr>(m_gfx.m_dx, heapInfo, &pHeapMgr));
+    AddBind(std::make_unique<GfxHeapMgr>(m_gfx.m_dx, *pheapInfo, &pHeapMgr));
 
     //ルートシグネチャ初期化
     GfxSampler* pSampler = dynamic_cast<GfxSampler*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::SAMPLER).get());
     GfxRootSignature* pRS = nullptr;
-    AddBind(std::make_unique<GfxRootSignature>(m_gfx.m_dx, heapInfo, *pSampler, *pHeapMgr, &pRS));
+    AddBind(std::make_unique<GfxRootSignature>(m_gfx.m_dx, *pheapInfo, *pSampler, *pHeapMgr, &pRS));
 
     //パイプラインステート初期化
     GfxVertexShader* pVS = dynamic_cast<GfxVertexShader*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::VS_INSTANCE_PHONG).get());
-    GfxPixelShader* pPS = dynamic_cast<GfxPixelShader*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::PS_PHONG).get());
+    GfxPixelShader* pPS = nullptr;
+    if (m_type == GfxVsdMaker::Shape::BOX)
+        pPS = dynamic_cast<GfxPixelShader*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::PS_PHONG).get());
+    else
+        pPS = dynamic_cast<GfxPixelShader*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::PS_PHONG_NO_TEX).get());
     GfxInputLayout* pLayout = dynamic_cast<GfxInputLayout*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::IL_INSTANCE_PHONG).get());
     AddBind(std::make_unique<GfxPipelineState>(m_gfx.m_dx, *pVS->GetBytecode(), *pPS->GetBytecode(), pLayout->GetLayout(), pRS->GetRootSignature()));
 

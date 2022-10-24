@@ -32,93 +32,109 @@ GfxRootSignature::GfxRootSignature(GfxMain& gfx, GfxHeapMgr::HeapInfo& heapInfo,
     D3D12_VERSIONED_ROOT_SIGNATURE_DESC vrsd{};
     vrsd.Version = fdrs.HighestVersion;
 
+    //ディスクリプタレンジ設定
+    std::vector<D3D12_DESCRIPTOR_RANGE1> aDR1(0);
+    int vsCnt = 0;
+    int psCnt = 0;
+    if (heapInfo.slotCBV_VS.size() > 0) {
+        D3D12_DESCRIPTOR_RANGE1 dr1{};
+        dr1.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+        dr1.NumDescriptors = static_cast<UINT>(heapInfo.slotCBV_VS.size());
+        dr1.BaseShaderRegister = 0u;                                                    //最初の入力スロット
+        dr1.RegisterSpace = 0u;                                                         //合わせるためのスペース(?)
+        dr1.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+        aDR1.push_back(dr1);
+        vsCnt++;
+    }
+    if (heapInfo.slotSRV_VS.size() > 0) {
+        D3D12_DESCRIPTOR_RANGE1 dr1{};
+        dr1.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+        dr1.NumDescriptors = static_cast<UINT>(heapInfo.slotSRV_VS.size());
+        dr1.BaseShaderRegister = 0u;
+        dr1.RegisterSpace = 0u;
+        dr1.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+        aDR1.push_back(dr1);
+        vsCnt++;
+    }
+    if (heapInfo.slotCBV_PS.size() > 0) {
+        D3D12_DESCRIPTOR_RANGE1 dr1{};
+        dr1.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
+        dr1.NumDescriptors = static_cast<UINT>(heapInfo.slotCBV_PS.size());
+        dr1.BaseShaderRegister = 0u;
+        dr1.RegisterSpace = 0u;
+        dr1.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+        aDR1.push_back(dr1);
+        psCnt++;
+    }
+    if (heapInfo.slotSRV_PS.size() > 0) {
+        D3D12_DESCRIPTOR_RANGE1 dr1{};
+        dr1.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+        dr1.NumDescriptors = static_cast<UINT>(heapInfo.slotSRV_PS.size());
+        dr1.BaseShaderRegister = 0u;
+        dr1.RegisterSpace = 0u;
+        dr1.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+        aDR1.push_back(dr1);
+        psCnt++;
+    }
+
     //ルートパラメータ設定
-    D3D12_DESCRIPTOR_RANGE1 dr1[4]{};
-    D3D12_ROOT_PARAMETER1 rp1[2]{};
-    dr1[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-    dr1[0].NumDescriptors = static_cast<UINT>(heapInfo.slotCBV_VS.size());
-    if (dr1[0].NumDescriptors == 0)
-        dr1[0].NumDescriptors = 1;
-    dr1[0].BaseShaderRegister = 0u;                                                     //最初の入力スロット
-    dr1[0].RegisterSpace = 0u;                                                          //合わせるためのスペース(?)
-    dr1[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-    dr1[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    dr1[1].NumDescriptors = static_cast<UINT>(heapInfo.slotSRV_VS.size());
-    if (dr1[1].NumDescriptors == 0)
-        dr1[1].NumDescriptors = 1;
-    dr1[1].BaseShaderRegister = 0u;
-    dr1[1].RegisterSpace = 0u;
-    dr1[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-    dr1[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_CBV;
-    dr1[2].NumDescriptors = static_cast<UINT>(heapInfo.slotCBV_PS.size());
-    if (dr1[2].NumDescriptors == 0)
-        dr1[2].NumDescriptors = 1;
-    dr1[2].BaseShaderRegister = 0u;
-    dr1[2].RegisterSpace = 0u;
-    dr1[2].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-    dr1[3].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    dr1[3].NumDescriptors = static_cast<UINT>(heapInfo.slotSRV_PS.size());
-    if (dr1[3].NumDescriptors == 0)
-        dr1[3].NumDescriptors = 1;
-    dr1[3].BaseShaderRegister = 0u;
-    dr1[3].RegisterSpace = 0u;
-    dr1[3].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    std::vector<D3D12_ROOT_PARAMETER1> aRP1(0);
+    if (vsCnt > 0) {
+        D3D12_ROOT_PARAMETER1 rp1{};
+        rp1.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;     //タイプ
+        rp1.DescriptorTable.pDescriptorRanges = &aDR1[0];                   //ディスクリプタレンジのポインタ
+        rp1.DescriptorTable.NumDescriptorRanges = vsCnt;                    //ディスクリプタレンジ数
+        rp1.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;              //VSシェーダ利用許可
+        aRP1.push_back(rp1);
+    }
+    if (psCnt > 0) {
+        D3D12_ROOT_PARAMETER1 rp1{};
+        rp1.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+        rp1.DescriptorTable.pDescriptorRanges = &aDR1[vsCnt];
+        rp1.DescriptorTable.NumDescriptorRanges = psCnt;
+        rp1.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;               //PSシェーダ利用許可
+        aRP1.push_back(rp1);
+    }
 
-    rp1[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;  //タイプ
-    rp1[0].DescriptorTable.pDescriptorRanges = &dr1[0];                 //ディスクリプタレンジのポインタ
-    rp1[0].DescriptorTable.NumDescriptorRanges = 2u;                    //ディスクリプタレンジ数
-    rp1[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;           //VSシェーダ利用許可
-    rp1[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    rp1[1].DescriptorTable.pDescriptorRanges = &dr1[2];
-    rp1[1].DescriptorTable.NumDescriptorRanges = 2u;
-    rp1[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;            //PSシェーダ利用許可
+    //別バージョン(1.0)の場合の設定
+    std::vector<D3D12_DESCRIPTOR_RANGE> aDR(aDR1.size());
+    for (size_t i = 0, Cnt = aDR.size(); i < Cnt; i++) {
+        aDR[i].RangeType = aDR1[i].RangeType;
+        aDR[i].NumDescriptors = aDR1[i].NumDescriptors;
+        aDR[i].BaseShaderRegister = aDR1[i].BaseShaderRegister;
+        aDR[i].RegisterSpace = aDR1[i].RegisterSpace;
+        aDR[i].OffsetInDescriptorsFromTableStart = aDR1[i].OffsetInDescriptorsFromTableStart;
+    }
+    std::vector<D3D12_ROOT_PARAMETER> aRP(aRP1.size());
+    for (size_t i = 0, Cnt = aRP.size(); i < Cnt; i++) {
+        aRP[i].ParameterType = aRP1[i].ParameterType;
+        aRP[i].DescriptorTable.NumDescriptorRanges = aRP1[i].DescriptorTable.NumDescriptorRanges;
+        aRP[i].ShaderVisibility = aRP1[i].ShaderVisibility;
 
-    D3D12_DESCRIPTOR_RANGE dr[4]{};
-    D3D12_ROOT_PARAMETER rp[2]{};
-    dr[0].RangeType = dr1[0].RangeType;
-    dr[0].NumDescriptors = dr1[0].NumDescriptors;
-    dr[0].BaseShaderRegister = dr1[0].BaseShaderRegister;
-    dr[0].RegisterSpace = dr1[0].RegisterSpace;
-    dr[0].OffsetInDescriptorsFromTableStart = dr1[0].OffsetInDescriptorsFromTableStart;
-    dr[1].RangeType = dr1[1].RangeType;
-    dr[1].NumDescriptors = dr1[1].NumDescriptors;
-    dr[1].BaseShaderRegister = dr1[1].BaseShaderRegister;
-    dr[1].RegisterSpace = dr1[1].RegisterSpace;
-    dr[1].OffsetInDescriptorsFromTableStart = dr1[1].OffsetInDescriptorsFromTableStart;
-    dr[2].RangeType = dr1[2].RangeType;
-    dr[2].NumDescriptors = dr1[2].NumDescriptors;
-    dr[2].BaseShaderRegister = dr1[2].BaseShaderRegister;
-    dr[2].RegisterSpace = dr1[2].RegisterSpace;
-    dr[2].OffsetInDescriptorsFromTableStart = dr1[2].OffsetInDescriptorsFromTableStart;
-    dr[3].RangeType = dr1[3].RangeType;
-    dr[3].NumDescriptors = dr1[3].NumDescriptors;
-    dr[3].BaseShaderRegister = dr1[3].BaseShaderRegister;
-    dr[3].RegisterSpace = dr1[3].RegisterSpace;
-    dr[3].OffsetInDescriptorsFromTableStart = dr1[3].OffsetInDescriptorsFromTableStart;
-
-    rp[0].ParameterType = rp1[0].ParameterType;
-    rp[0].DescriptorTable.pDescriptorRanges = &dr[0];
-    rp[0].DescriptorTable.NumDescriptorRanges = rp1[0].DescriptorTable.NumDescriptorRanges;
-    rp[0].ShaderVisibility = rp1[0].ShaderVisibility;
-    rp[1].ParameterType = rp1[1].ParameterType;
-    rp[1].DescriptorTable.pDescriptorRanges = &dr[2];
-    rp[1].DescriptorTable.NumDescriptorRanges = rp1[1].DescriptorTable.NumDescriptorRanges;
-    rp[1].ShaderVisibility = rp1[1].ShaderVisibility;
+        if (aRP[i].ShaderVisibility == D3D12_SHADER_VISIBILITY_VERTEX)
+            aRP[i].DescriptorTable.pDescriptorRanges = &aDR[0];
+        else if (aRP[i].ShaderVisibility == D3D12_SHADER_VISIBILITY_PIXEL)
+            aRP[i].DescriptorTable.pDescriptorRanges = &aDR[vsCnt];
+    }
 
     //ルールシグネチャ作成
     wrl::ComPtr<ID3DBlob> pBlobRS;                                                              //バイナリコード作成
     wrl::ComPtr<ID3DBlob> pBlobErrorRS;
     if (vrsd.Version == D3D_ROOT_SIGNATURE_VERSION_1_1) {
-        vrsd.Desc_1_1.NumParameters = 2u;                                                       //ルートパラメータ
-        vrsd.Desc_1_1.pParameters = rp1;
+        if (aRP1.size() > 0) {
+            vrsd.Desc_1_1.NumParameters = static_cast<UINT>(aRP1.size());                       //ルートパラメータ
+            vrsd.Desc_1_1.pParameters = &aRP1[0];
+        }
         vrsd.Desc_1_1.NumStaticSamplers = 1u;                                                   //サンプラー
         vrsd.Desc_1_1.pStaticSamplers = sampler.GetSampler();
         vrsd.Desc_1_1.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;     //IA許可
         hr = D3D12SerializeVersionedRootSignature(&vrsd, &pBlobRS, &pBlobErrorRS);
     }
     else {
-        vrsd.Desc_1_0.NumParameters = 2u;
-        vrsd.Desc_1_0.pParameters = rp;
+        if (aRP.size() > 0) {
+            vrsd.Desc_1_0.NumParameters = static_cast<UINT>(aRP.size());
+            vrsd.Desc_1_0.pParameters = &aRP[0];
+        }
         vrsd.Desc_1_0.NumStaticSamplers = 1u;
         vrsd.Desc_1_0.pStaticSamplers = sampler.GetSampler();
         vrsd.Desc_1_0.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;

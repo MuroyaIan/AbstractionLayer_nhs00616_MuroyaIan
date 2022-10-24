@@ -31,7 +31,7 @@ DrawShapeModel::DrawShapeModel(GfxPack& gfx, GfxVsdMaker::Shape type) :
     AddBind(std::make_unique<GfxIndexBuffer>(m_gfx.m_dx, model.m_indices));
 
     //ヒープ設定
-    GfxHeapMgr::HeapInfo heapInfo(1, 1, 2, 1);
+    GfxHeapMgr::HeapInfo heapInfo(1, 0, 2, 1);
 
     //CBV登録（カメラ）
     GfxCBuffMtxVP* pCamera = dynamic_cast<GfxCBuffMtxVP*>(m_gfx.m_shaderMgr.GetBind(DrawShaderMgr::BinderID::CB_VS_MTX_VP).get());

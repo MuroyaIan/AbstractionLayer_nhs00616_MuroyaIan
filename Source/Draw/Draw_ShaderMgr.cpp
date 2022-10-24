@@ -22,34 +22,16 @@ DrawShaderMgr::DrawShaderMgr(GfxMain& gfx) :
         m_aBinder[static_cast<int>(BinderID::VS_INSTANCE_PHONG)] = std::move(pVS);
 
         //入力レイアウト作成
-        if (gfx.CheckApiVer(GfxMain::API_MODE::DX_11)) {
-            const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
-            {
-                { "POSITION",  0u, DXGI_FORMAT_R32G32B32_FLOAT,    0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0u },
-                { "TEXCOORD",  0u, DXGI_FORMAT_R32G32_FLOAT,       0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0u },
-                { "NORMAL",    0u, DXGI_FORMAT_R32G32B32_FLOAT,    0u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA,   0u },
-                { "WORLD_MTX", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1u },
-                { "WORLD_MTX", 1u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1u },
-                { "WORLD_MTX", 2u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1u },
-                { "WORLD_MTX", 3u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_INSTANCE_DATA, 1u }
-            };
-            m_aBinder[static_cast<int>(BinderID::IL_INSTANCE_PHONG)] =
-                std::make_unique<GfxInputLayout>(m_dx, ied, pvsBC);
-        }
-        else if (gfx.CheckApiVer(GfxMain::API_MODE::DX_12)) {
-            const std::vector<D3D12_INPUT_ELEMENT_DESC> ied =
-            {
-                { "POSITION",  0u, DXGI_FORMAT_R32G32B32_FLOAT,    0u, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,   0u },
-                { "TEXCOORD",  0u, DXGI_FORMAT_R32G32_FLOAT,       0u, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,   0u },
-                { "NORMAL",    0u, DXGI_FORMAT_R32G32B32_FLOAT,    0u, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,   0u },
-                { "WORLD_MTX", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1u },
-                { "WORLD_MTX", 1u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1u },
-                { "WORLD_MTX", 2u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1u },
-                { "WORLD_MTX", 3u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_INSTANCE_DATA, 1u }
-            };
-            m_aBinder[static_cast<int>(BinderID::IL_INSTANCE_PHONG)] =
-                std::make_unique<GfxInputLayout>(ied);
-        }
+        std::vector<GfxInputLayout::LayoutInfo> aLayout(0);
+        aLayout.push_back({ "POSITION",  0u, DXGI_FORMAT_R32G32B32_FLOAT,    0u, D3D11_APPEND_ALIGNED_ELEMENT, false, 0u });
+        aLayout.push_back({ "TEXCOORD",  0u, DXGI_FORMAT_R32G32_FLOAT,       0u, D3D11_APPEND_ALIGNED_ELEMENT, false, 0u });
+        aLayout.push_back({ "NORMAL",    0u, DXGI_FORMAT_R32G32B32_FLOAT,    0u, D3D11_APPEND_ALIGNED_ELEMENT, false, 0u });
+        aLayout.push_back({ "WORLD_MTX", 0u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D11_APPEND_ALIGNED_ELEMENT, true,  1u });
+        aLayout.push_back({ "WORLD_MTX", 1u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D11_APPEND_ALIGNED_ELEMENT, true,  1u });
+        aLayout.push_back({ "WORLD_MTX", 2u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D11_APPEND_ALIGNED_ELEMENT, true,  1u });
+        aLayout.push_back({ "WORLD_MTX", 3u, DXGI_FORMAT_R32G32B32A32_FLOAT, 1u, D3D11_APPEND_ALIGNED_ELEMENT, true,  1u });
+        m_aBinder[static_cast<int>(BinderID::IL_INSTANCE_PHONG)] =
+            std::make_unique<GfxInputLayout>(m_dx, aLayout, pvsBC);
     }
 
     //プリミティブトポロジー作成

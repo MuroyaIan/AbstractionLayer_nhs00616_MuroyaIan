@@ -16,6 +16,30 @@ class GfxInputLayout : public GfxBinder
 {
 public:
 
+    //レイアウト情報
+    struct LayoutInfo
+    {
+        //----------------------------------------------------------------------
+        LPCSTR semanticName;
+        UINT semanticIndex;
+        DXGI_FORMAT format;
+        UINT inputSlot;
+        UINT alignedByteOffset;
+        bool isPerInstanceData;
+        UINT instanceDataStepRate;
+        //----------------------------------------------------------------------
+
+        /// <summary>
+        /// semanticName            セマンティック名
+        /// semanticIndex           セマンティックインデックス
+        /// format                  レイアウトフォーマット
+        /// inputSlot               入力スロット
+        /// alignedByteOffset       バイトオフセット
+        /// isPerVertexData         頂点ごとの情報かどうか
+        /// instanceDataStepRate    インスタンス情報の使用レート
+        /// </summary>
+    };
+
     //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
@@ -29,18 +53,8 @@ public:
     //--------------------------------------------------------------------------
     GfxInputLayout(
         /*[in]*/ GfxMain& gfx,
-        /*[in]*/ const std::vector<D3D11_INPUT_ELEMENT_DESC>& layout,
+        /*[in]*/ const std::vector<LayoutInfo>& layout,
         /*[in]*/ ID3DBlob* pVertexShaderBytecode);
-
-    //--------------------------------------------------------------------------
-    /// コンストラクタ
-    ///
-    /// \param[in] layout                   レイアウト情報
-    ///
-    /// \return void
-    //--------------------------------------------------------------------------
-    GfxInputLayout(
-        /*[in]*/ const std::vector<D3D12_INPUT_ELEMENT_DESC>& layout);
 
     //--------------------------------------------------------------------------
     /// デストラクタ
@@ -72,6 +86,35 @@ public:
     //--------------------------------------------------------------------------
 
 protected:
+
+    //--------------------------------------------------------------------------
+
+
+    //--------------------------------------------------------------------------
+    /// レイアウト作成
+    ///
+    /// \param[in] gfx                      グラフィック処理の参照先
+    /// \param[in] layout                   レイアウト情報
+    /// \param[in] pVertexShaderBytecode    頂点シェーダの情報
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void CreateLayoutDX11(
+        /*[in]*/ GfxMain& gfx,
+        /*[in]*/ const std::vector<LayoutInfo>& layout,
+        /*[in]*/ ID3DBlob* pVertexShaderBytecode);
+
+    //--------------------------------------------------------------------------
+    /// レイアウト作成
+    ///
+    /// \param[in] layout                   レイアウト情報
+    ///
+    /// \return void
+    //--------------------------------------------------------------------------
+    void CreateLayoutDX12(
+        /*[in]*/ const std::vector<LayoutInfo>& layout);
+
+    //--------------------------------------------------------------------------
 
     //--------------------------------------------------------------------------
     Microsoft::WRL::ComPtr<ID3D11InputLayout> m_pInputLayout;

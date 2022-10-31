@@ -45,6 +45,35 @@ void InitGfx();                         //GfxAPI更新
 void Update();
 void Draw();
 
+void BindVertexIndexBuffer();
+void BindShader();
+void BindTexture();
+
+unsigned int VAO;
+unsigned int VBO;
+unsigned int EBO;
+unsigned int instanceVBO;
+unsigned int instanceVBO2;
+unsigned int shaderProgram;
+unsigned int texture;
+
+struct Vertex
+{
+	struct Pos
+	{
+		float x, y, z;
+	};
+
+	struct Tex
+	{
+		float u, v;
+	};
+
+	Pos pos;
+	Tex uv;
+};
+std::vector<Vertex> MakeBox();
+
 
 
 //エントリーポイント
@@ -85,11 +114,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 #ifdef _DEBUG
 
         //エラー処理
-        IDXGIDebug1* pDebugDxgi;
-        if (SUCCEEDED(DXGIGetDebugInterface1(0u, IID_PPV_ARGS(&pDebugDxgi)))) {
-            pDebugDxgi->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
-            pDebugDxgi->Release();
-        }
+        Microsoft::WRL::ComPtr<IDXGIDebug1> pDebugDxgi;
+        if (SUCCEEDED(DXGIGetDebugInterface1(0u, IID_PPV_ARGS(&pDebugDxgi))))
+            pDebugDxgi->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
 
 #endif // _DEBUG
 
@@ -314,6 +341,361 @@ void Draw()
     //バッファクリア
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //描画処理
+	//頂点・インデックスバッファ設定
+	BindVertexIndexBuffer();
 
+	//シェーダ設定
+	BindShader();
+
+	//テクスチャ設定
+	BindTexture();
+
+	//テクスチャセット
+	glActiveTexture(GL_TEXTURE0);				//テクスチャセット（ユニットは最大16個）
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	//シェーダプログラムセット
+	glUseProgram(shaderProgram);
+
+
+
+	//変換行列処理(mtxW,V,P)
+	glm::mat4 model(1.0f);
+	//model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	//model = glm::rotate(model, static_cast<float>(glfwGetTime()), glm::vec3(0.0f, 0.0f, 1.0f));
+	model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+
+	glm::mat4 view(1.0f);
+	//view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+
+	glm::mat4 projection(1.0f);
+	projection = glm::perspective(glm::radians(60.0f), 16.0f / 9.0f, 0.1f, 100.0f);
+
+	int modelLoc = glGetUniformLocation(shaderProgram, "model");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	modelLoc = glGetUniformLocation(shaderProgram, "view");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(view));
+	modelLoc = glGetUniformLocation(shaderProgram, "projection");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(projection));
+
+
+
+	//描画処理
+	glBindVertexArray(VAO);
+	glDrawElementsInstanced(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0, 100);
+	glBindVertexArray(0);
+
+	//終了処理
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	glDeleteProgram(shaderProgram);
+}
+
+//頂点・インデックスバッファ設定
+void BindVertexIndexBuffer()
+{
+	//頂点配列Obj作成
+	glGenVertexArrays(1, &VAO);
+	glBindVertexArray(VAO);
+
+	std::vector<Vertex> data = MakeBox();
+	unsigned int indices[]{
+		 0,  2,  1,		 2,  3,  1,
+		 4,  6,  5,		 6,  7,  5,
+		 8, 10,  9,		10, 11,  9,
+		12, 14, 13,		14, 15, 13,
+		16, 18, 17,		18, 19, 17,
+		20, 22, 21,		22, 23, 21
+	};
+	glGenBuffers(1, &VBO);														//作成
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);											//バインド
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * data.size(), data.data(), GL_STATIC_DRAW);	//更新
+
+	//インデックスバッファ作成
+	glGenBuffers(1, &EBO);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	//(直前にバインドしたVBO情報とリンク)
+	//IL設定(頂点位置)
+	glVertexAttribPointer(0,		//レイアウト位置(location)
+		3,							//頂点ごとのデータ数
+		GL_FLOAT,					//データの型
+		GL_FALSE,					//正規化するかどうか
+		5 * sizeof(float),			//頂点ごとのデータサイズ(stride)
+		(void*)0);					//データの読込開始位置
+	glEnableVertexAttribArray(0);	//有効化
+
+	//IL設定(UV座標)
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+
+
+	//インスタンスバッファ作成
+	glm::vec2 translations[100];
+	glm::mat4 models[100];
+	int index = 0;
+	float offset = 2.0f;
+	for (int y = 0; y < 10; y++) {
+		for (int x = 0; x < 10; x++) {
+			glm::vec2 translation{};
+			translation.x = (float)x * offset;
+			translation.y = (float)y * offset;
+			translations[index] = translation;
+			glm::mat4 model(1.0f);
+			models[index] = glm::rotate(model, glm::radians(1.0f + index), glm::vec3((float)(rand() % 10), (float)(rand() % 10), (float)(rand() % 10)));
+			index++;
+		}
+	}
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glGenBuffers(1, &instanceVBO);
+	glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * 100, &translations[0], GL_STATIC_DRAW);
+
+	//IL設定(インスタンス情報)
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(2);
+	glVertexAttribDivisor(2, 1);
+
+
+
+	//glBindBuffer(GL_ARRAY_BUFFER, 0);
+	//glGenBuffers(1, &instanceVBO2);
+	//glBindBuffer(GL_ARRAY_BUFFER, instanceVBO2);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * 100, &models[0], GL_STATIC_DRAW);
+
+	//glVertexAttribPointer(3, 16, GL_FLOAT, GL_FALSE, 16 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(3);
+	//glVertexAttribDivisor(2, 1);
+
+
+
+	//バインド解除（念の為）
+	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);	//VAOより先にバインド解除はNG
+}
+
+//シェーダ設定
+void BindShader()
+{
+	//頂点シェーダ作成
+	std::string vsSource;
+	std::ifstream vss("Source/Shader/glsl/VS_Test.glsl", std::ios::in);
+	if (vss.is_open()) {
+		std::stringstream sstr;
+		sstr << vss.rdbuf();
+		vsSource = sstr.str();
+		vss.close();
+	}
+
+	//シェーダObj作成
+	unsigned int vertexShader;
+	vertexShader = glCreateShader(GL_VERTEX_SHADER);
+
+	//コンパイル
+	char const* pVS = vsSource.c_str();
+	glShaderSource(vertexShader,
+		1,							//リソース配列の要素数
+		&pVS,						//リソース配列のポインタ
+		NULL);						//リソース配列のサイズ
+	glCompileShader(vertexShader);
+
+#ifdef _DEBUG
+
+	{
+		//デバッグ情報
+		int  success;
+		char infoLog[512]{};
+		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+		if (!success) {
+			glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+			std::wostringstream oss;
+			oss << "Error : Vertex Shader Compilation Failed!\n" << infoLog << std::endl;
+			PrintD(oss.str().c_str());
+		}
+	}
+
+#endif // _DEBUG
+
+
+
+	//ピクセルシェーダ作成
+	std::string psSource;
+	std::ifstream pss("Source/Shader/glsl/PS_Test.glsl", std::ios::in);
+	if (pss.is_open()) {
+		std::stringstream sstr;
+		sstr << pss.rdbuf();
+		psSource = sstr.str();
+		pss.close();
+	}
+
+	//シェーダObj作成
+	unsigned int fragmentShader;
+	fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	char const* pPS = psSource.c_str();
+	glShaderSource(fragmentShader, 1, &pPS, NULL);			//コンパイル
+	glCompileShader(fragmentShader);
+
+#ifdef _DEBUG
+
+	{
+		//デバッグ情報
+		int  success;
+		char infoLog[512]{};
+		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+		if (!success) {
+			glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
+			std::wostringstream oss;
+			oss << "Error : Vertex Shader Compilation Failed!\n" << infoLog << std::endl;
+			PrintD(oss.str().c_str());
+		}
+	}
+
+#endif // _DEBUG
+
+
+
+	//シェーダプログラム作成
+	shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+
+#ifdef _DEBUG
+
+	{
+		//デバッグ情報
+		int  success;
+		char infoLog[512]{};
+		glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+		if (!success) {
+			glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+			std::wostringstream oss;
+			oss << "Error : Shader Program Link Failed!\n" << infoLog << std::endl;
+			PrintD(oss.str().c_str());
+		}
+	}
+
+#endif // _DEBUG
+
+	glDeleteShader(vertexShader);		//シェーダObjを破棄
+	glDeleteShader(fragmentShader);
+}
+
+//テクスチャ設定
+void BindTexture()
+{
+	//テクスチャ作成
+	unsigned char color[] = {
+		255, 255, 255,	255, 255, 255,	255, 255, 255,	255, 255, 255,
+		255, 255, 255,	255, 255, 255,	255, 255, 255,	255, 255, 255,
+		255, 255, 255,	255, 000, 255,	255, 255, 255,	255, 255, 255,
+		255, 255, 255,	255, 255, 255,	255, 000, 255,	255, 255, 255,
+		255, 255, 255,	255, 000, 255,	255, 000, 255,	255, 255, 255,
+		255, 255, 255,	255, 000, 255,	255, 000, 255,	255, 255, 255,
+		255, 000, 255,	255, 000, 255,	255, 000, 255,	255, 000, 255,
+		255, 000, 255,	255, 000, 255,	255, 000, 255,	255, 000, 255,
+		255, 000, 255,	255, 255, 255,	255, 255, 255,	255, 000, 255,
+		255, 000, 255,	255, 255, 255,	255, 255, 255,	255, 000, 255,
+		255, 000, 255,	255, 255, 255,	255, 000, 255,	255, 000, 255,
+		255, 000, 255,	255, 255, 255,	255, 000, 255,	255, 000, 255,
+		255, 000, 255,	255, 000, 255,	255, 000, 255,	255, 000, 255,
+		255, 000, 255,	255, 000, 255,	255, 000, 255,	255, 000, 255,
+		255, 255, 255,	255, 000, 255,	255, 000, 255,	255, 000, 255,
+		255, 000, 255,	255, 000, 255,	255, 000, 255,	255, 255, 255,
+	};
+	int width = 8;
+	int height = 8;
+
+	//バッファ作成
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	//ラッピング設定
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);		//リピート方式
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	//フィルタリング設定(ミップマップ)
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);	//ポイント方式
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	//テクスチャ読込
+	glTexImage2D(GL_TEXTURE_2D, 0,		//ミップマップレベル
+		GL_RGB,							//テクスチャタイプ
+		width, height, 0,				//リソースの幅と高さ
+		GL_RGB, GL_UNSIGNED_BYTE,		//リソースのフォーマットと型
+		color);							//リソースのポインタ
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	//バインド解除
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+
+
+	//テクスチャユニット設定
+	glUseProgram(shaderProgram);
+	glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+}
+
+std::vector<Vertex> MakeBox()
+{
+	//長さ定義
+	constexpr float size = 1.0f * 0.5f;		//ボックスの辺の長さ(標準1.0f)
+
+	//頂点作成
+	std::vector<Vertex> aData(24);
+	aData[0].pos  = { -size, -size, -size };
+	aData[1].pos  = {  size, -size, -size };
+	aData[2].pos  = { -size,  size, -size };
+	aData[3].pos  = {  size,  size, -size };	//near
+	aData[4].pos  = {  size, -size,  size };
+	aData[5].pos  = { -size, -size,  size };
+	aData[6].pos  = {  size,  size,  size };
+	aData[7].pos  = { -size,  size,  size };    //far
+	aData[8].pos  = { -size, -size,  size };
+	aData[9].pos  = { -size, -size, -size };
+	aData[10].pos = { -size,  size,  size };
+	aData[11].pos = { -size,  size, -size };    //left
+	aData[12].pos = {  size, -size, -size };
+	aData[13].pos = {  size, -size,  size };
+	aData[14].pos = {  size,  size, -size };
+	aData[15].pos = {  size,  size,  size };    //right
+	aData[16].pos = { -size, -size,  size };
+	aData[17].pos = {  size, -size,  size };
+	aData[18].pos = { -size, -size, -size };
+	aData[19].pos = {  size, -size, -size };    //bottom
+	aData[20].pos = { -size,  size, -size };
+	aData[21].pos = {  size,  size, -size };
+	aData[22].pos = { -size,  size,  size };
+	aData[23].pos = {  size,  size,  size };    //top
+	aData[0].uv  = { 0.0f, 1.0f };
+	aData[1].uv  = { 1.0f, 1.0f };
+	aData[2].uv  = { 0.0f, 0.0f };
+	aData[3].uv  = { 1.0f, 0.0f };              //near
+	aData[4].uv  = { 0.0f, 1.0f };
+	aData[5].uv  = { 1.0f, 1.0f };
+	aData[6].uv  = { 0.0f, 0.0f };
+	aData[7].uv  = { 1.0f, 0.0f };              //far
+	aData[8].uv  = { 0.0f, 1.0f };
+	aData[9].uv  = { 1.0f, 1.0f };
+	aData[10].uv = { 0.0f, 0.0f };
+	aData[11].uv = { 1.0f, 0.0f };              //left
+	aData[12].uv = { 0.0f, 1.0f };
+	aData[13].uv = { 1.0f, 1.0f };
+	aData[14].uv = { 0.0f, 0.0f };
+	aData[15].uv = { 1.0f, 0.0f };              //right
+	aData[16].uv = { 0.0f, 1.0f };
+	aData[17].uv = { 1.0f, 1.0f };
+	aData[18].uv = { 0.0f, 0.0f };
+	aData[19].uv = { 1.0f, 0.0f };              //bottom
+	aData[20].uv = { 0.0f, 1.0f };
+	aData[21].uv = { 1.0f, 1.0f };
+	aData[22].uv = { 0.0f, 0.0f };
+	aData[23].uv = { 1.0f, 0.0f };              //top
+
+	return aData;
 }

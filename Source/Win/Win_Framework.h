@@ -61,6 +61,7 @@
 #include <string>           // 文字列
 #include <iostream>         // 文字列入出力
 #include <sstream>          // 文字列ストリーム
+#include <fstream>          // ファイルストリーム
 
 //===== 定数・マクロ定義 =====
 #define IMGUI                       // ImGui使用

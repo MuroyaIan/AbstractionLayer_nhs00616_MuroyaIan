@@ -16,7 +16,7 @@ public:
 
     //プロトタイプ宣言
     GfxDX11(WinDirectX& window);
-    ~GfxDX11() noexcept override;
+    ~GfxDX11() noexcept(!IS_DEBUG) override;
     void BeginFrame(float r, float g, float b) noexcept override;                   //フレーム開始
     void DrawIndexed(UINT indexNum) const noexcept override;                        //描画処理
     void DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept override;    //インスタンシング描画

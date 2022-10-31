@@ -317,6 +317,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Source\Shader\BaseShader.hlsli" />
+    <None Include="Source\Shader\glsl\PS_Test.glsl" />
+    <None Include="Source\Shader\glsl\VS_Test.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

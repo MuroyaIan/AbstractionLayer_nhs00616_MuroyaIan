@@ -79,7 +79,7 @@ GfxMain::GfxMain(WinDirectX& window) :
     dx::XMStoreFloat4x4(&m_mtxProjection, dx::XMMatrixIdentity());
 }
 
-GfxMain::~GfxMain() noexcept
+GfxMain::~GfxMain() noexcept(!IS_DEBUG)
 {
 }
 

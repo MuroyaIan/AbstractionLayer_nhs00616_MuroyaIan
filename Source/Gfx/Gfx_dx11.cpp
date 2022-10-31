@@ -174,7 +174,7 @@ m_pDevice(), m_pSwapChain(), m_pContext(), m_pRTView(), m_pDSView()
 
 }
 
-GfxDX11::~GfxDX11() noexcept
+GfxDX11::~GfxDX11() noexcept(!IS_DEBUG)
 {
 
 #ifdef IMGUI
@@ -183,6 +183,23 @@ GfxDX11::~GfxDX11() noexcept
     ImGui_ImplDX11_Shutdown();
 
 #endif // IMGUI
+
+#ifdef _DEBUG
+
+    ////エラー確認
+    //m_pDSView.Reset();
+    //m_pRTView.Reset();
+    //m_pContext.Reset();
+    //m_pSwapChain.Reset();
+
+    //wrl::ComPtr<ID3D11Debug> pD3dDebug;
+    //HRESULT hr = m_pDevice->QueryInterface(IID_PPV_ARGS(&pD3dDebug));
+    //ERROR_DX(hr);
+    //hr = pD3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+    //ERROR_DX(hr);
+    //m_pDevice.Reset();
+
+#endif // _DEBUG
 
 }
 

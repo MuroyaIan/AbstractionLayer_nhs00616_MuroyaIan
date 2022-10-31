@@ -22,7 +22,7 @@ public:
 
     //プロトタイプ宣言
     GfxDX12(WinDirectX& window);
-    ~GfxDX12() noexcept override;
+    ~GfxDX12() noexcept(!IS_DEBUG) override;
     void BeginFrame(float r, float g, float b) noexcept override;                   //フレーム開始
     void DrawIndexed(UINT indexNum) const noexcept override;                        //描画処理(DX12では廃止)
     void DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept override;    //インスタンシング描画

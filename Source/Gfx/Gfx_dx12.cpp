@@ -216,7 +216,7 @@ GfxDX12::GfxDX12(WinDirectX& window) : GfxMain(window),
 
 }
 
-GfxDX12::~GfxDX12() noexcept
+GfxDX12::~GfxDX12() noexcept(!IS_DEBUG)
 {
     //フェンス用イベント終了
     CloseHandle(m_fenceEvent);  //ハンドルを閉じる

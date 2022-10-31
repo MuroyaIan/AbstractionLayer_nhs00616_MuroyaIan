@@ -85,6 +85,9 @@
     <Filter Include="Lib\glad">
       <UniqueIdentifier>{ddae8ca5-70bc-4b04-bc7d-d02bcc25e448}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\glsl">
+      <UniqueIdentifier>{7b8cbb22-ba5a-450a-9c1f-90a8778c60a5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc">
@@ -468,6 +471,12 @@
   <ItemGroup>
     <None Include="Source\Shader\BaseShader.hlsli">
       <Filter>Shader</Filter>
+    </None>
+    <None Include="Source\Shader\glsl\PS_Test.glsl">
+      <Filter>Shader\glsl</Filter>
+    </None>
+    <None Include="Source\Shader\glsl\VS_Test.glsl">
+      <Filter>Shader\glsl</Filter>
     </None>
   </ItemGroup>
 </Project>

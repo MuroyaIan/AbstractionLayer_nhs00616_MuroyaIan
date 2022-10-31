@@ -54,7 +54,7 @@ public:
 
     //プロトタイプ宣言
     GfxMain(WinDirectX& window);
-    virtual ~GfxMain() noexcept = 0;
+    virtual ~GfxMain() noexcept(!IS_DEBUG) = 0;
     virtual void BeginFrame(float r, float g, float b) noexcept = 0;                    //フレーム開始
     virtual void DrawIndexed(UINT indexNum) const noexcept = 0;                         //フレームバッファ書込み
     virtual void DrawInstanced(UINT indexNum, UINT instanceNum) const noexcept = 0;     //インスタンシング描画

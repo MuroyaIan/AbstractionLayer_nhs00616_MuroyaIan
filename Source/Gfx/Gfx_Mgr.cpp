@@ -10,7 +10,7 @@
 #include <Gfx/Gfx_dx12.h>
 
 //===== クラス実装 =====
-GfxMgr::GfxMgr(WinWindow& window) : m_window(window), m_pGfx()
+GfxMgr::GfxMgr(WinDirectX& window) : m_window(window), m_pGfx()
 {
     //GfxAPI初期化
     InitAPI();

@@ -7,7 +7,7 @@
 #pragma once
 
 //===== インクルード部 =====
-#include <Win/Win_Window.h>
+#include <Win/Win_DirectX.h>
 #include <Gfx/Gfx_Main.h>
 
 //===== 定数・マクロ定義 =====

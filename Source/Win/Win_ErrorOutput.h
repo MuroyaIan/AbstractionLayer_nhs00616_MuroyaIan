@@ -7,8 +7,8 @@
 #pragma once
 
 //===== インクルード部 =====
-#include <Win/Win_Framework.h>
 #include <exception>            //例外処理
+#include <sstream>              //文字列ストリーム
 
 //===== クラス定義 =====
 

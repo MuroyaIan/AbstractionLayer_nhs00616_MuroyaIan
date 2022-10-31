@@ -15,7 +15,7 @@ class GfxDX11 : public GfxMain
 public:
 
     //プロトタイプ宣言
-    GfxDX11(WinWindow& window);
+    GfxDX11(WinDirectX& window);
     ~GfxDX11() noexcept override;
     void BeginFrame(float r, float g, float b) noexcept override;                   //フレーム開始
     void DrawIndexed(UINT indexNum) const noexcept override;                        //描画処理

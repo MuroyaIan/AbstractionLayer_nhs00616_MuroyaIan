@@ -7,7 +7,7 @@
 #pragma once
 
 //===== インクルード部 =====
-#include <Win/Win_Window.h>
+#include <Win/Win_DirectX.h>
 #include <wrl.h>                //COMポインタ
 #include <dxgi1_6.h>
 #include <d3dcompiler.h>        //シェーダ読込
@@ -53,7 +53,7 @@ public:
     GfxMain& operator=(const GfxMain&) = delete;
 
     //プロトタイプ宣言
-    GfxMain(WinWindow& window);
+    GfxMain(WinDirectX& window);
     virtual ~GfxMain() noexcept = 0;
     virtual void BeginFrame(float r, float g, float b) noexcept = 0;                    //フレーム開始
     virtual void DrawIndexed(UINT indexNum) const noexcept = 0;                         //フレームバッファ書込み
@@ -97,7 +97,7 @@ public:
 protected:
 
     //変数宣言
-    WinWindow& m_window;                                //ウィンドウ情報の参照
+    WinDirectX& m_window;                               //ウィンドウ情報の参照
     Microsoft::WRL::ComPtr<IDXGIFactory6> m_pFactory;   //DXGIファクトリ
     Microsoft::WRL::ComPtr<IDXGIAdapter> m_pAdapter;    //アダプター
 
@@ -117,7 +117,7 @@ private:
 
     //権限指定
     friend class WinCheckGfx;
-    friend class WinWindow;
+    friend class WinDirectX;
     friend class GfxMgr;
     friend class GfxBinder;
 };

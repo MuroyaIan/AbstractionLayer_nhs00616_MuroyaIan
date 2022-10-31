@@ -18,7 +18,7 @@ namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
 //===== クラス実装 =====
-GfxDX11::GfxDX11(WinWindow& window) : GfxMain(window),
+GfxDX11::GfxDX11(WinDirectX& window) : GfxMain(window),
 m_pDevice(), m_pSwapChain(), m_pContext(), m_pRTView(), m_pDSView()
 {
     //ウィンドウ情報取得

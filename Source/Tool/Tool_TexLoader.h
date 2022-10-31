@@ -7,7 +7,7 @@
 #pragma once
 
 //===== インクルード部 =====
-#include <Win/Win_Window.h>
+#include <Win/Win_DirectX.h>
 
 //===== クラス宣言 =====
 

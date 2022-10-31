@@ -6,6 +6,7 @@
 
 //===== インクルード部 =====
 #include <Win/Win_App.h>
+#include <Win/Win_DirectX.h>
 #include <Draw/Draw_CameraMgr.h>
 #include <Draw/Draw_LightMgr.h>
 #include <Draw/Draw_Shape.h>
@@ -23,13 +24,16 @@ constexpr int WND_POS_Y = 50;                           //Window左上座標
 
 //===== クラス実装 =====
 App64::App64() :
-    m_window(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH),
-    static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y), m_message(), m_time(),
+    m_pWindow(), m_message(), m_time(),
     m_pGfxMgr(), m_pShaderMgr(), m_pGfx(), m_pInputMgr(), m_pCameraMgr(), m_pLightMgr(),
     m_aDrawer(0), m_shapeID(0), m_pSunLight(), m_rot()
 {
+    //Window初期化
+    m_pWindow = std::make_unique<WinDirectX>(WINDOW_NAME, static_cast<int>(SCREEN_WIDTH),
+        static_cast<int>(SCREEN_HEIGHT), WND_POS_X, WND_POS_Y);
+
     //DirectX初期化
-    m_pGfxMgr = std::make_unique<GfxMgr>(m_window);
+    m_pGfxMgr = std::make_unique<GfxMgr>(*dynamic_cast<WinDirectX*>(m_pWindow.get()));
 
     //シェーダMgr初期化
     m_pShaderMgr = std::make_unique<DrawShaderMgr>(*m_pGfxMgr->GetGfx());
@@ -66,7 +70,7 @@ App64::App64() :
     //太陽光初期化
     m_pSunLight = std::make_unique<DrawDirectionalLight>(*this);
 
-    m_window.m_mouse.SetRawInput(true);
+    dynamic_cast<WinDirectX*>(m_pWindow.get())->m_mouse.SetRawInput(true);
 
     //テスト描画用データの初期化
     m_rot.x = DrawShapeModel::m_rotX;
@@ -75,6 +79,7 @@ App64::App64() :
 
 App64::~App64()
 {
+    m_pWindow.reset();
 }
 
 //アプリケーション実行
@@ -126,7 +131,7 @@ void App64::Update()
         d->Update();
 
     //モデル回転制御
-    if (m_pInputMgr->m_mouse.GetPress(VK_LBUTTON) && !m_window.IsUsingImgui()) {
+    if (m_pInputMgr->m_mouse.GetPress(VK_LBUTTON) && !m_pWindow->IsUsingImgui()) {
         dx::XMINT2 mouseMove = m_pInputMgr->m_mouse.GetMoveVal();
         m_rot.y -= static_cast<int>(mouseMove.x * 0.5f);
         m_rot.x -= static_cast<int>(mouseMove.y * 0.5f);
@@ -228,7 +233,7 @@ void App64::Draw()
                 ImGui::Text(": %d", m_pInputMgr->m_mouse.GetWheelVal());
 
                 ImGui::Text(U8(u8"マウス表示")); ImGui::SameLine(); ImGui::Text(":"); ImGui::SameLine();
-                if (m_window.IsUsingCursor())
+                if (m_pWindow->IsUsingCursor())
                     ImGui::TextColored(ImVec4(0.5f, 1.0f, 0.5f, 1.0f), "True");
                 else {
                     ImGui::TextColored(ImVec4(1.0f, 0.5f, 0.5f, 1.0f), "False");

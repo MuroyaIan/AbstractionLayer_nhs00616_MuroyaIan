@@ -18,7 +18,7 @@ namespace wrl = Microsoft::WRL;
 namespace dx = DirectX;
 
 //===== クラス実装 =====
-GfxDX12::GfxDX12(WinWindow& window) : GfxMain(window),
+GfxDX12::GfxDX12(WinDirectX& window) : GfxMain(window),
     m_pDevice(), m_pCmdAllocator(), m_pCmdList(), m_pCmdQueue(), m_pSwapChain(),
     m_pBackBuffers(0), m_pHeapsRTV(), m_rtvIncSize(0), m_pDepthBuffer(), m_pHeapDSV(),
     m_pFence(), m_fenceVal(0), m_fenceEvent(), m_resourceBarrier(),

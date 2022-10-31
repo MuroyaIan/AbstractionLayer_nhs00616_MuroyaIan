@@ -82,6 +82,9 @@
     <Filter Include="ヘッダー ファイル\Tool\Input">
       <UniqueIdentifier>{c6168faa-c3ca-48fa-8857-215854749743}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Lib\glad">
+      <UniqueIdentifier>{ddae8ca5-70bc-4b04-bc7d-d02bcc25e448}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AbstractionLayer_nhs00616_MuroyaIan.rc">
@@ -112,7 +115,7 @@
     <ClInclude Include="Source\Win\Win_ErrorOutput.h">
       <Filter>ヘッダー ファイル\Win</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Win\Win_Window.h">
+    <ClInclude Include="Source\Win\Win_DirectX.h">
       <Filter>ヘッダー ファイル\Win</Filter>
     </ClInclude>
     <ClInclude Include="Source\Win\Win_Keyboard.h">
@@ -289,6 +292,12 @@
     <ClInclude Include="Source\Gfx\Binder\Gfx_HeapMgr.h">
       <Filter>ヘッダー ファイル\GFX\Binder</Filter>
     </ClInclude>
+    <ClInclude Include="Library\3rd_Party\glad\gl.h">
+      <Filter>Lib\glad</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Win\Win_Window.h">
+      <Filter>ヘッダー ファイル\Win</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Win\Win_Main.cpp">
@@ -297,7 +306,7 @@
     <ClCompile Include="Source\Win\Win_ErrorOutput.cpp">
       <Filter>ソース ファイル\Win</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Win\Win_Window.cpp">
+    <ClCompile Include="Source\Win\Win_DirectX.cpp">
       <Filter>ソース ファイル\Win</Filter>
     </ClCompile>
     <ClCompile Include="Source\Win\Win_Keyboard.cpp">
@@ -437,6 +446,12 @@
     </ClCompile>
     <ClCompile Include="Source\Gfx\Binder\Gfx_HeapMgr.cpp">
       <Filter>ソース ファイル\GFX\Binder</Filter>
+    </ClCompile>
+    <ClCompile Include="Library\3rd_Party\glad\gl.cpp">
+      <Filter>Lib\glad</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Win\Win_Window.cpp">
+      <Filter>ソース ファイル\Win</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

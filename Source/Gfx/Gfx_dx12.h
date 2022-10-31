@@ -21,7 +21,7 @@ public:
     };
 
     //プロトタイプ宣言
-    GfxDX12(WinWindow& window);
+    GfxDX12(WinDirectX& window);
     ~GfxDX12() noexcept override;
     void BeginFrame(float r, float g, float b) noexcept override;                   //フレーム開始
     void DrawIndexed(UINT indexNum) const noexcept override;                        //描画処理(DX12では廃止)

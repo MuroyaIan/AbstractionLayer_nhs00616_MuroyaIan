@@ -11,7 +11,7 @@
 
 //===== クラス実装 =====
 ToolMouse::ToolMouse(App64& app, ToolKeyboard& kb) noexcept :
-    m_mouse(app.GetWindowProc().m_mouse), m_kb(kb), moveVal()
+    m_mouse(app.GetWindowProc()->m_mouse), m_kb(kb), moveVal()
 {
 }
 

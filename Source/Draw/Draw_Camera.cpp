@@ -26,7 +26,7 @@ DrawCamera::DrawCamera(App64& app) noexcept : m_app(app),
     m_mtxWorld(), m_mtxView(), m_mtxProj(), m_rot(0.0f, 0.0f, 0.0f), m_sensitivity(1.0f)
 {
     //縦横比初期化
-    auto [x, y] = m_app.GetWindowProc().GetSize();
+    auto [x, y] = m_app.GetWindowProc()->GetSize();
     g_aspectRatio = static_cast<float>(x) / static_cast<float>(y);
 
     //行列初期化

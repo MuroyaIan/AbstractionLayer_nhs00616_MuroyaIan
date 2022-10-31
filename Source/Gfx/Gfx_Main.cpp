@@ -20,7 +20,7 @@ namespace dx = DirectX;
 GfxMain::API_MODE GfxMain::m_api = GfxMain::API_MODE::NONE;     //GfxApiモード
 
 //===== クラス実装 =====
-GfxMain::GfxMain(WinWindow& window) :
+GfxMain::GfxMain(WinDirectX& window) :
     m_window(window), m_pFactory(), m_pAdapter(), m_drawMode(DRAW_MODE::DRAW_3D), m_mtxView(), m_mtxProjection()
 {
     //エラーハンドル

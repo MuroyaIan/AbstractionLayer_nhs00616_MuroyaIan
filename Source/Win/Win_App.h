@@ -88,9 +88,9 @@ public:
     ///
     /// \return ウィンドウ処理の参照先
     //--------------------------------------------------------------------------
-    WinWindow& GetWindowProc() noexcept
+    WinDirectX* GetWindowProc() const noexcept
     {
-        return m_window;
+        return dynamic_cast<WinDirectX*>(m_pWindow.get());
     }
 
     //--------------------------------------------------------------------------
@@ -155,7 +155,7 @@ private:
 
 #endif // IMGUI
 
-    WinWindow m_window;
+    std::unique_ptr<WinWindow> m_pWindow;
     MSG m_message;
     WinTime m_time;
     std::unique_ptr<GfxMgr> m_pGfxMgr;

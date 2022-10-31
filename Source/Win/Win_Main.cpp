@@ -12,7 +12,6 @@
 
 
 //OpenGL
-#define GLAD_GL_IMPLEMENTATION
 #include <3rd_Party/glad/gl.h>
 #include <3rd_Party/glfw/glfw3.h>
 #define GLM_FORCE_RADIANS                   //ラジアン角度に設定

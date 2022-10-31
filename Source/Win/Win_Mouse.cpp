@@ -87,7 +87,6 @@ WinMouseEvents WinMouse::ReadBuffer() noexcept
     const WinMouseEvents event = m_buffer.front();  //次のイベントにアクセス
     m_buffer.pop();                                 //イベントを削除する
     return event;
-
 }
 
 //バッファの空き確認

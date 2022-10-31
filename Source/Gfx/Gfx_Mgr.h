@@ -15,7 +15,7 @@ class GfxMgr
 public:
 
     //プロトタイプ宣言
-    GfxMgr(WinWindow& window);
+    GfxMgr(WinDirectX& window);
     ~GfxMgr() noexcept;
     void SetAPI(GfxMain::API_MODE mode);    //API切替
 
@@ -27,7 +27,7 @@ public:
 private:
 
     //変数宣言
-    WinWindow& m_window;
+    WinDirectX& m_window;
     std::unique_ptr<GfxMain> m_pGfx;
 
     //プロトタイプ宣言

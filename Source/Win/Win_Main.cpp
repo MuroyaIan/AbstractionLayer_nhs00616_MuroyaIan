@@ -53,7 +53,6 @@ unsigned int VAO;
 unsigned int VBO;
 unsigned int EBO;
 unsigned int instanceVBO;
-unsigned int instanceVBO2;
 unsigned int shaderProgram;
 unsigned int texture;
 
@@ -435,8 +434,12 @@ void BindVertexIndexBuffer()
 
 
 	//インスタンスバッファ作成
-	glm::vec2 translations[100];
-	glm::mat4 models[100];
+	struct InstancePack
+	{
+		glm::vec2 translations;
+		glm::mat4 models;
+	};
+	InstancePack pack[100];
 	int index = 0;
 	float offset = 2.0f;
 	for (int y = 0; y < 10; y++) {
@@ -444,32 +447,46 @@ void BindVertexIndexBuffer()
 			glm::vec2 translation{};
 			translation.x = (float)x * offset;
 			translation.y = (float)y * offset;
-			translations[index] = translation;
-			glm::mat4 model(1.0f);
-			models[index] = glm::rotate(model, glm::radians(1.0f + index), glm::vec3((float)(rand() % 10), (float)(rand() % 10), (float)(rand() % 10)));
+			pack[index].translations = translation;
+			pack[index].models = glm::mat4(1.0f);
+			float r = 0.0f;
+			float g = 0.0f;
+			float b = 0.0f;
+			if (index % 3 == 0)
+				r = 1.0f;
+			else if (index % 3 == 1)
+				g = 1.0f;
+			else if (index % 3 == 2)
+				b = 1.0f;
+			pack[index].models = glm::rotate(pack[index].models, glm::radians(360.0f * index / 99.0f), glm::vec3(r, g, b));
 			index++;
 		}
 	}
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glGenBuffers(1, &instanceVBO);
 	glBindBuffer(GL_ARRAY_BUFFER, instanceVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * 100, &translations[0], GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(InstancePack) * 100, &pack[0], GL_STATIC_DRAW);
 
 	//IL設定(インスタンス情報)
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 18 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(2);
 	glVertexAttribDivisor(2, 1);
 
+	glVertexAttribPointer(3, 4, GL_FLOAT, GL_FALSE, 18 * sizeof(float), (void*)(2 * sizeof(float)));
+	glEnableVertexAttribArray(3);
+	glVertexAttribDivisor(3, 1);
 
+	glVertexAttribPointer(4, 4, GL_FLOAT, GL_FALSE, 18 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(4);
+	glVertexAttribDivisor(4, 1);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, 0);
-	//glGenBuffers(1, &instanceVBO2);
-	//glBindBuffer(GL_ARRAY_BUFFER, instanceVBO2);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * 100, &models[0], GL_STATIC_DRAW);
+	glVertexAttribPointer(5, 4, GL_FLOAT, GL_FALSE, 18 * sizeof(float), (void*)(10 * sizeof(float)));
+	glEnableVertexAttribArray(5);
+	glVertexAttribDivisor(5, 1);
 
-	//glVertexAttribPointer(3, 16, GL_FLOAT, GL_FALSE, 16 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(3);
-	//glVertexAttribDivisor(2, 1);
+	glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, 18 * sizeof(float), (void*)(14 * sizeof(float)));
+	glEnableVertexAttribArray(6);
+	glVertexAttribDivisor(6, 1);
 
 
 

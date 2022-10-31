@@ -5,7 +5,7 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoord;
 layout (location = 2) in vec2 aOffset;
-//layout (location = 3) in mat4 aMtx;
+layout (location = 3) in mat4 aMtx;
 
 //出力
 out vec2 TexCoord;
@@ -18,7 +18,7 @@ uniform mat4 projection;
 //エントリーポイント
 void main()
 {
-    vec4 posW = model * vec4(aPos, 1.0);
+    vec4 posW = model * aMtx * vec4(aPos, 1.0);
     posW.xy += aOffset;
     gl_Position = projection * view * posW;
     TexCoord = aTexCoord;
